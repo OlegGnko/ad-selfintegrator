@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpha Digital — Brand Guidebook & Component Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   ALPHA DIGITAL — DESIGN SYSTEM & GUIDEBOOK
+   ============================================ */
+
+/* === CSS CUSTOM PROPERTIES (DESIGN TOKENS) === */
+:root {
+  /* ── Color Palette ── */
+  --ad-black:        #111111;
+  --ad-black-pure:   #000000;
+  --ad-dark-gray:    #272727;
+  --ad-mid-gray:     #404040;
+  --ad-light-gray:   #C5C5C5;
+  --ad-cream:        #FAF9F5;
+  --ad-white:        #FFFFFF;
+
+  /* Accent Colors */
+  --ad-lime:         #C2FF85;
+  --ad-lime-light:   #F5FFEA;
+  --ad-lime-rgb:     194, 255, 133;
+  --ad-green:        #62C584;
+  --ad-coral:        #F95D51;
+  --ad-coral-light:  #FF8562;
+
+  /* ── Typography ── */
+  --ad-font-primary: 'Inter', Arial, sans-serif;
+
+  /* Font Sizes */
+  --ad-text-xs:      12px;
+  --ad-text-sm:      14px;
+  --ad-text-base:    16px;
+  --ad-text-md:      18px;
+  --ad-text-lg:      20px;
+  --ad-text-xl:      24px;
+  --ad-text-2xl:     30px;
+  --ad-text-3xl:     35px;
+  --ad-text-4xl:     45px;
+  --ad-text-5xl:     70px;
+
+  /* Font Weights */
+  --ad-weight-light:    300;
+  --ad-weight-regular:  400;
+  --ad-weight-medium:   500;
+  --ad-weight-semibold: 600;
+  --ad-weight-bold:     700;
+  --ad-weight-black:    900;
+
+  /* Line Heights */
+  --ad-leading-tight:   1.2;
+  --ad-leading-normal:  1.36;
+  --ad-leading-relaxed: 1.5;
+  --ad-leading-loose:   1.7;
+
+  /* ── Spacing ── */
+  --ad-space-xs:     8px;
+  --ad-space-sm:     12px;
+  --ad-space-md:     16px;
+  --ad-space-lg:     24px;
+  --ad-space-xl:     32px;
+  --ad-space-2xl:    48px;
+  --ad-space-3xl:    64px;
+  --ad-space-4xl:    80px;
+  --ad-space-5xl:    120px;
+
+  /* ── Border Radius ── */
+  --ad-radius-sm:    8px;
+  --ad-radius-md:    16px;
+  --ad-radius-lg:    20px;
+  --ad-radius-xl:    30px;
+  --ad-radius-pill:  200px;
+  --ad-radius-circle: 50%;
+
+  /* ── Shadows ── */
+  --ad-shadow-card:  0 4px 24px rgba(0, 0, 0, 0.08);
+  --ad-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --ad-shadow-dark:  0 4px 24px rgba(0, 0, 0, 0.3);
+
+  /* ── Transitions ── */
+  --ad-transition:   all 0.3s ease;
+  --ad-transition-fast: all 0.15s ease;
+
+  /* ── Container ── */
+  --ad-container-max: 1200px;
+  --ad-container-padding: 40px;
+}
+
+/* === RESET & BASE === */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--ad-font-primary);
+  font-size: var(--ad-text-base);
+  line-height: var(--ad-leading-normal);
+  color: var(--ad-black);
+  background: var(--ad-white);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--ad-transition);
+}
+
+/* === GUIDEBOOK NAVIGATION === */
+.guide-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--ad-black);
+  border-bottom: 1px solid var(--ad-dark-gray);
+  padding: 12px 0;
+}
+
+.guide-nav__inner {
+  max-width: var(--ad-container-max);
+  margin: 0 auto;
+  padding: 0 var(--ad-container-padding);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  overflow-x: auto;
+}
+
+.guide-nav__logo {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ad-lime);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+}
+
+.guide-nav__link {
+  color: var(--ad-light-gray);
+  font-size: 13px;
+  white-space: nowrap;
+  transition: var(--ad-transition-fast);
+}
+
+.guide-nav__link:hover {
+  color: var(--ad-lime);
+}
+
+/* === CONTAINER === */
+.ad-container {
+  max-width: var(--ad-container-max);
+  margin: 0 auto;
+  padding: 0 var(--ad-container-padding);
+}
+
+/* === SECTION STYLES === */
+.guide-section {
+  padding: var(--ad-space-5xl) 0;
+}
+
+.guide-section--dark {
+  background: var(--ad-black);
+  color: var(--ad-white);
+}
+
+.guide-section--lime {
+  background: var(--ad-lime);
+  color: var(--ad-black);
+}
+
+.guide-section--cream {
+  background: var(--ad-cream);
+}
+
+.guide-section--lime-light {
+  background: var(--ad-lime-light);
+}
+
+.guide-section__title {
+  font-size: var(--ad-text-3xl);
+  font-weight: var(--ad-weight-bold);
+  margin-bottom: var(--ad-space-lg);
+  text-transform: uppercase;
+}
+
+.guide-section__subtitle {
+  font-size: var(--ad-text-md);
+  color: var(--ad-mid-gray);
+  margin-bottom: var(--ad-space-3xl);
+  max-width: 700px;
+}
+
+.guide-section--dark .guide-section__subtitle {
+  color: var(--ad-light-gray);
+}
+
+/* === SWATCH GRID (Color Palette) === */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--ad-space-lg);
+  margin-bottom: var(--ad-space-3xl);
+}
+
+.swatch {
+  border-radius: var(--ad-radius-lg);
+  overflow: hidden;
+  background: var(--ad-white);
+  box-shadow: var(--ad-shadow-card);
+}
+
+.swatch__color {
+  height: 100px;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+}
+
+.swatch__info {
+  padding: 16px;
+}
+
+.swatch__name {
+  font-weight: var(--ad-weight-semibold);
+  font-size: var(--ad-text-sm);
+  margin-bottom: 4px;
+}
+
+.swatch__hex {
+  font-size: var(--ad-text-xs);
+  color: var(--ad-mid-gray);
+  font-family: monospace;
+}
+
+.swatch__var {
+  font-size: 11px;
+  color: var(--ad-light-gray);
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+/* === TYPOGRAPHY SHOWCASE === */
+.type-sample {
+  margin-bottom: var(--ad-space-2xl);
+  padding-bottom: var(--ad-space-2xl);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.type-sample:last-child {
+  border-bottom: none;
+}
+
+.type-sample__label {
+  font-size: var(--ad-text-xs);
+  font-weight: var(--ad-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ad-lime);
+  margin-bottom: var(--ad-space-sm);
+}
+
+.type-sample__meta {
+  font-size: var(--ad-text-xs);
+  color: var(--ad-light-gray);
+  font-family: monospace;
+  margin-top: var(--ad-space-xs);
+}
+
+/* Actual type styles matching site */
+.type-h1 {
+  font-size: var(--ad-text-5xl);
+  font-weight: var(--ad-weight-bold);
+  line-height: 1.36;
+  text-transform: uppercase;
+}
+
+.type-h2 {
+  font-size: var(--ad-text-4xl);
+  font-weight: var(--ad-weight-regular);
+  line-height: 1.36;
+  text-transform: uppercase;
+}
+
+.type-h3 {
+  font-size: var(--ad-text-2xl);
+  font-weight: var(--ad-weight-regular);
+  line-height: 1.36;
+  text-transform: uppercase;
+}
+
+.type-h4 {
+  font-size: var(--ad-text-xl);
+  font-weight: var(--ad-weight-bold);
+  line-height: 1.36;
+  text-transform: uppercase;
+}
+
+.type-body {
+  font-size: var(--ad-text-md);
+  font-weight: var(--ad-weight-regular);
+  line-height: var(--ad-leading-relaxed);
+}
+
+.type-body-sm {
+  font-size: var(--ad-text-base);
+  font-weight: var(--ad-weight-regular);
+  line-height: var(--ad-leading-relaxed);
+}
+
+.type-caption {
+  font-size: var(--ad-text-sm);
+  font-weight: var(--ad-weight-regular);
+  line-height: var(--ad-leading-normal);
+}
+
+/* === COMPONENT SHOWCASE === */
+.component-showcase {
+  background: var(--ad-dark-gray);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-2xl);
+  margin-bottom: var(--ad-space-2xl);
+}
+
+.component-showcase--light {
+  background: var(--ad-cream);
+}
+
+.component-showcase--lime {
+  background: var(--ad-lime);
+}
+
+.component-label {
+  font-size: var(--ad-text-xs);
+  font-weight: var(--ad-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ad-lime);
+  margin-bottom: var(--ad-space-lg);
+}
+
+.component-showcase--light .component-label,
+.component-showcase--lime .component-label {
+  color: var(--ad-black);
+}
+
+/* ============================================
+   REUSABLE COMPONENTS — ALPHA DIGITAL STYLE
+   ============================================ */
+
+/* === BUTTONS === */
+.ad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ad-font-primary);
+  font-size: var(--ad-text-md);
+  font-weight: var(--ad-weight-regular);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--ad-transition);
+  white-space: nowrap;
+  border-radius: var(--ad-radius-pill);
+}
+
+.ad-btn--primary {
+  background: var(--ad-black);
+  color: var(--ad-lime);
+  padding: 16px 40px;
+  border: 1px solid transparent;
+}
+
+.ad-btn--primary:hover {
+  background: var(--ad-dark-gray);
+  transform: translateY(-2px);
+  box-shadow: var(--ad-shadow-dark);
+}
+
+.ad-btn--secondary {
+  background: var(--ad-white);
+  color: var(--ad-mid-gray);
+  padding: 16px 40px;
+  border: 1px solid var(--ad-black);
+}
+
+.ad-btn--secondary:hover {
+  background: var(--ad-black);
+  color: var(--ad-lime);
+  transform: translateY(-2px);
+}
+
+.ad-btn--lime {
+  background: var(--ad-lime);
+  color: var(--ad-black);
+  padding: 16px 40px;
+  border: 1px solid transparent;
+  font-weight: var(--ad-weight-medium);
+}
+
+.ad-btn--lime:hover {
+  background: #d4ff9f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(194, 255, 133, 0.3);
+}
+
+.ad-btn--ghost {
+  background: transparent;
+  color: var(--ad-white);
+  padding: 16px 40px;
+  border: 1px solid var(--ad-white);
+}
+
+.ad-btn--ghost:hover {
+  background: var(--ad-white);
+  color: var(--ad-black);
+}
+
+.ad-btn--sm {
+  font-size: var(--ad-text-sm);
+  padding: 10px 24px;
+}
+
+.ad-btn--lg {
+  font-size: var(--ad-text-lg);
+  padding: 20px 48px;
+}
+
+/* === LANGUAGE TOGGLE === */
+.ad-lang-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.ad-lang-toggle__btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--ad-radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--ad-text-sm);
+  font-weight: var(--ad-weight-semibold);
+  font-family: var(--ad-font-primary);
+  cursor: pointer;
+  transition: var(--ad-transition);
+  border: none;
+}
+
+.ad-lang-toggle__btn--active {
+  background: var(--ad-black-pure);
+  color: var(--ad-lime);
+}
+
+.ad-lang-toggle__btn--inactive {
+  background: var(--ad-white);
+  color: var(--ad-black);
+  border: 1px solid var(--ad-light-gray);
+}
+
+.ad-lang-toggle__btn--inactive:hover {
+  background: var(--ad-black-pure);
+  color: var(--ad-lime);
+  border-color: transparent;
+}
+
+/* === CARDS === */
+.ad-card {
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-xl);
+  transition: var(--ad-transition);
+}
+
+.ad-card--dark {
+  background: var(--ad-black);
+  color: var(--ad-white);
+}
+
+.ad-card--white {
+  background: var(--ad-white);
+  color: var(--ad-black);
+  box-shadow: var(--ad-shadow-card);
+}
+
+.ad-card--gray {
+  background: var(--ad-dark-gray);
+  color: var(--ad-white);
+}
+
+.ad-card--lime-light {
+  background: var(--ad-lime-light);
+  color: var(--ad-black);
+}
+
+.ad-card--glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  color: var(--ad-white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ad-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ad-shadow-hover);
+}
+
+.ad-card__title {
+  font-size: var(--ad-text-lg);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-sm);
+}
+
+.ad-card__text {
+  font-size: var(--ad-text-base);
+  line-height: var(--ad-leading-relaxed);
+  color: inherit;
+  opacity: 0.85;
+}
+
+/* === ANNOUNCEMENT BAR === */
+.ad-announcement {
+  background: var(--ad-white);
+  color: var(--ad-black);
+  text-align: center;
+  padding: 12px var(--ad-space-lg);
+  font-size: var(--ad-text-sm);
+}
+
+.ad-announcement strong {
+  font-weight: var(--ad-weight-bold);
+}
+
+.ad-announcement--dark {
+  background: var(--ad-black);
+  color: var(--ad-white);
+}
+
+.ad-announcement--lime {
+  background: var(--ad-lime);
+  color: var(--ad-black);
+}
+
+/* === HERO SECTION === */
+.ad-hero {
+  background: var(--ad-black);
+  color: var(--ad-white);
+  padding: var(--ad-space-4xl) 0 var(--ad-space-5xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ad-space-3xl);
+  align-items: center;
+}
+
+.ad-hero__title {
+  font-size: var(--ad-text-5xl);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  line-height: 1.36;
+  margin-bottom: var(--ad-space-lg);
+}
+
+.ad-hero__title span {
+  color: var(--ad-lime);
+}
+
+.ad-hero__subtitle {
+  font-size: var(--ad-text-2xl);
+  font-weight: var(--ad-weight-regular);
+  line-height: 1.36;
+  margin-bottom: var(--ad-space-xl);
+}
+
+.ad-hero__subtitle span {
+  color: var(--ad-lime);
+  font-weight: var(--ad-weight-bold);
+}
+
+.ad-hero__desc-card {
+  background: var(--ad-white);
+  color: var(--ad-black);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-xl);
+  margin-bottom: var(--ad-space-lg);
+}
+
+.ad-hero__desc-card p {
+  font-size: var(--ad-text-md);
+  line-height: var(--ad-leading-relaxed);
+  margin-bottom: var(--ad-space-md);
+}
+
+.ad-hero__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ad-space-md);
+  margin-bottom: var(--ad-space-lg);
+}
+
+.ad-hero__feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ad-radius-md);
+  background: var(--ad-lime-light);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-hero__buttons {
+  display: flex;
+  gap: var(--ad-space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--ad-space-md);
+}
+
+.ad-hero__note {
+  font-size: var(--ad-text-sm);
+  color: var(--ad-white);
+}
+
+.ad-hero__note strong {
+  font-weight: var(--ad-weight-bold);
+}
+
+.ad-hero__image {
+  position: relative;
+}
+
+.ad-hero__image img {
+  width: 100%;
+  border-radius: var(--ad-radius-xl);
+}
+
+/* === FEATURES SECTION === */
+.ad-features {
+  padding: var(--ad-space-5xl) 0;
+}
+
+.ad-features__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ad-space-3xl);
+  align-items: start;
+}
+
+.ad-features__image-col {
+  position: sticky;
+  top: 80px;
+}
+
+.ad-features__image-card {
+  background: var(--ad-black);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-xl);
+  aspect-ratio: 4/5;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.ad-features__image-card h3 {
+  font-size: var(--ad-text-4xl);
+  color: var(--ad-white);
+  line-height: 1.36;
+}
+
+.ad-features__image-card h3 span {
+  color: var(--ad-lime);
+}
+
+.ad-features__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ad-space-2xl);
+}
+
+.ad-feature-item {
+  padding-bottom: var(--ad-space-2xl);
+  border-bottom: 1px solid var(--ad-light-gray);
+}
+
+.ad-feature-item:last-child {
+  border-bottom: none;
+}
+
+.ad-feature-item__title {
+  font-size: var(--ad-text-lg);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-sm);
+}
+
+.ad-feature-item__text {
+  font-size: var(--ad-text-md);
+  line-height: var(--ad-leading-relaxed);
+  color: var(--ad-mid-gray);
+}
+
+/* === TWO-COLUMN LIST SECTION (Lime bg) === */
+.ad-split-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 500px;
+}
+
+.ad-split-section__left {
+  background: var(--ad-lime);
+  padding: var(--ad-space-3xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ad-split-section__right {
+  background: var(--ad-lime);
+  padding: var(--ad-space-3xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.ad-split-section__right--with-card {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ad-list-title {
+  font-size: var(--ad-text-2xl);
+  font-weight: var(--ad-weight-regular);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-xl);
+}
+
+.ad-bullet-list {
+  list-style: disc;
+  padding-left: var(--ad-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ad-space-sm);
+}
+
+.ad-bullet-list li {
+  font-size: var(--ad-text-md);
+  line-height: var(--ad-leading-relaxed);
+}
+
+/* Float card within section */
+.ad-float-card {
+  background: var(--ad-white);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-xl);
+  box-shadow: var(--ad-shadow-card);
+}
+
+.ad-float-card__title {
+  font-size: var(--ad-text-2xl);
+  font-weight: var(--ad-weight-regular);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-lg);
+}
+
+/* === RESULTS SECTION (Dark bg) === */
+.ad-results {
+  background: var(--ad-black);
+  color: var(--ad-white);
+  padding: var(--ad-space-5xl) 0;
+  text-align: center;
+}
+
+.ad-results__title {
+  font-size: var(--ad-text-4xl);
+  line-height: 1.36;
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-3xl);
+}
+
+.ad-results__title span {
+  color: var(--ad-lime);
+}
+
+.ad-results__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ad-space-xl);
+  text-align: left;
+}
+
+.ad-results__list-card {
+  background: var(--ad-dark-gray);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-xl);
+}
+
+.ad-results__list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--ad-space-md);
+  padding: var(--ad-space-md) 0;
+}
+
+.ad-results__list-item::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--ad-lime);
+  flex-shrink: 0;
+}
+
+.ad-results__list-item span {
+  font-size: var(--ad-text-2xl);
+  line-height: var(--ad-leading-normal);
+}
+
+.ad-results__bonus {
+  display: flex;
+  align-items: center;
+  gap: var(--ad-space-lg);
+}
+
+.ad-results__bonus-icon {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.ad-results__bonus-text {
+  font-size: var(--ad-text-md);
+  text-transform: uppercase;
+  font-weight: var(--ad-weight-bold);
+}
+
+.ad-results__bonus-text span {
+  color: var(--ad-lime);
+}
+
+/* === WHY CHOOSE US === */
+.ad-why {
+  padding: var(--ad-space-5xl) 0;
+  text-align: center;
+}
+
+.ad-why__title {
+  font-size: var(--ad-text-4xl);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-3xl);
+}
+
+.ad-why__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--ad-space-xl);
+  text-align: left;
+}
+
+.ad-why__card {
+  background: var(--ad-lime-light);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-xl);
+}
+
+.ad-why__card-title {
+  font-size: var(--ad-text-lg);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-sm);
+}
+
+.ad-why__card-text {
+  font-size: var(--ad-text-base);
+  line-height: var(--ad-leading-relaxed);
+  color: var(--ad-mid-gray);
+}
+
+/* === CTA SECTION === */
+.ad-cta {
+  background: var(--ad-lime);
+  padding: var(--ad-space-5xl) 0;
+  border-radius: var(--ad-radius-xl) var(--ad-radius-xl) 0 0;
+}
+
+.ad-cta__grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--ad-space-3xl);
+  align-items: center;
+}
+
+.ad-cta__content-card {
+  background: var(--ad-white);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-2xl);
+}
+
+.ad-cta__title {
+  font-size: var(--ad-text-3xl);
+  font-weight: var(--ad-weight-regular);
+  text-transform: uppercase;
+  line-height: 1.36;
+  margin-bottom: var(--ad-space-lg);
+}
+
+.ad-cta__title strong {
+  font-weight: var(--ad-weight-bold);
+}
+
+.ad-cta__text {
+  font-size: var(--ad-text-md);
+  line-height: var(--ad-leading-relaxed);
+  color: var(--ad-mid-gray);
+  margin-bottom: var(--ad-space-xl);
+}
+
+.ad-cta__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ad-space-xl);
+  flex-wrap: wrap;
+}
+
+.ad-cta__price {
+  font-size: var(--ad-text-md);
+  text-transform: uppercase;
+}
+
+.ad-cta__price strong {
+  font-weight: var(--ad-weight-bold);
+  font-size: var(--ad-text-xl);
+}
+
+/* === FORM COMPONENTS === */
+.ad-form {
+  max-width: 500px;
+}
+
+.ad-form__group {
+  margin-bottom: var(--ad-space-md);
+}
+
+.ad-form__label {
+  display: block;
+  font-size: var(--ad-text-sm);
+  font-weight: var(--ad-weight-medium);
+  margin-bottom: var(--ad-space-xs);
+  color: var(--ad-mid-gray);
+}
+
+.ad-form__input {
+  width: 100%;
+  font-family: var(--ad-font-primary);
+  font-size: var(--ad-text-base);
+  padding: 14px 20px;
+  border: 1px solid var(--ad-light-gray);
+  border-radius: var(--ad-radius-pill);
+  background: var(--ad-white);
+  color: var(--ad-black);
+  transition: var(--ad-transition);
+  outline: none;
+}
+
+.ad-form__input:focus {
+  border-color: var(--ad-lime);
+  box-shadow: 0 0 0 3px rgba(var(--ad-lime-rgb), 0.2);
+}
+
+.ad-form__input::placeholder {
+  color: var(--ad-light-gray);
+}
+
+.ad-form__input--dark {
+  background: var(--ad-dark-gray);
+  border-color: var(--ad-dark-gray);
+  color: var(--ad-white);
+}
+
+.ad-form__input--dark:focus {
+  border-color: var(--ad-lime);
+}
+
+.ad-form__textarea {
+  width: 100%;
+  font-family: var(--ad-font-primary);
+  font-size: var(--ad-text-base);
+  padding: 14px 20px;
+  border: 1px solid var(--ad-light-gray);
+  border-radius: var(--ad-radius-lg);
+  background: var(--ad-white);
+  color: var(--ad-black);
+  transition: var(--ad-transition);
+  outline: none;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.ad-form__textarea:focus {
+  border-color: var(--ad-lime);
+  box-shadow: 0 0 0 3px rgba(var(--ad-lime-rgb), 0.2);
+}
+
+.ad-form__checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ad-space-sm);
+  cursor: pointer;
+}
+
+.ad-form__checkbox input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ad-lime);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ad-form__checkbox span {
+  font-size: var(--ad-text-sm);
+  color: var(--ad-mid-gray);
+  line-height: var(--ad-leading-relaxed);
+}
+
+/* === TIMELINE / STEPS === */
+.ad-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+.ad-timeline::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ad-lime);
+}
+
+.ad-timeline__step {
+  display: flex;
+  gap: var(--ad-space-xl);
+  padding: var(--ad-space-xl) 0;
+  position: relative;
+}
+
+.ad-timeline__number {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--ad-radius-circle);
+  background: var(--ad-lime);
+  color: var(--ad-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--ad-weight-bold);
+  font-size: var(--ad-text-lg);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.ad-timeline__content {
+  flex: 1;
+  padding-top: 10px;
+}
+
+.ad-timeline__title {
+  font-size: var(--ad-text-lg);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-xs);
+}
+
+.ad-timeline__text {
+  font-size: var(--ad-text-base);
+  line-height: var(--ad-leading-relaxed);
+  color: var(--ad-light-gray);
+}
+
+/* === STATS / NUMBERS === */
+.ad-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--ad-space-xl);
+}
+
+.ad-stat {
+  text-align: center;
+  padding: var(--ad-space-xl);
+}
+
+.ad-stat__number {
+  font-size: var(--ad-text-5xl);
+  font-weight: var(--ad-weight-bold);
+  color: var(--ad-lime);
+  line-height: 1;
+  margin-bottom: var(--ad-space-sm);
+}
+
+.ad-stat__label {
+  font-size: var(--ad-text-base);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* === TESTIMONIAL === */
+.ad-testimonial {
+  background: var(--ad-dark-gray);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-2xl);
+  position: relative;
+}
+
+.ad-testimonial__quote {
+  font-size: var(--ad-text-lg);
+  line-height: var(--ad-leading-relaxed);
+  color: var(--ad-white);
+  margin-bottom: var(--ad-space-xl);
+  font-style: italic;
+}
+
+.ad-testimonial__quote::before {
+  content: '\201C';
+  font-size: 60px;
+  color: var(--ad-lime);
+  line-height: 0;
+  display: block;
+  margin-bottom: var(--ad-space-md);
+}
+
+.ad-testimonial__author {
+  display: flex;
+  align-items: center;
+  gap: var(--ad-space-md);
+}
+
+.ad-testimonial__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ad-radius-circle);
+  background: var(--ad-lime);
+}
+
+.ad-testimonial__name {
+  font-weight: var(--ad-weight-semibold);
+  color: var(--ad-white);
+}
+
+.ad-testimonial__role {
+  font-size: var(--ad-text-sm);
+  color: var(--ad-light-gray);
+}
+
+/* === PRICING CARD === */
+.ad-pricing {
+  background: var(--ad-white);
+  color: var(--ad-black);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-2xl);
+  box-shadow: var(--ad-shadow-card);
+  text-align: center;
+  border: 2px solid transparent;
+  transition: var(--ad-transition);
+}
+
+.ad-pricing:hover {
+  border-color: var(--ad-lime);
+}
+
+.ad-pricing--featured {
+  border-color: var(--ad-lime);
+  position: relative;
+}
+
+.ad-pricing__badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ad-lime);
+  color: var(--ad-black);
+  padding: 4px 20px;
+  border-radius: var(--ad-radius-pill);
+  font-size: var(--ad-text-xs);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+}
+
+.ad-pricing__name {
+  font-size: var(--ad-text-xl);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-md);
+  color: var(--ad-black);
+}
+
+.ad-pricing__price {
+  font-size: var(--ad-text-4xl);
+  font-weight: var(--ad-weight-bold);
+  margin-bottom: var(--ad-space-xs);
+  color: var(--ad-black);
+}
+
+.ad-pricing__price small {
+  font-size: var(--ad-text-md);
+  font-weight: var(--ad-weight-regular);
+  color: var(--ad-mid-gray);
+}
+
+.ad-pricing__features {
+  list-style: none;
+  text-align: left;
+  margin: var(--ad-space-xl) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ad-space-sm);
+}
+
+.ad-pricing__features li {
+  font-size: var(--ad-text-base);
+  padding-left: 28px;
+  position: relative;
+  color: var(--ad-black);
+}
+
+.ad-pricing__features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--ad-green);
+  font-weight: bold;
+}
+
+/* === HEADER / NAVBAR === */
+.ad-header {
+  background: var(--ad-black);
+  padding: 16px 0;
+}
+
+.ad-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ad-header__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ad-header__logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--ad-lime);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-header__logo-text {
+  color: var(--ad-white);
+  font-size: var(--ad-text-sm);
+  font-weight: var(--ad-weight-semibold);
+  line-height: 1.2;
+}
+
+.ad-header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--ad-space-xl);
+}
+
+.ad-header__link {
+  color: var(--ad-light-gray);
+  font-size: var(--ad-text-sm);
+  transition: var(--ad-transition-fast);
+}
+
+.ad-header__link:hover {
+  color: var(--ad-lime);
+}
+
+/* === FOOTER === */
+.ad-footer {
+  background: var(--ad-black);
+  color: var(--ad-white);
+  padding: var(--ad-space-3xl) 0 var(--ad-space-xl);
+}
+
+.ad-footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--ad-space-2xl);
+  margin-bottom: var(--ad-space-2xl);
+}
+
+.ad-footer__brand-text {
+  font-size: var(--ad-text-sm);
+  color: var(--ad-light-gray);
+  line-height: var(--ad-leading-relaxed);
+  margin-top: var(--ad-space-md);
+}
+
+.ad-footer__title {
+  font-size: var(--ad-text-sm);
+  font-weight: var(--ad-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--ad-space-md);
+  color: var(--ad-lime);
+}
+
+.ad-footer__links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ad-space-sm);
+}
+
+.ad-footer__links a {
+  font-size: var(--ad-text-sm);
+  color: var(--ad-light-gray);
+}
+
+.ad-footer__links a:hover {
+  color: var(--ad-lime);
+}
+
+.ad-footer__bottom {
+  border-top: 1px solid var(--ad-dark-gray);
+  padding-top: var(--ad-space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--ad-text-xs);
+  color: var(--ad-light-gray);
+}
+
+/* === DIVIDER / WAVE === */
+.ad-wave {
+  width: 100%;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-wave--dark-to-light {
+  background: var(--ad-black);
+}
+
+.ad-wave--dark-to-light::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  right: -5%;
+  height: 80px;
+  background: var(--ad-white);
+  border-radius: 50% 50% 0 0;
+}
+
+.ad-wave--light-to-dark {
+  background: var(--ad-white);
+}
+
+.ad-wave--light-to-dark::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  right: -5%;
+  height: 80px;
+  background: var(--ad-black);
+  border-radius: 50% 50% 0 0;
+}
+
+.ad-wave--lime-to-white {
+  background: var(--ad-lime);
+}
+
+.ad-wave--lime-to-white::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  right: -5%;
+  height: 80px;
+  background: var(--ad-white);
+  border-radius: 50% 50% 0 0;
+}
+
+/* === BADGE / TAG === */
+.ad-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--ad-radius-pill);
+  font-size: var(--ad-text-xs);
+  font-weight: var(--ad-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ad-badge--lime {
+  background: var(--ad-lime);
+  color: var(--ad-black);
+}
+
+.ad-badge--dark {
+  background: var(--ad-black);
+  color: var(--ad-lime);
+}
+
+.ad-badge--white {
+  background: var(--ad-white);
+  color: var(--ad-black);
+}
+
+.ad-badge--coral {
+  background: var(--ad-coral);
+  color: var(--ad-white);
+}
+
+/* === ICON BULLETS === */
+.ad-icon-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ad-space-md);
+}
+
+.ad-icon-list__item {
+  display: flex;
+  align-items: center;
+  gap: var(--ad-space-md);
+}
+
+.ad-icon-list__marker {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--ad-lime);
+  flex-shrink: 0;
+}
+
+.ad-icon-list__text {
+  font-size: var(--ad-text-lg);
+}
+
+/* === POPUP / MODAL === */
+.ad-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ad-modal {
+  background: var(--ad-white);
+  border-radius: var(--ad-radius-xl);
+  padding: var(--ad-space-2xl);
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+}
+
+.ad-modal--dark {
+  background: var(--ad-black);
+  color: var(--ad-white);
+}
+
+.ad-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ad-radius-circle);
+  border: none;
+  background: var(--ad-cream);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: var(--ad-transition-fast);
+}
+
+.ad-modal__close:hover {
+  background: var(--ad-lime);
+}
+
+.ad-modal__title {
+  font-size: var(--ad-text-xl);
+  font-weight: var(--ad-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--ad-space-lg);
+  padding-right: 40px;
+}
+
+/* === GRID UTILITIES === */
+.ad-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ad-space-xl);
+}
+
+.ad-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--ad-space-xl);
+}
+
+.ad-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--ad-space-xl);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1024px) {
+  :root {
+    --ad-text-5xl: 48px;
+    --ad-text-4xl: 36px;
+    --ad-text-3xl: 28px;
+  }
+
+  .ad-hero__grid,
+  .ad-features__grid,
+  .ad-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-split-section {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ad-grid-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ad-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ad-footer__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --ad-text-5xl: 36px;
+    --ad-text-4xl: 28px;
+    --ad-text-3xl: 24px;
+    --ad-container-padding: 20px;
+  }
+
+  .ad-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ad-hero__buttons {
+    flex-direction: column;
+  }
+
+  .ad-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .ad-cta__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === CODE DISPLAY FOR GUIDEBOOK === */
+.code-block {
+  background: #1a1a2e;
+  border-radius: var(--ad-radius-md);
+  padding: var(--ad-space-lg);
+  margin: var(--ad-space-md) 0;
+  overflow-x: auto;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+.code-block .tag { color: #ff79c6; }
+.code-block .attr { color: #50fa7b; }
+.code-block .val { color: #f1fa8c; }
+.code-block .cls { color: #8be9fd; }
+.code-block .cmt { color: #6272a4; }
+
+/* Horizontal rule for sections */
+.guide-hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ad-lime), transparent);
+  margin: var(--ad-space-3xl) 0;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     GUIDEBOOK NAVIGATION
+     ============================================ -->
+<nav class="guide-nav">
+  <div class="guide-nav__inner">
+    <span class="guide-nav__logo">ALPHA DIGITAL — GUIDEBOOK</span>
+    <a href="#colors" class="guide-nav__link">Colors</a>
+    <a href="#typography" class="guide-nav__link">Typography</a>
+    <a href="#buttons" class="guide-nav__link">Buttons</a>
+    <a href="#cards" class="guide-nav__link">Cards</a>
+    <a href="#forms" class="guide-nav__link">Forms</a>
+    <a href="#sections" class="guide-nav__link">Sections</a>
+    <a href="#components" class="guide-nav__link">Components</a>
+    <a href="#templates" class="guide-nav__link">Templates</a>
+  </div>
+</nav>
+
+<!-- SPACER for fixed nav -->
+<div style="height: 52px;"></div>
+
+<!-- ============================================
+     COVER
+     ============================================ -->
+<section class="guide-section guide-section--dark" style="padding: 120px 0; text-align: center;">
+  <div class="ad-container">
+    <div style="margin-bottom: 24px;">
+      <span class="ad-badge ad-badge--lime">Design System v1.0</span>
+    </div>
+    <h1 style="font-size: 60px; font-weight: 700; text-transform: uppercase; line-height: 1.2; margin-bottom: 24px;">
+      <span style="color: var(--ad-lime);">Alpha Digital</span><br>
+      Brand Guidebook
+    </h1>
+    <p style="font-size: 20px; color: var(--ad-light-gray); max-width: 600px; margin: 0 auto 40px;">
+      Полное руководство по дизайн-системе, компонентам и шаблонам для создания лендингов, продающих страниц и лид-магнитов
+    </p>
+    <div style="display: flex; gap: 16px; justify-content: center;">
+      <a href="#colors" class="ad-btn ad-btn--primary">Начать изучение</a>
+      <a href="#templates" class="ad-btn ad-btn--ghost">К шаблонам</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     1. COLOR PALETTE
+     ============================================ -->
+<section id="colors" class="guide-section">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Цветовая палитра</h2>
+    <p class="guide-section__subtitle">Основные цвета бренда Alpha Digital. Каждый цвет имеет CSS-переменную для быстрого использования.</p>
+
+    <h3 style="font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 2px;">Основные цвета</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch__color" style="background: #111111;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Primary Black</div>
+          <div class="swatch__hex">#111111 · rgb(17, 17, 17)</div>
+          <div class="swatch__var">--ad-black</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #000000;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Pure Black</div>
+          <div class="swatch__hex">#000000 · rgb(0, 0, 0)</div>
+          <div class="swatch__var">--ad-black-pure</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #272727;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Dark Gray</div>
+          <div class="swatch__hex">#272727 · rgb(39, 39, 39)</div>
+          <div class="swatch__var">--ad-dark-gray</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #404040; color: white;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Mid Gray</div>
+          <div class="swatch__hex">#404040 · rgb(64, 64, 64)</div>
+          <div class="swatch__var">--ad-mid-gray</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #C5C5C5;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Light Gray</div>
+          <div class="swatch__hex">#C5C5C5 · rgb(197, 197, 197)</div>
+          <div class="swatch__var">--ad-light-gray</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #FAF9F5;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Cream</div>
+          <div class="swatch__hex">#FAF9F5 · rgb(250, 249, 245)</div>
+          <div class="swatch__var">--ad-cream</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 2px;">Акцентные цвета</h3>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch__color" style="background: #C2FF85;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Lime (Primary Accent)</div>
+          <div class="swatch__hex">#C2FF85 · rgb(194, 255, 133)</div>
+          <div class="swatch__var">--ad-lime</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #F5FFEA;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Lime Light</div>
+          <div class="swatch__hex">#F5FFEA · rgb(245, 255, 234)</div>
+          <div class="swatch__var">--ad-lime-light</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #62C584;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Green</div>
+          <div class="swatch__hex">#62C584 · rgb(98, 197, 132)</div>
+          <div class="swatch__var">--ad-green</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch__color" style="background: #F95D51; color: white;"></div>
+        <div class="swatch__info">
+          <div class="swatch__name">Coral (Danger/Alert)</div>
+          <div class="swatch__hex">#F95D51 · rgb(249, 93, 81)</div>
+          <div class="swatch__var">--ad-coral</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 2px;">Принцип использования цвета</h3>
+    <div class="ad-grid-3" style="margin-top: 24px;">
+      <div class="ad-card ad-card--dark" style="text-align: center;">
+        <p style="font-size: 14px; color: var(--ad-lime); margin-bottom: 8px;">Фоны секций</p>
+        <p style="font-size: 13px; color: var(--ad-light-gray);">#111111, #C2FF85, #FFFFFF — чередование тёмных, лаймовых и белых секций</p>
+      </div>
+      <div class="ad-card ad-card--dark" style="text-align: center;">
+        <p style="font-size: 14px; color: var(--ad-lime); margin-bottom: 8px;">Акценты</p>
+        <p style="font-size: 13px; color: var(--ad-light-gray);">Lime #C2FF85 — для выделения ключевых слов, кнопок, маркеров</p>
+      </div>
+      <div class="ad-card ad-card--dark" style="text-align: center;">
+        <p style="font-size: 14px; color: var(--ad-lime); margin-bottom: 8px;">Контраст</p>
+        <p style="font-size: 13px; color: var(--ad-light-gray);">Чёрный текст на лайме, лаймовый текст на чёрном</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     2. TYPOGRAPHY
+     ============================================ -->
+<section id="typography" class="guide-section guide-section--dark">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Типографика</h2>
+    <p class="guide-section__subtitle">Шрифт: <strong>Inter</strong> (Google Fonts) — все начертания от Light (300) до Bold (700). Заголовки в uppercase, body-текст — обычный.</p>
+
+    <div class="type-sample">
+      <div class="type-sample__label">H1 — Hero Heading</div>
+      <div class="type-h1" style="color: var(--ad-lime);">Business чек-ап</div>
+      <div class="type-sample__meta">70px / bold (700) / uppercase / line-height: 1.36 / color: lime on dark</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">H2 — Section Heading</div>
+      <div class="type-h2">Почему выбирают нас</div>
+      <div class="type-sample__meta">45px / regular (400) / uppercase / line-height: 1.36</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">H3 — Subsection Heading</div>
+      <div class="type-h3">Что мы анализируем:</div>
+      <div class="type-sample__meta">30px / regular (400) / uppercase / line-height: 1.36</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">H4 — Card Title</div>
+      <div class="type-h4">Опыт</div>
+      <div class="type-sample__meta">24px / bold (700) / uppercase / line-height: 1.36</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">Body — Paragraph Text</div>
+      <div class="type-body">Мы проведем тщательное исследование ваших рабочих процессов, выявим проблемные зоны и предложим решения</div>
+      <div class="type-sample__meta">18px / regular (400) / line-height: 1.5</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">Body Small</div>
+      <div class="type-body-sm">Внимательный анализ вашего рабочего процесса позволяет нам выявить и устранить узкие места.</div>
+      <div class="type-sample__meta">16px / regular (400) / line-height: 1.5</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">Caption / Small</div>
+      <div class="type-caption">*если у вас есть промо-код, то аудит будет бесплатным</div>
+      <div class="type-sample__meta">14px / regular (400) / line-height: 1.36</div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-sample__label">Акцентирование текста</div>
+      <div class="type-h2">ЧТО ВЫ <span style="color: var(--ad-lime);">ПОЛУЧИТЕ</span> В РЕЗУЛЬТАТЕ?</div>
+      <div class="type-sample__meta">Ключевые слова выделяются лаймовым цветом (--ad-lime) через &lt;span&gt;</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     3. BUTTONS
+     ============================================ -->
+<section id="buttons" class="guide-section">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Кнопки</h2>
+    <p class="guide-section__subtitle">Все кнопки pill-shaped (border-radius: 200px). Основной паттерн — тёмная кнопка с лаймовым текстом.</p>
+
+    <div class="component-showcase" style="background: var(--ad-dark-gray);">
+      <div class="component-label">Primary Button (Dark bg + Lime text)</div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+        <a href="#" class="ad-btn ad-btn--primary ad-btn--lg">Получить аудит</a>
+        <a href="#" class="ad-btn ad-btn--primary">Получить аудит</a>
+        <a href="#" class="ad-btn ad-btn--primary ad-btn--sm">Подробнее</a>
+      </div>
+    </div>
+
+    <div class="component-showcase component-showcase--light">
+      <div class="component-label">Secondary Button (White bg + Border)</div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+        <a href="#" class="ad-btn ad-btn--secondary ad-btn--lg">Узнать подробнее</a>
+        <a href="#" class="ad-btn ad-btn--secondary">Узнать подробнее</a>
+        <a href="#" class="ad-btn ad-btn--secondary ad-btn--sm">Узнать</a>
+      </div>
+    </div>
+
+    <div class="component-showcase" style="background: var(--ad-black);">
+      <div class="component-label">Lime Button</div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+        <a href="#" class="ad-btn ad-btn--lime">Записаться</a>
+        <a href="#" class="ad-btn ad-btn--lime ad-btn--sm">Скачать</a>
+      </div>
+    </div>
+
+    <div class="component-showcase" style="background: var(--ad-black);">
+      <div class="component-label">Ghost Button (Transparent + White border)</div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+        <a href="#" class="ad-btn ad-btn--ghost">Узнать больше</a>
+        <a href="#" class="ad-btn ad-btn--ghost ad-btn--sm">Подробнее</a>
+      </div>
+    </div>
+
+    <div class="component-showcase component-showcase--light">
+      <div class="component-label">Button Group (Hero Pattern)</div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <a href="#" class="ad-btn ad-btn--primary">Получить аудит</a>
+        <a href="#" class="ad-btn ad-btn--secondary">Узнать подробнее</a>
+      </div>
+    </div>
+
+    <div class="component-showcase" style="background: var(--ad-dark-gray);">
+      <div class="component-label">Language Toggle</div>
+      <div class="ad-lang-toggle">
+        <button class="ad-lang-toggle__btn ad-lang-toggle__btn--active">RU</button>
+        <button class="ad-lang-toggle__btn ad-lang-toggle__btn--inactive">PL</button>
+      </div>
+    </div>
+
+    <div class="component-showcase component-showcase--light">
+      <div class="component-label">Badges / Tags</div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <span class="ad-badge ad-badge--lime">Новинка</span>
+        <span class="ad-badge ad-badge--dark">Pro</span>
+        <span class="ad-badge ad-badge--white">Бесплатно</span>
+        <span class="ad-badge ad-badge--coral">Акция</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     4. CARDS
+     ============================================ -->
+<section id="cards" class="guide-section guide-section--dark">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Карточки</h2>
+    <p class="guide-section__subtitle">Универсальные контейнеры с border-radius: 30px. Варианты для тёмного, светлого и акцентного фона.</p>
+
+    <div class="ad-grid-3" style="margin-bottom: 48px;">
+      <div class="ad-card ad-card--dark">
+        <div class="ad-card__title">Dark Card</div>
+        <div class="ad-card__text">Используется на белом или лаймовом фоне для контраста. Фон: #111111</div>
+      </div>
+      <div class="ad-card ad-card--white">
+        <div class="ad-card__title">White Card</div>
+        <div class="ad-card__text">Используется на тёмном фоне. С тенью box-shadow. Фон: #FFFFFF</div>
+      </div>
+      <div class="ad-card ad-card--gray">
+        <div class="ad-card__title">Gray Card</div>
+        <div class="ad-card__text">Вторичная карточка для тёмных секций. Фон: #272727</div>
+      </div>
+    </div>
+
+    <div class="ad-grid-3" style="margin-bottom: 48px;">
+      <div class="ad-card ad-card--lime-light">
+        <div class="ad-card__title">Lime Light Card</div>
+        <div class="ad-card__text">Мягкий акцент для светлых секций. Фон: #F5FFEA</div>
+      </div>
+      <div class="ad-card ad-card--glass">
+        <div class="ad-card__title">Glass Card</div>
+        <div class="ad-card__text">Эффект стекла с backdrop-filter для наложения на изображения</div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="ad-card ad-card--dark" style="padding: 16px 24px;">
+          <div style="font-size: 14px; font-weight: 600;">Компактная карточка</div>
+        </div>
+        <div class="ad-card ad-card--dark" style="padding: 16px 24px;">
+          <div style="font-size: 14px; font-weight: 600;">Для списков</div>
+        </div>
+        <div class="ad-card ad-card--dark" style="padding: 16px 24px;">
+          <div style="font-size: 14px; font-weight: 600;">И коротких блоков</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card with icon list pattern -->
+    <div class="component-label">Card с маркированным списком (паттерн с сайта)</div>
+    <div class="ad-grid-2" style="margin-top: 16px;">
+      <div class="ad-card ad-card--gray" style="padding: 32px;">
+        <div class="ad-icon-list">
+          <div class="ad-icon-list__item">
+            <div class="ad-icon-list__marker"></div>
+            <span class="ad-icon-list__text" style="color: white;">Комплексный отчет</span>
+          </div>
+          <div class="ad-icon-list__item">
+            <div class="ad-icon-list__marker"></div>
+            <span class="ad-icon-list__text" style="color: white;">Описание точек роста</span>
+          </div>
+          <div class="ad-icon-list__item">
+            <div class="ad-icon-list__marker"></div>
+            <span class="ad-icon-list__text" style="color: white;">План действий по устранению проблем</span>
+          </div>
+        </div>
+      </div>
+      <div class="ad-card ad-card--white">
+        <div class="ad-card__title" style="font-size: 24px; margin-bottom: 16px;">Что будет необходимо с вашей стороны?</div>
+        <ul class="ad-bullet-list" style="color: var(--ad-mid-gray);">
+          <li>Прохождение интервью с вашими ключевыми сотрудниками</li>
+          <li>Предоставление документации, баз знаний</li>
+          <li>Общение с рядовыми сотрудниками</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     5. FORMS
+     ============================================ -->
+<section id="forms" class="guide-section">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Формы</h2>
+    <p class="guide-section__subtitle">Поля ввода с pill-shaped borders, фокус подсвечивается лаймовым цветом.</p>
+
+    <div class="ad-grid-2">
+      <!-- Light form -->
+      <div class="component-showcase component-showcase--light">
+        <div class="component-label">Форма на светлом фоне</div>
+        <form class="ad-form" onsubmit="return false;">
+          <div class="ad-form__group">
+            <label class="ad-form__label">Ваше имя</label>
+            <input type="text" class="ad-form__input" placeholder="Введите ваше имя">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__label">Email</label>
+            <input type="email" class="ad-form__input" placeholder="your@email.com">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__label">Телефон</label>
+            <input type="tel" class="ad-form__input" placeholder="+48 XXX XXX XXX">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__label">Сообщение</label>
+            <textarea class="ad-form__textarea" placeholder="Опишите вашу задачу..."></textarea>
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__checkbox">
+              <input type="checkbox">
+              <span>Я согласен на обработку персональных данных</span>
+            </label>
+          </div>
+          <button type="submit" class="ad-btn ad-btn--primary" style="width: 100%;">Отправить заявку</button>
+        </form>
+      </div>
+
+      <!-- Dark form -->
+      <div class="component-showcase">
+        <div class="component-label">Форма на тёмном фоне</div>
+        <form class="ad-form" onsubmit="return false;">
+          <div class="ad-form__group">
+            <label class="ad-form__label" style="color: var(--ad-light-gray);">Ваше имя</label>
+            <input type="text" class="ad-form__input ad-form__input--dark" placeholder="Введите ваше имя">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__label" style="color: var(--ad-light-gray);">Email</label>
+            <input type="email" class="ad-form__input ad-form__input--dark" placeholder="your@email.com">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__label" style="color: var(--ad-light-gray);">Телефон</label>
+            <input type="tel" class="ad-form__input ad-form__input--dark" placeholder="+48 XXX XXX XXX">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__label" style="color: var(--ad-light-gray);">Промо-код</label>
+            <input type="text" class="ad-form__input ad-form__input--dark" placeholder="Введите промо-код">
+          </div>
+          <div class="ad-form__group">
+            <label class="ad-form__checkbox">
+              <input type="checkbox">
+              <span style="color: var(--ad-light-gray);">Согласие на обработку данных</span>
+            </label>
+          </div>
+          <button type="submit" class="ad-btn ad-btn--lime" style="width: 100%;">Получить аудит</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     6. SECTIONS & LAYOUTS
+     ============================================ -->
+<section id="sections" class="guide-section guide-section--dark">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Секции и макеты</h2>
+    <p class="guide-section__subtitle">Основные паттерны компоновки секций на странице Alpha Digital.</p>
+  </div>
+
+  <!-- Announcement Bar -->
+  <div style="margin: 48px 0 24px;">
+    <div class="ad-container"><div class="component-label">Announcement Bar</div></div>
+    <div class="ad-announcement">
+      <strong>Супер-акция до конца месяца:</strong> получи скидку 100% на бизнес чек-ап по промо-коду <strong>Audyt100!</strong>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="ad-container" style="margin-bottom: 48px;">
+    <div class="component-label">Statistics / Numbers Block</div>
+    <div class="ad-stats" style="margin-top: 16px;">
+      <div class="ad-stat">
+        <div class="ad-stat__number">8+</div>
+        <div class="ad-stat__label">Лет опыта</div>
+      </div>
+      <div class="ad-stat">
+        <div class="ad-stat__number">150+</div>
+        <div class="ad-stat__label">Проектов</div>
+      </div>
+      <div class="ad-stat">
+        <div class="ad-stat__number">40+</div>
+        <div class="ad-stat__label">Клиентов</div>
+      </div>
+      <div class="ad-stat">
+        <div class="ad-stat__number">98%</div>
+        <div class="ad-stat__label">Довольных</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="ad-container" style="margin-bottom: 48px;">
+    <div class="component-label">Timeline / Steps</div>
+    <div class="ad-timeline" style="max-width: 600px; margin-top: 16px;">
+      <div class="ad-timeline__step">
+        <div class="ad-timeline__number">1</div>
+        <div class="ad-timeline__content">
+          <div class="ad-timeline__title">Заявка</div>
+          <div class="ad-timeline__text">Вы заполняете форму и мы связываемся с вами в течение 24 часов</div>
+        </div>
+      </div>
+      <div class="ad-timeline__step">
+        <div class="ad-timeline__number">2</div>
+        <div class="ad-timeline__content">
+          <div class="ad-timeline__title">Аудит</div>
+          <div class="ad-timeline__text">Проводим анализ бизнес-процессов вашей компании</div>
+        </div>
+      </div>
+      <div class="ad-timeline__step">
+        <div class="ad-timeline__number">3</div>
+        <div class="ad-timeline__content">
+          <div class="ad-timeline__title">Отчёт</div>
+          <div class="ad-timeline__text">Предоставляем подробный отчёт с рекомендациями</div>
+        </div>
+      </div>
+      <div class="ad-timeline__step">
+        <div class="ad-timeline__number">4</div>
+        <div class="ad-timeline__content">
+          <div class="ad-timeline__title">Внедрение</div>
+          <div class="ad-timeline__text">Помогаем реализовать изменения и оптимизации</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonial -->
+  <div class="ad-container" style="margin-bottom: 48px;">
+    <div class="component-label">Testimonial / Отзыв</div>
+    <div class="ad-grid-2" style="margin-top: 16px;">
+      <div class="ad-testimonial">
+        <div class="ad-testimonial__quote">
+          Команда Alpha Digital помогла нам полностью перестроить бизнес-процессы. Результат превзошёл все ожидания!
+        </div>
+        <div class="ad-testimonial__author">
+          <div class="ad-testimonial__avatar"></div>
+          <div>
+            <div class="ad-testimonial__name">Анна Ковальская</div>
+            <div class="ad-testimonial__role">CEO, TechStart</div>
+          </div>
+        </div>
+      </div>
+      <div class="ad-testimonial">
+        <div class="ad-testimonial__quote">
+          Профессиональный подход и глубокий анализ. Рекомендую всем, кто хочет вывести бизнес на новый уровень.
+        </div>
+        <div class="ad-testimonial__author">
+          <div class="ad-testimonial__avatar"></div>
+          <div>
+            <div class="ad-testimonial__name">Михаил Петров</div>
+            <div class="ad-testimonial__role">COO, DataFlow</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="ad-container">
+    <div class="component-label">Pricing Cards</div>
+    <div class="ad-grid-3" style="margin-top: 16px;">
+      <div class="ad-pricing">
+        <div class="ad-pricing__name">Базовый</div>
+        <div class="ad-pricing__price">499 zl <small>/ разово</small></div>
+        <ul class="ad-pricing__features">
+          <li>Анализ 3 процессов</li>
+          <li>Отчёт на 10 страниц</li>
+          <li>1 консультация</li>
+          <li>Email-поддержка</li>
+        </ul>
+        <a href="#" class="ad-btn ad-btn--secondary" style="width: 100%;">Выбрать</a>
+      </div>
+      <div class="ad-pricing ad-pricing--featured">
+        <div class="ad-pricing__badge">Популярный</div>
+        <div class="ad-pricing__name">Бизнес</div>
+        <div class="ad-pricing__price">799 zl <small>/ разово</small></div>
+        <ul class="ad-pricing__features">
+          <li>Полный аудит процессов</li>
+          <li>Подробный отчёт</li>
+          <li>План действий</li>
+          <li>3 консультации</li>
+          <li>Приоритетная поддержка</li>
+        </ul>
+        <a href="#" class="ad-btn ad-btn--primary" style="width: 100%;">Выбрать</a>
+      </div>
+      <div class="ad-pricing">
+        <div class="ad-pricing__name">Премиум</div>
+        <div class="ad-pricing__price">1499 zl <small>/ разово</small></div>
+        <ul class="ad-pricing__features">
+          <li>Всё из «Бизнес»</li>
+          <li>Внедрение решений</li>
+          <li>Месяц сопровождения</li>
+          <li>Отчёт о грантах</li>
+          <li>Персональный менеджер</li>
+        </ul>
+        <a href="#" class="ad-btn ad-btn--secondary" style="width: 100%;">Выбрать</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================
+     7. FULL COMPONENTS
+     ============================================ -->
+<section id="components" class="guide-section">
+  <div class="ad-container">
+    <h2 class="guide-section__title">Готовые блоки</h2>
+    <p class="guide-section__subtitle">Полностью собранные секции, готовые для копирования в ваш проект.</p>
+  </div>
+
+  <!-- HEADER -->
+  <div class="ad-container" style="margin-bottom: 48px;">
+    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--ad-mid-gray); margin-bottom: 16px;">Header / Навигация</div>
+    <header class="ad-header" style="border-radius: var(--ad-radius-xl);">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 24px;">
+        <div class="ad-header__logo">
+          <div class="ad-header__logo-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 2L2 16h14L9 2z" fill="#111"/>
+            </svg>
+          </div>
+          <div class="ad-header__logo-text">alpha<br>digital</div>
+        </div>
+        <nav class="ad-header__nav">
+          <a href="#" class="ad-header__link">Услуги</a>
+          <a href="#" class="ad-header__link">О нас</a>
+          <a href="#" class="ad-header__link">Контакты</a>
+          <div class="ad-lang-toggle">
+            <button class="ad-lang-toggle__btn ad-lang-toggle__btn--active">RU</button>
+            <button class="ad-lang-toggle__btn ad-lang-toggle__btn--inactive">PL</button>
+          </div>
+          <a href="#" class="ad-btn ad-btn--primary ad-btn--sm">Заказать</a>
+        </nav>
+      </div>
+    </header>
+  </div>
+
+  <!-- FEATURES BLOCK (Why section) -->
+  <div class="ad-container" style="margin-bottom: 48px;">
+    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--ad-mid-gray); margin-bottom: 16px;">«Почему выбирают нас» Block</div>
+    <div style="padding: 64px 0;">
+      <h2 style="font-size: 45px; text-transform: uppercase; text-align: center; margin-bottom: 48px;">Почему выбирают нас</h2>
+      <div class="ad-why__grid">
+        <div class="ad-why__card">
+          <div class="ad-why__card-title">Опыт</div>
+          <div class="ad-why__card-text">более 8 лет опыта в оптимизации и автоматизации бизнес-процессов, внедрения IT-систем</div>
+        </div>
+        <div class="ad-why__card">
+          <div class="ad-why__card-title">Насмотренность</div>
+          <div class="ad-why__card-text">Мы поможем вам оптимизировать обмен данными внутри компании, устраняя ненужное дублирование</div>
+        </div>
+        <div class="ad-why__card">
+          <div class="ad-why__card-title">Гарантии</div>
+          <div class="ad-why__card-text">подписываем NDA перед началом работы, полная конфиденциальность</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ad-container">
+    <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--ad-mid-gray); margin-bottom: 16px;">Footer</div>
+    <footer class="ad-footer" style="border-radius: var(--ad-radius-xl); padding: 48px 32px 24px;">
+      <div class="ad-footer__grid">
+        <div>
+          <div class="ad-header__logo" style="margin-bottom: 16px;">
+            <div class="ad-header__logo-icon">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M9 2L2 16h14L9 2z" fill="#111"/>
+              </svg>
+            </div>
+            <div class="ad-header__logo-text">alpha<br>digital</div>
+          </div>
+          <div class="ad-footer__brand-text">Оптимизация и автоматизация бизнес-процессов. Мы помогаем компаниям расти эффективнее.</div>
+        </div>
+        <div>
+          <div class="ad-footer__title">Услуги</div>
+          <ul class="ad-footer__links">
+            <li><a href="#">Бизнес аудит</a></li>
+            <li><a href="#">Автоматизация</a></li>
+            <li><a href="#">Консалтинг</a></li>
+            <li><a href="#">IT решения</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="ad-footer__title">Компания</div>
+          <ul class="ad-footer__links">
+            <li><a href="#">О нас</a></li>
+            <li><a href="#">Блог</a></li>
+            <li><a href="#">Кейсы</a></li>
+            <li><a href="#">Контакты</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="ad-footer__title">Контакты</div>
+          <ul class="ad-footer__links">
+            <li><a href="#">hello@alpha.digital</a></li>
+            <li><a href="#">+48 XXX XXX XXX</a></li>
+            <li><a href="#">Варшава, Польша</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="ad-footer__bottom">
+        <span>&copy; 2024 Alpha Digital. Все права защищены.</span>
+        <span>Политика конфиденциальности</span>
+      </div>
+    </footer>
+  </div>
+</section>
+
+
+<!-- ============================================
+     8. FULL PAGE TEMPLATE DEMO
+     ============================================ -->
+<section id="templates" class="guide-section guide-section--lime">
+  <div class="ad-container" style="text-align: center;">
+    <span class="ad-badge ad-badge--dark" style="margin-bottom: 16px;">Полный шаблон</span>
+    <h2 style="font-size: 45px; text-transform: uppercase; margin-bottom: 16px;">Шаблон лендинга</h2>
+    <p style="font-size: 18px; max-width: 600px; margin: 0 auto 32px;">Ниже — полностью собранный шаблон посадочной страницы в стиле Alpha Digital, готовый к использованию</p>
+  </div>
+</section>
+
+<!-- ===== TEMPLATE STARTS HERE ===== -->
+
+<!-- T: Announcement -->
+<div class="ad-announcement">
+  <strong>Специальное предложение:</strong> получи бесплатную консультацию при заказе до конца месяца!
+</div>
+
+<!-- T: Header -->
+<header class="ad-header">
+  <div class="ad-container">
+    <div class="ad-header__inner">
+      <div class="ad-header__logo">
+        <div class="ad-header__logo-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2L2 16h14L9 2z" fill="#111"/>
+          </svg>
+        </div>
+        <div class="ad-header__logo-text">alpha<br>digital</div>
+      </div>
+      <nav class="ad-header__nav">
+        <a href="#t-features" class="ad-header__link">Преимущества</a>
+        <a href="#t-results" class="ad-header__link">Результаты</a>
+        <a href="#t-cta" class="ad-header__link">Заказать</a>
+        <div class="ad-lang-toggle">
+          <button class="ad-lang-toggle__btn ad-lang-toggle__btn--active">RU</button>
+          <button class="ad-lang-toggle__btn ad-lang-toggle__btn--inactive">PL</button>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- T: Hero Section -->
+<section class="ad-hero">
+  <div class="ad-container">
+    <div class="ad-hero__grid">
+      <div>
+        <h1 class="ad-hero__title">
+          <span>Название</span> вашего продукта
+        </h1>
+        <div class="ad-hero__subtitle">
+          Описание главного оффера и <span>ключевое преимущество</span> выделено цветом
+        </div>
+
+        <div class="ad-hero__desc-card">
+          <p>Здесь размещается подробное описание предложения, которое раскрывает суть продукта или услуги.</p>
+          <div class="ad-hero__feature">
+            <div class="ad-hero__feature-icon">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#111" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <strong>В результате вы получите подробный отчет</strong> с рекомендациями по улучшению эффективности
+            </div>
+          </div>
+          <div class="ad-hero__buttons">
+            <a href="#t-cta" class="ad-btn ad-btn--primary">Получить оффер</a>
+            <a href="#t-features" class="ad-btn ad-btn--secondary">Узнать подробнее</a>
+          </div>
+          <div class="ad-hero__note">*если у вас есть промо-код, то <strong>услуга будет бесплатной</strong></div>
+        </div>
+      </div>
+      <div class="ad-hero__image">
+        <div style="background: linear-gradient(135deg, var(--ad-lime-light), var(--ad-lime)); border-radius: 30px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 48px; color: var(--ad-black); opacity: 0.7;">
+          Image
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- T: Wave transition -->
+<div class="ad-wave ad-wave--dark-to-light"></div>
+
+<!-- T: Features -->
+<section id="t-features" class="ad-features">
+  <div class="ad-container">
+    <div class="ad-features__grid">
+      <div class="ad-features__image-col">
+        <div class="ad-features__image-card">
+          <h3 style="font-size: 40px; color: white;">
+            Зачем вашему бизнесу <span style="color: var(--ad-lime);">наш продукт?</span>
+          </h3>
+        </div>
+      </div>
+      <div class="ad-features__list">
+        <div class="ad-feature-item">
+          <div class="ad-feature-item__title">Найдем узкие места в процессах</div>
+          <div class="ad-feature-item__text">Внимательный анализ вашего рабочего процесса позволяет нам выявить и устранить узкие места, обеспечивая бесперебойную работу вашей команды</div>
+        </div>
+        <div class="ad-feature-item">
+          <div class="ad-feature-item__title">Устраним дублирование информации</div>
+          <div class="ad-feature-item__text">Мы поможем вам оптимизировать обмен данными внутри компании, устраняя ненужное дублирование и повышая продуктивность</div>
+        </div>
+        <div class="ad-feature-item">
+          <div class="ad-feature-item__title">Минимизируем человеческие ошибки</div>
+          <div class="ad-feature-item__text">Минимизируем риск человеческих ошибок через автоматизацию и усовершенствование процедур</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- T: Split Section (Lime) -->
+<div class="ad-split-section">
+  <div class="ad-split-section__left">
+    <div class="ad-list-title">Что мы анализируем:</div>
+    <ul class="ad-bullet-list">
+      <li>Наличие описанных бизнес-процессов, инструкций</li>
+      <li>Управление маркетингом (автоматизация, аналитика)</li>
+      <li>Управление продажами (crm, аналитика)</li>
+      <li>Управление финансами</li>
+      <li>Управление персоналом</li>
+      <li>Аудит IT сервисов и подписок</li>
+    </ul>
+  </div>
+  <div class="ad-split-section__right ad-split-section__right--with-card">
+    <div class="ad-float-card">
+      <div class="ad-float-card__title">Что будет необходимо с вашей стороны?</div>
+      <ul class="ad-bullet-list">
+        <li>Прохождение интервью с ключевыми сотрудниками</li>
+        <li>Предоставление документации</li>
+        <li>Общение с рядовыми сотрудниками</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- T: Results (Dark) -->
+<section id="t-results" class="ad-results">
+  <div class="ad-container">
+    <h2 class="ad-results__title">
+      Что вы <span>получите</span> в результате?
+    </h2>
+    <div class="ad-results__grid">
+      <div class="ad-results__list-card">
+        <div class="ad-results__list-item">
+          <span>Комплексный отчет</span>
+        </div>
+        <div class="ad-results__list-item">
+          <span>Описание точек роста</span>
+        </div>
+        <div class="ad-results__list-item">
+          <span>План действий по устранению проблем</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <div class="ad-results__bonus">
+          <div class="ad-results__bonus-icon" style="background: var(--ad-lime); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 36px;">+</div>
+          <div class="ad-results__bonus-text">
+            Информация о <span>грантовой программе</span>, за счёт которой можно оплатить до 70% вашего проекта!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- T: Why Section (White) -->
+<div class="ad-wave ad-wave--dark-to-light"></div>
+<section class="ad-why">
+  <div class="ad-container">
+    <h2 class="ad-why__title">Почему выбирают нас</h2>
+    <div class="ad-why__grid">
+      <div class="ad-why__card">
+        <div class="ad-why__card-title">Опыт</div>
+        <div class="ad-why__card-text">более 8 лет опыта в оптимизации и автоматизации бизнес-процессов, внедрения IT-систем, которые повышают эффективность бизнеса</div>
+      </div>
+      <div class="ad-why__card">
+        <div class="ad-why__card-title">Насмотренность</div>
+        <div class="ad-why__card-text">Мы поможем вам оптимизировать обмен данными внутри компании, устраняя ненужное дублирование и повышая продуктивность</div>
+      </div>
+      <div class="ad-why__card">
+        <div class="ad-why__card-title">Гарантии</div>
+        <div class="ad-why__card-text">подписываем NDA перед началом работы. Полная конфиденциальность вашей информации</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- T: CTA Section (Lime) -->
+<section id="t-cta" class="ad-cta">
+  <div class="ad-container">
+    <div class="ad-cta__content-card" style="max-width: 800px; margin: 0 auto;">
+      <div class="ad-cta__title">
+        <strong>Воспользуйтесь возможностью</strong> получить новые инсайты и точки роста для своего бизнеса
+      </div>
+      <div class="ad-cta__text">
+        Достаточно заполнить форму ниже и мы свяжемся с вами в течение 24 часов
+      </div>
+      <form class="ad-form" onsubmit="return false;" style="max-width: 100%;">
+        <div class="ad-grid-2" style="gap: 12px; margin-bottom: 12px;">
+          <div class="ad-form__group" style="margin-bottom: 0;">
+            <input type="text" class="ad-form__input" placeholder="Ваше имя">
+          </div>
+          <div class="ad-form__group" style="margin-bottom: 0;">
+            <input type="email" class="ad-form__input" placeholder="Email">
+          </div>
+        </div>
+        <div class="ad-grid-2" style="gap: 12px; margin-bottom: 16px;">
+          <div class="ad-form__group" style="margin-bottom: 0;">
+            <input type="tel" class="ad-form__input" placeholder="Телефон">
+          </div>
+          <div class="ad-form__group" style="margin-bottom: 0;">
+            <input type="text" class="ad-form__input" placeholder="Промо-код (при наличии)">
+          </div>
+        </div>
+        <div class="ad-cta__row">
+          <button type="submit" class="ad-btn ad-btn--primary">Получить аудит</button>
+          <div class="ad-cta__price">
+            Стоимость — <strong>799 zl</strong><br>
+            <small style="font-size: 13px; color: var(--ad-mid-gray);">*с промо-кодом — бесплатно</small>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- T: Footer -->
+<footer class="ad-footer">
+  <div class="ad-container">
+    <div class="ad-footer__grid">
+      <div>
+        <div class="ad-header__logo" style="margin-bottom: 16px;">
+          <div class="ad-header__logo-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 2L2 16h14L9 2z" fill="#111"/>
+            </svg>
+          </div>
+          <div class="ad-header__logo-text">alpha<br>digital</div>
+        </div>
+        <div class="ad-footer__brand-text">Оптимизация и автоматизация бизнес-процессов. Мы помогаем компаниям расти эффективнее.</div>
+      </div>
+      <div>
+        <div class="ad-footer__title">Услуги</div>
+        <ul class="ad-footer__links">
+          <li><a href="#">Бизнес аудит</a></li>
+          <li><a href="#">Автоматизация</a></li>
+          <li><a href="#">Консалтинг</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ad-footer__title">Компания</div>
+        <ul class="ad-footer__links">
+          <li><a href="#">О нас</a></li>
+          <li><a href="#">Блог</a></li>
+          <li><a href="#">Контакты</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ad-footer__title">Контакты</div>
+        <ul class="ad-footer__links">
+          <li><a href="#">hello@alpha.digital</a></li>
+          <li><a href="#">+48 XXX XXX XXX</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ad-footer__bottom">
+      <span>&copy; 2024 Alpha Digital. Все права защищены.</span>
+      <span>Политика конфиденциальности</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

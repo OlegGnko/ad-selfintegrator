@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9.5pt;
+    color: #111111;
+    background: #fff;
+    line-height: 1.55;
+  }
+
+  .page { padding: 13mm 15mm; }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid #111111;
+  }
+  .logo-name {
+    font-size: 20pt;
+    font-weight: 900;
+    color: #111111;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .logo-name span { color: #C2FF85; }
+  .logo-tag {
+    font-size: 8pt;
+    color: #404040;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .doc-meta { text-align: right; }
+  .doc-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .doc-number { font-size: 8pt; color: #404040; margin-top: 3px; }
+
+  /* ── Lime accent bar ── */
+  .lime-bar {
+    background: #C2FF85;
+    border-radius: 6px;
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Parties ── */
+  .parties {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .party {
+    flex: 1;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .party.client { border-color: #C2FF85; background: #f8fff2; }
+  .party-label {
+    font-size: 7pt;
+    font-weight: 700;
+    color: #404040;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+  .party-name { font-size: 10.5pt; font-weight: 700; margin-bottom: 3px; }
+  .party-detail { font-size: 8pt; color: #404040; margin-bottom: 2px; }
+
+  /* ── Summary boxes ── */
+  .summary-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .s-box {
+    flex: 1;
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+    border: 1.5px solid #e5e5e5;
+  }
+  .s-box.lime { background: #C2FF85; border-color: #C2FF85; }
+  .s-box.dark { background: #111111; color: #fff; border-color: #111111; }
+  .s-box .val {
+    font-size: 14pt;
+    font-weight: 900;
+    line-height: 1.1;
+    color: #111111;
+  }
+  .s-box.lime .val { color: #111111; }
+  .s-box.dark .val { color: #C2FF85; }
+  .s-box .lbl {
+    font-size: 7pt;
+    color: #404040;
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .s-box.lime .lbl { color: #272727; }
+  .s-box.dark .lbl { color: #C5C5C5; }
+
+  /* ── Sections ── */
+  h2 {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 16px 0 8px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #C2FF85;
+  }
+
+  p { margin-bottom: 6px; font-size: 9pt; }
+
+  /* ── Scope table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 6px;
+    font-size: 8.5pt;
+  }
+  thead th {
+    background: #111111;
+    color: #fff;
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 7.5pt;
+    letter-spacing: 0.5px;
+  }
+  thead th:last-child { text-align: right; }
+  thead th.center { text-align: center; }
+  tbody tr:nth-child(even) { background: #f9f9f9; }
+  tbody td { padding: 7px 10px; border-bottom: 1px solid #ebebeb; font-size: 8.5pt; }
+  tbody td.center { text-align: center; color: #404040; }
+  tbody td.right { text-align: right; font-weight: 700; }
+  .total-row td {
+    background: #C2FF85;
+    font-weight: 700;
+    font-size: 9.5pt;
+    border-top: 2px solid #111111;
+    color: #111111;
+  }
+  .total-row td.right { color: #111111; }
+  .subtotal-row td {
+    background: #f0f0f0;
+    font-weight: 700;
+    font-size: 9pt;
+    border-top: 1.5px solid #111111;
+  }
+
+  /* ── Timeline ── */
+  .tl-wrap { margin-bottom: 14px; }
+  .tl-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+    align-items: flex-start;
+  }
+  .tl-dot {
+    width: 22px; height: 22px;
+    background: #C2FF85;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 7.5pt;
+    font-weight: 900;
+    color: #111111;
+    margin-top: 1px;
+  }
+  .tl-week {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #111111;
+    width: 65px;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+  .tl-phase {
+    font-size: 8.5pt;
+    color: #272727;
+    padding-top: 3px;
+  }
+
+  /* ── Conditions grid ── */
+  .conditions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .cond-item {
+    flex: 1;
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 9px 12px;
+    text-align: center;
+  }
+  .cond-key {
+    font-size: 7pt;
+    color: #404040;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .cond-val { font-size: 8.5pt; font-weight: 700; color: #111111; }
+
+  /* ── Guarantees ── */
+  .guarantees {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .g-item {
+    flex: 1;
+    border-left: 3px solid #C2FF85;
+    padding: 8px 12px;
+    background: #f8fff2;
+    border-radius: 0 6px 6px 0;
+    font-size: 8pt;
+    color: #272727;
+  }
+  .g-item strong {
+    display: block;
+    font-size: 8.5pt;
+    color: #111111;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── Bank table ── */
+  .bank-table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 8.5pt; }
+  .bank-table td { padding: 4px 10px 4px 0; }
+  .bank-table .bank-key {
+    color: #404040;
+    text-transform: uppercase;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    width: 80px;
+  }
+  .bank-table .bank-val { font-weight: 700; }
+
+  /* ── Signatures ── */
+  .signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 28px;
+  }
+  .sig-block { width: 44%; text-align: center; }
+  .sig-line {
+    border-top: 1.5px solid #111111;
+    padding-top: 6px;
+    font-size: 8pt;
+    color: #272727;
+    margin-top: 36px;
+    line-height: 1.6;
+  }
+  .sig-line strong { font-size: 8.5pt; color: #111111; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7.5pt;
+    color: #C5C5C5;
+  }
+
+  .rate-note {
+    font-size: 7.5pt;
+    color: #404040;
+    margin-top: -4px;
+    margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="logo-name">Alpha<span> Digital</span></div>
+      <div class="logo-tag">Wdrożenia Bitrix24 · CRM · Automatyzacja</div>
+    </div>
+    <div class="doc-meta">
+      <div class="doc-title">Oferta handlowa</div>
+      <div class="doc-number">Nr {{ proposal_number }}</div>
+      <div class="doc-number">Data: {{ today }}</div>
+    </div>
+  </div>
+
+  <!-- Lime bar -->
+  <div class="lime-bar">
+    <span>Wdrożenie CRM Bitrix24</span>
+    <span>Ważność oferty: {{ validity_days }} dni</span>
+  </div>
+
+  <!-- Parties -->
+  <div class="parties">
+    <div class="party">
+      <div class="party-label">Wykonawca</div>
+      <div class="party-name">{{ your_company.name }}</div>
+      <div class="party-detail">NIP: {{ your_company.nip }} · KRS: {{ your_company.krs }}</div>
+      <div class="party-detail">{{ your_company.address }}</div>
+      <div class="party-detail">{{ your_company.email }}</div>
+    </div>
+    <div class="party client">
+      <div class="party-label">Zamawiający</div>
+      <div class="party-name">{{ company.name }}</div>
+      <div class="party-detail">NIP: {{ company.nip }}</div>
+      {% if company.address %}<div class="party-detail">{{ company.address }}</div>{% endif %}
+      <div class="party-detail">
+        {{ user_info.first_name }} {{ user_info.last_name }} · {{ user_info.position }} · {{ user_info.phone }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-row">
+    <div class="s-box">
+      <div class="val">{{ total_net | int }} PLN</div>
+      <div class="lbl">Wartość netto</div>
+    </div>
+    <div class="s-box lime">
+      <div class="val">{{ total_gross | int }} PLN</div>
+      <div class="lbl">Wartość brutto</div>
+    </div>
+    <div class="s-box dark">
+      <div class="val">{{ scope | sum(attribute='hours') | round(1) | string | replace('.0','') }}h</div>
+      <div class="lbl">Łączne godziny</div>
+    </div>
+    <div class="s-box">
+      <div class="val">6 tyg.</div>
+      <div class="lbl">Czas realizacji</div>
+    </div>
+  </div>
+
+  <!-- Scope -->
+  <h2>1. Zakres prac</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:4%">Lp.</th>
+        <th>Pozycja</th>
+        <th class="center" style="width:11%">Godz.</th>
+        <th style="width:17%; text-align:right;">Cena netto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in scope %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ item.item }}</td>
+        <td class="center">{% if item.hours > 0 %}{{ item.hours | round(1) | string | replace('.0','') }}h{% else %}gratis{% endif %}</td>
+        <td class="right">{% if item.price > 0 %}{{ item.price | int }} PLN{% else %}—{% endif %}</td>
+      </tr>
+      {% endfor %}
+      <tr class="subtotal-row">
+        <td colspan="2"><strong>RAZEM NETTO</strong></td>
+        <td class="center"><strong>{{ scope | sum(attribute='hours') | round(1) | string | replace('.0','') }}h</strong></td>
+        <td class="right">{{ total_net | int }} PLN</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="3"><strong>RAZEM BRUTTO (VAT 23%)</strong></td>
+        <td class="right">{{ total_gross | int }} PLN</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="rate-note">Stawka: 250 PLN netto/godz. · Wszystkie ceny netto, VAT 23%.</p>
+
+  <!-- Licencja Bitrix24 -->
+  <h2>2. Licencja Bitrix24</h2>
+  <p>Koszt licencji Bitrix24 <strong>nie jest wliczony</strong> w cenę wdrożenia — Zamawiający nabywa ją bezpośrednio od Bitrix24.
+  Poniżej przedstawiamy dostępne plany i rekomendację dla Państwa firmy.</p>
+
+  <table style="margin: 8px 0 6px; font-size: 8pt;">
+    <thead>
+      <tr>
+        <th>Plan</th>
+        <th class="center">Użytkownicy</th>
+        <th class="center">Cena/mies.</th>
+        <th>Kluczowe funkcje</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Free</strong></td>
+        <td class="center">Bez limitu</td>
+        <td class="center">0 PLN</td>
+        <td>Podstawowy CRM, zadania, czat — bez automatyzacji i zaawansowanych raportów</td>
+      </tr>
+      <tr style="background:#f9f9f9;">
+        <td><strong>Basic</strong></td>
+        <td class="center">5</td>
+        <td class="center">~229 PLN</td>
+        <td>CRM, maile, 24 GB dysk, podstawowe automatyzacje</td>
+      </tr>
+      <tr>
+        <td><strong>Standard</strong></td>
+        <td class="center">50</td>
+        <td class="center">~459 PLN</td>
+        <td>Pełny CRM, automatyzacje, marketing, 100 GB dysk</td>
+      </tr>
+      <tr style="background:#f9f9f9;">
+        <td><strong>Professional</strong></td>
+        <td class="center">100</td>
+        <td class="center">~919 PLN</td>
+        <td>Wszystko z Standard + HR, serwis, zaawansowana analityka, 1024 GB</td>
+      </tr>
+      <tr>
+        <td><strong>Enterprise</strong></td>
+        <td class="center">250+</td>
+        <td class="center">od ~2 299 PLN</td>
+        <td>Pełna platforma, wiele oddziałów, dedykowany serwer, SLA</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="background:#C2FF85; border-radius:6px; padding:9px 14px; margin:8px 0 14px; font-size:8.5pt;">
+    <strong>Rekomendacja dla {{ company.name }}:</strong>
+    {% if license_plan %}
+      plan <strong>{{ license_plan }}</strong> — {{ license_reason }}
+    {% else %}
+      plan <strong>Standard</strong> — optymalny dla większości firm z zespołem sprzedażowym, zapewnia pełny CRM i automatyzacje.
+    {% endif %}
+    Ceny mogą ulec zmianie — aktualne stawki na <strong>bitrix24.pl</strong>.
+  </div>
+
+  <!-- Timeline -->
+  <h2>3. Harmonogram realizacji</h2>
+
+  <div class="tl-wrap">
+    {% for phase in timeline %}
+    <div class="tl-row">
+      <div class="tl-dot">{{ loop.index }}</div>
+      <div class="tl-week">Tydzień {{ phase.week }}</div>
+      <div class="tl-phase">{{ phase.phase }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- How it works -->
+  <h2>4. Jak przebiega wdrożenie?</h2>
+  <p><strong>Analiza</strong> — mapujemy procesy biznesowe i ustalamy konfigurację podczas spotkania online.</p>
+  <p><strong>Konfiguracja</strong> — ustawiamy lejki, automatyzacje, pola i uprawnienia w Bitrix24.</p>
+  <p><strong>Integracje</strong> — podłączamy telefonie, formularze i inne systemy.</p>
+  <p><strong>Import danych</strong> — przenosimy kontakty, firmy i historię z obecnych narzędzi.</p>
+  <p><strong>Szkolenia i odbiór</strong> — szkolenie online dla zespołu + nadzór przez pierwsze 2 tygodnie.</p>
+
+  <!-- Conditions -->
+  <h2>5. Warunki handlowe</h2>
+  <div class="conditions">
+    <div class="cond-item">
+      <div class="cond-key">Płatność</div>
+      <div class="cond-val">50% + 50%</div>
+    </div>
+    <div class="cond-item">
+      <div class="cond-key">Zaliczka</div>
+      <div class="cond-val">{{ (total_net * 0.5) | int }} PLN</div>
+    </div>
+    <div class="cond-item">
+      <div class="cond-key">Termin realizacji</div>
+      <div class="cond-val">do 6 tygodni</div>
+    </div>
+    <div class="cond-item">
+      <div class="cond-key">Gwarancja</div>
+      <div class="cond-val">12 miesięcy</div>
+    </div>
+    <div class="cond-item">
+      <div class="cond-key">Wsparcie startowe</div>
+      <div class="cond-val">2 tygodnie gratis</div>
+    </div>
+  </div>
+
+  <!-- Guarantees -->
+  <h2>6. Nasze gwarancje</h2>
+  <div class="guarantees">
+    <div class="g-item">
+      <strong>Stały opiekun projektu</strong>
+      Jeden PM odpowiada za cały projekt — pełna odpowiedzialność i komunikacja.
+    </div>
+    <div class="g-item">
+      <strong>Certyfikowani specjaliści</strong>
+      Zespół z certyfikatami Bitrix24 i kilkuletnim doświadczeniem wdrożeniowym.
+    </div>
+    <div class="g-item">
+      <strong>Cena stała w umowie</strong>
+      Żadnych ukrytych kosztów. Zmiany zakresu — tylko za osobnym aneksem.
+    </div>
+  </div>
+
+  <!-- Acceptance -->
+  <h2>7. Akceptacja oferty</h2>
+  <p>W celu akceptacji prosimy o podpisanie umowy i wpłatę zaliczki na rachunek bankowy:</p>
+  <table class="bank-table">
+    <tr>
+      <td class="bank-key">PLN</td>
+      <td class="bank-val">{{ your_company.bank_account_pln }}</td>
+    </tr>
+    <tr>
+      <td class="bank-key">EUR</td>
+      <td class="bank-val">{{ your_company.bank_account_eur }}</td>
+    </tr>
+    <tr>
+      <td class="bank-key">USD</td>
+      <td class="bank-val">{{ your_company.bank_account_usd }}</td>
+    </tr>
+    <tr>
+      <td class="bank-key">Bank</td>
+      <td>{{ your_company.bank_name }} · SWIFT: {{ your_company.bic_swift }}</td>
+    </tr>
+  </table>
+  <p>Kontakt: <strong>{{ your_company.email }}</strong> · <strong>{{ your_company.phone }}</strong></p>
+
+  <!-- Signatures -->
+  <div class="signatures">
+    <div class="sig-block">
+      <div class="sig-line">
+        <strong>{{ your_company.name }}</strong><br>
+        {{ your_company.ceo }}<br>
+        {{ your_company.ceo_title }}<br>
+        Wykonawca
+      </div>
+    </div>
+    <div class="sig-block">
+      <div class="sig-line">
+        <strong>{{ company.name }}</strong><br>
+        {{ user_info.first_name }} {{ user_info.last_name }}<br>
+        {{ user_info.position }}<br>
+        Zamawiający
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>{{ your_company.name_full }} · NIP: {{ your_company.nip }} · KRS: {{ your_company.krs }} · REGON: {{ your_company.regon }}</span>
+    <span>{{ proposal_number }} · {{ today }}</span>
+  </div>
+
+</div>
+</body>
+</html>

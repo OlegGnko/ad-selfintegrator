@@ -1,0 +1,86 @@
+from jinja2 import Environment, FileSystemLoader
+from pathlib import Path
+from datetime import date
+
+TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
+env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
+
+PRINT_WRAPPER = """<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<script>
+  window.onload = function() {{
+    // Auto-open print dialog; fallback to manual button
+    setTimeout(function() {{ window.print(); }}, 600);
+  }};
+</script>
+<style>
+  @media screen {{
+    body {{ margin: 0; background: #f0f0f0; }}
+    .print-bar {{
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      background: #C2FF85; padding: 10px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: Arial, sans-serif; font-size: 14px; font-weight: 600;
+      color: #111; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }}
+    .print-bar button {{
+      background: #111; color: #C2FF85; border: none;
+      padding: 8px 24px; border-radius: 200px; font-size: 14px;
+      font-weight: 700; cursor: pointer; font-family: Arial, sans-serif;
+    }}
+    .doc-wrap {{ margin-top: 52px; padding: 20px; }}
+  }}
+  @media print {{
+    .print-bar {{ display: none !important; }}
+    .doc-wrap {{ margin: 0; padding: 0; }}
+  }}
+</style>
+</head><body>
+<div class="print-bar">
+  <span>Alpha Digital · {doctype}</span>
+  <button onclick="window.print()">Drukuj / Zapisz PDF</button>
+</div>
+<div class="doc-wrap">{content}</div>
+</body></html>"""
+
+
+def _extract_body(html: str) -> str:
+    """Extract content between <body> tags."""
+    import re
+    m = re.search(r"<body[^>]*>(.*?)</body>", html, re.DOTALL)
+    return m.group(1) if m else html
+
+
+def _extract_styles(html: str) -> str:
+    """Extract <style> blocks."""
+    import re
+    styles = re.findall(r"<style[^>]*>(.*?)</style>", html, re.DOTALL)
+    return "<style>" + "\n".join(styles) + "</style>" if styles else ""
+
+
+def generate_proposal_pdf(session_data: dict) -> bytes:
+    template = env.get_template("proposal.html")
+    html = template.render(
+        **session_data,
+        today=date.today().strftime("%d.%m.%Y"),
+        proposal_number=f"OF/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
+    )
+    wrapped = PRINT_WRAPPER.format(
+        doctype="Oferta handlowa",
+        content=_extract_styles(html) + _extract_body(html),
+    )
+    return wrapped.encode("utf-8")
+
+
+def generate_contract_pdf(session_data: dict) -> bytes:
+    template = env.get_template("contract.html")
+    html = template.render(
+        **session_data,
+        today=date.today().strftime("%d.%m.%Y"),
+        contract_number=f"UMW/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
+    )
+    wrapped = PRINT_WRAPPER.format(
+        doctype="Umowa o świadczenie usług",
+        content=_extract_styles(html) + _extract_body(html),
+    )
+    return wrapped.encode("utf-8")

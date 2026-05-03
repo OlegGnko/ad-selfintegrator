@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 9.5pt;
+    color: #111111;
+    background: #fff;
+    line-height: 1.6;
+  }
+
+  .page { padding: 15mm 18mm; }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #111111;
+  }
+  .logo-name {
+    font-size: 18pt;
+    font-weight: 900;
+    color: #111111;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .logo-name span { color: #C2FF85; }
+  .logo-tag {
+    font-size: 7.5pt;
+    color: #404040;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .doc-meta { text-align: right; }
+  .doc-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .doc-sub { font-size: 8pt; color: #404040; margin-top: 3px; }
+
+  /* ── Lime bar ── */
+  .lime-bar {
+    background: #C2FF85;
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    font-size: 8pt;
+    font-weight: 700;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── Parties table ── */
+  .parties-wrap {
+    border: 1.5px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    font-size: 9pt;
+  }
+  .party-row {
+    display: flex;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .party-row:last-child { border-bottom: none; }
+  .party-label-cell {
+    background: #111111;
+    color: #C2FF85;
+    font-size: 7pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    writing-mode: horizontal-tb;
+    padding: 10px 14px;
+    width: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+  .party-content { padding: 10px 14px; flex: 1; }
+  .party-content strong { font-size: 10pt; }
+
+  /* ── Section headings ── */
+  h2 {
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #111111;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 16px 0 8px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #C2FF85;
+  }
+
+  p { margin-bottom: 6px; font-size: 9pt; }
+  ol { margin-left: 18px; margin-bottom: 8px; }
+  ol li { margin-bottom: 4px; font-size: 9pt; }
+
+  /* ── Amount box ── */
+  .amount-box {
+    background: #C2FF85;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 10px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .amount-main {
+    font-size: 16pt;
+    font-weight: 900;
+    color: #111111;
+    line-height: 1;
+  }
+  .amount-sub {
+    font-size: 8pt;
+    color: #272727;
+    margin-top: 3px;
+  }
+  .amount-breakdown {
+    margin-left: auto;
+    text-align: right;
+    font-size: 8.5pt;
+  }
+  .amount-breakdown strong { color: #111111; }
+
+  /* ── Bank table ── */
+  .bank-table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 8.5pt; }
+  .bank-table td { padding: 4px 10px 4px 0; vertical-align: top; }
+  .bank-key {
+    color: #404040;
+    text-transform: uppercase;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    width: 70px;
+    padding-top: 5px;
+  }
+  .bank-val { font-weight: 700; }
+
+  /* ── Schedule table ── */
+  .schedule-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9pt; }
+  .schedule-table th {
+    background: #111111;
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .schedule-table td { padding: 7px 10px; border-bottom: 1px solid #ebebeb; }
+  .schedule-table tr:nth-child(even) td { background: #f9f9f9; }
+
+  /* ── Signatures ── */
+  .signatures {
+    margin-top: 36px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .sig-block { width: 44%; text-align: center; }
+  .sig-line {
+    border-top: 1.5px solid #111111;
+    padding-top: 6px;
+    font-size: 8pt;
+    color: #272727;
+    margin-top: 40px;
+    line-height: 1.7;
+  }
+  .sig-line strong { font-size: 9pt; color: #111111; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 18px;
+    padding-top: 8px;
+    border-top: 1px solid #e5e5e5;
+    font-size: 7.5pt;
+    color: #C5C5C5;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="logo-name">Alpha<span> Digital</span></div>
+      <div class="logo-tag">Wdrożenia Bitrix24 · CRM · Automatyzacja</div>
+    </div>
+    <div class="doc-meta">
+      <div class="doc-title">Umowa o świadczenie usług</div>
+      <div class="doc-sub">Nr {{ contract_number }}</div>
+      <div class="doc-sub">zawarta dnia {{ today }} w Warszawie</div>
+    </div>
+  </div>
+
+  <!-- Lime bar -->
+  <div class="lime-bar">
+    <span>Umowa o wdrożenie systemu CRM Bitrix24</span>
+    <span>{{ contract_number }}</span>
+  </div>
+
+  <!-- Parties -->
+  <div class="parties-wrap">
+    <div class="party-row">
+      <div class="party-label-cell">Wykonawca</div>
+      <div class="party-content">
+        <strong>{{ your_company.name_full }}</strong>, wpisana do rejestru przedsiębiorców KRS
+        pod nr <strong>{{ your_company.krs }}</strong>, REGON: {{ your_company.regon }},
+        NIP: {{ your_company.nip }}, z siedzibą: {{ your_company.address }},
+        reprezentowana przez <strong>{{ your_company.ceo }}</strong> — {{ your_company.ceo_title }},
+        e-mail: {{ your_company.email }}, tel.: {{ your_company.phone }}
+      </div>
+    </div>
+    <div class="party-row">
+      <div class="party-label-cell">Zamawiający</div>
+      <div class="party-content">
+        <strong>{{ company.name }}</strong>, NIP: {{ company.nip }},
+        {% if company.address %}z siedzibą: {{ company.address }},{% endif %}
+        reprezentowana przez <strong>{{ user_info.first_name }} {{ user_info.last_name }}</strong>
+        ({{ user_info.position }}), tel.: {{ user_info.phone }}
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-bottom:16px;">zwanych dalej łącznie <strong>„Stronami"</strong>, o następującej treści:</p>
+
+  <!-- §1 -->
+  <h2>§ 1. Przedmiot umowy</h2>
+  <p>1. Wykonawca zobowiązuje się do kompleksowego wdrożenia systemu CRM <strong>Bitrix24</strong>
+  dla Zamawiającego, zgodnie z zakresem określonym w Ofercie Nr {{ contract_number | replace("UMW","OF") }}.</p>
+  <p>2. Zakres wdrożenia obejmuje w szczególności:</p>
+  <ol>
+    {% for item in scope %}
+    <li>{{ item.item }}{% if item.hours > 0 %} ({{ item.hours | int }}h){% endif %}</li>
+    {% endfor %}
+  </ol>
+  <p>3. Szczegółowy harmonogram realizacji stanowi Załącznik nr 1 do niniejszej Umowy.</p>
+
+  <!-- §2 -->
+  <h2>§ 2. Wynagrodzenie i warunki płatności</h2>
+  <div class="amount-box">
+    <div>
+      <div class="amount-main">{{ total_net | int }} PLN netto</div>
+      <div class="amount-sub">Wynagrodzenie ryczałtowe · VAT 23%</div>
+    </div>
+    <div class="amount-breakdown">
+      <div><strong>{{ total_gross | int }} PLN brutto</strong></div>
+      <div style="color:#404040; font-size:7.5pt;">łączna wartość umowy</div>
+    </div>
+  </div>
+  <p>2. Płatność w dwóch ratach:</p>
+  <ol>
+    <li><strong>Zaliczka — 50%:</strong> {{ (total_net * 0.5) | int }} PLN netto — w terminie 7 dni od podpisania Umowy.</li>
+    <li><strong>Pozostała kwota — 50%:</strong> {{ (total_net * 0.5) | int }} PLN netto — w ciągu 7 dni od podpisania protokołu odbioru.</li>
+  </ol>
+  <p>3. Dane do przelewu:</p>
+  <table class="bank-table">
+    <tr>
+      <td class="bank-key">PLN</td>
+      <td class="bank-val">{{ your_company.bank_account_pln }}</td>
+    </tr>
+    <tr>
+      <td class="bank-key">EUR</td>
+      <td class="bank-val">{{ your_company.bank_account_eur }}</td>
+    </tr>
+    <tr>
+      <td class="bank-key">USD</td>
+      <td class="bank-val">{{ your_company.bank_account_usd }}</td>
+    </tr>
+    <tr>
+      <td class="bank-key">Bank</td>
+      <td>{{ your_company.bank_name }}, {{ your_company.bank_address }}<br>SWIFT/BIC: {{ your_company.bic_swift }}</td>
+    </tr>
+  </table>
+  <p>4. W tytule przelewu należy podać: <strong>{{ contract_number }}</strong>.</p>
+
+  <!-- §3 -->
+  <h2>§ 3. Harmonogram realizacji</h2>
+  <table class="schedule-table">
+    <thead>
+      <tr><th style="width:25%">Tydzień</th><th>Etap</th></tr>
+    </thead>
+    <tbody>
+      {% for phase in timeline %}
+      <tr>
+        <td>Tydzień {{ phase.week }}</td>
+        <td>{{ phase.phase }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p>Termin rozpoczęcia: 7 dni roboczych od wpłaty zaliczki.</p>
+
+  <!-- §4 -->
+  <h2>§ 4. Obowiązki Stron</h2>
+  <p><strong>Wykonawca zobowiązuje się do:</strong></p>
+  <ol>
+    <li>Realizacji prac z należytą starannością zgodnie z aktualną wiedzą techniczną.</li>
+    <li>Wyznaczenia dedykowanego opiekuna projektu (Project Managera).</li>
+    <li>Informowania Zamawiającego o postępach prac co najmniej raz w tygodniu.</li>
+    <li>Przeprowadzenia szkoleń dla użytkowników systemu.</li>
+  </ol>
+  <p><strong>Zamawiający zobowiązuje się do:</strong></p>
+  <ol>
+    <li>Terminowego dostarczenia niezbędnych danych, materiałów i dostępów.</li>
+    <li>Wyznaczenia osoby kontaktowej odpowiedzialnej po swojej stronie.</li>
+    <li>Terminowego wnoszenia płatności zgodnie z § 2.</li>
+    <li>Udziału w testach akceptacyjnych i podpisania protokołu odbioru.</li>
+  </ol>
+
+  <!-- §5 -->
+  <h2>§ 5. Gwarancja i wsparcie</h2>
+  <ol>
+    <li>Wykonawca udziela <strong>12-miesięcznej gwarancji</strong> na wykonaną konfigurację, liczonej od daty podpisania protokołu odbioru.</li>
+    <li>W ramach gwarancji błędy wynikające z prac Wykonawcy usuwane są do 5 dni roboczych od zgłoszenia.</li>
+    <li>Bezpłatne wsparcie startowe przez <strong>2 tygodnie</strong> od przekazania projektu.</li>
+    <li>Po okresie gwarancyjnym Zamawiający może korzystać z odpłatnych pakietów wsparcia.</li>
+  </ol>
+
+  <!-- §6 -->
+  <h2>§ 6. Poufność</h2>
+  <p>Strony zobowiązują się do zachowania w tajemnicy wszelkich informacji poufnych uzyskanych
+  w związku z realizacją Umowy przez okres 5 lat od jej wygaśnięcia.</p>
+
+  <!-- §7 -->
+  <h2>§ 7. Odpowiedzialność</h2>
+  <p>Łączna odpowiedzialność Wykonawcy ograniczona jest do wartości wynagrodzenia netto określonego w § 2.</p>
+
+  <!-- §8 -->
+  <h2>§ 8. Postanowienia końcowe</h2>
+  <ol>
+    <li>Umowa wchodzi w życie z dniem podpisania przez obie Strony.</li>
+    <li>Wszelkie zmiany Umowy wymagają formy pisemnej pod rygorem nieważności.</li>
+    <li>W sprawach nieuregulowanych zastosowanie mają przepisy Kodeksu Cywilnego.</li>
+    <li>Spory rozstrzyga sąd właściwy dla siedziby Wykonawcy.</li>
+    <li>Umowę sporządzono w dwóch jednobrzmiących egzemplarzach, po jednym dla każdej ze Stron.</li>
+  </ol>
+
+  <!-- Signatures -->
+  <div class="signatures">
+    <div class="sig-block">
+      <div class="sig-line">
+        <strong>{{ your_company.name }}</strong><br>
+        {{ your_company.ceo }}<br>
+        {{ your_company.ceo_title }}<br>
+        <span style="color:#C5C5C5;">Wykonawca</span>
+      </div>
+    </div>
+    <div class="sig-block">
+      <div class="sig-line">
+        <strong>{{ company.name }}</strong><br>
+        {{ user_info.first_name }} {{ user_info.last_name }}<br>
+        {{ user_info.position }}<br>
+        <span style="color:#C5C5C5;">Zamawiający</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    {{ your_company.name_full }} · NIP: {{ your_company.nip }} · KRS: {{ your_company.krs }} · REGON: {{ your_company.regon }} · {{ your_company.address }} · {{ contract_number }}
+  </div>
+
+</div>
+</body>
+</html>
