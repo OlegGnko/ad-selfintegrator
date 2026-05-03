@@ -1,7 +1,7 @@
 {
   "experimentalServices": {
-    "main": {
-      "entrypoint": "api",
+    "backend": {
+      "entrypoint": "backend",
       "routePrefix": "/"
     }
   }
