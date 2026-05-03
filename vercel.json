@@ -1,11 +1,8 @@
 {
-  "version": 2,
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 30
+  "experimentalServices": {
+    "main": {
+      "entrypoint": "api",
+      "routePrefix": "/"
     }
-  },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.py" }
-  ]
+  }
 }
