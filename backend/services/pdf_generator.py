@@ -1,7 +1,6 @@
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from datetime import date
-import io
 import logging
 
 from services.translations import T, scope_item as _scope_item
@@ -59,17 +58,12 @@ def _extract_styles(html: str) -> str:
 
 
 def _html_to_pdf(html: str) -> bytes:
-    """Convert HTML string to PDF bytes using xhtml2pdf (pure-Python, serverless-safe)."""
-    try:
-        from xhtml2pdf import pisa
-        buffer = io.BytesIO()
-        status = pisa.CreatePDF(html, dest=buffer, encoding="utf-8")
-        if not status.err:
-            return buffer.getvalue()
-        logger.warning("xhtml2pdf error: %s", status.err)
-    except Exception as exc:
-        logger.warning("PDF conversion failed: %s", exc)
-    return b""
+    """
+    Return the rendered HTML as UTF-8 bytes.
+    Files are attached to Bitrix24 with a .html extension so managers can
+    open them in a browser and print to PDF — no native system libs required.
+    """
+    return html.encode("utf-8")
 
 
 def _proposal_render_ctx(session_data: dict) -> dict:
@@ -128,10 +122,11 @@ def generate_contract_pdf(session_data: dict) -> bytes:
     return wrapped.encode("utf-8")
 
 
-# ── PDF versions for Bitrix24 file attachments ────────────────────────────────
+# ── HTML versions for Bitrix24 file attachments ───────────────────────────────
+# Attached as .html — managers open in browser and print to PDF if needed.
 
 def generate_proposal_pdf_file(session_data: dict) -> bytes:
-    """Return true PDF bytes (for attaching to Bitrix24 deal)."""
+    """Return rendered HTML bytes for Bitrix24 attachment (proposal)."""
     template = env.get_template("proposal.html")
     ctx = _proposal_render_ctx(session_data)
     html = template.render(
@@ -143,7 +138,7 @@ def generate_proposal_pdf_file(session_data: dict) -> bytes:
 
 
 def generate_contract_pdf_file(session_data: dict) -> bytes:
-    """Return true PDF bytes for contract (always Polish)."""
+    """Return rendered HTML bytes for Bitrix24 attachment (contract, always Polish)."""
     template = env.get_template("contract.html")
     html = template.render(
         **session_data,

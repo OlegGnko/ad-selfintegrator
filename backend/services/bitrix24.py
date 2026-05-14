@@ -272,9 +272,9 @@ async def add_proposal_comment(
         "COMMENT":        "\n".join(lines),
     }})
 
-    # Attach PDF file to the "Oferta" file field
+    # Attach HTML file to the "Oferta" file field (open in browser, print to PDF)
     if pdf_bytes:
-        await _attach_file(deal_id, FIELD_OFERTA, f"Oferta_{session_id[:8]}.pdf", pdf_bytes)
+        await _attach_file(deal_id, FIELD_OFERTA, f"Oferta_{session_id[:8]}.html", pdf_bytes)
 
     # Advance to Oferta (stage index 2)
     await _move_deal(deal_id, 2)
@@ -387,13 +387,13 @@ async def add_mvp_documents(
     updates: dict = {}
     if tz_pdf_bytes and fields.get("tz"):
         b64 = base64.b64encode(tz_pdf_bytes).decode()
-        updates[fields["tz"]] = {"fileData": [f"TZ_{session_id[:8]}.pdf", b64]}
+        updates[fields["tz"]] = {"fileData": [f"TZ_{session_id[:8]}.html", b64]}
     if config_zip_bytes and fields.get("mvp"):
         b64 = base64.b64encode(config_zip_bytes).decode()
         updates[fields["mvp"]] = {"fileData": [f"MVP_Config_{session_id[:8]}.zip", b64]}
     if readme_pdf_bytes and fields.get("readme"):
         b64 = base64.b64encode(readme_pdf_bytes).decode()
-        updates[fields["readme"]] = {"fileData": [f"README_MVP_{session_id[:8]}.pdf", b64]}
+        updates[fields["readme"]] = {"fileData": [f"README_MVP_{session_id[:8]}.html", b64]}
 
     if updates:
         result = await _bx("crm.deal.update", {"id": int(deal_id), "fields": updates})
@@ -457,9 +457,9 @@ async def add_contract_comment(
         "COMMENT":        "\n".join(lines),
     }})
 
-    # Attach PDF file to the "Umowa" file field
+    # Attach HTML file to the "Umowa" file field (open in browser, print to PDF)
     if pdf_bytes:
-        await _attach_file(deal_id, FIELD_UMOWA, f"Umowa_{session_id[:8]}.pdf", pdf_bytes)
+        await _attach_file(deal_id, FIELD_UMOWA, f"Umowa_{session_id[:8]}.html", pdf_bytes)
 
     # Advance to Umowa (stage index 3)
     await _move_deal(deal_id, 3)
