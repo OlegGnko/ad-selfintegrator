@@ -228,10 +228,24 @@ async def start_session():
     }
 
     greeting = (
-        "Dzień dobry! Jestem asystentem AD SelfIntegrator — pomagam w przygotowaniu "
-        "indywidualnej oferty wdrożenia systemu CRM Bitrix24.\n\n"
-        "Aby przygotować ofertę dopasowaną do Twojej firmy, potrzebuję kilku informacji. "
-        "Zacznijmy od **numeru NIP** Twojej firmy."
+        "Cześć! Jestem asystentem AI firmy Alpha Digital — pomagam w przygotowaniu "
+        "indywidualnej oferty handlowej na integrację systemu Bitrix24.\n\n"
+        "Nasza rozmowa będzie przebiegać następująco:\n\n"
+        "* najpierw poproszę Cię o podanie **numeru NIP** Twojej firmy, aby znaleźć o niej "
+        "informacje w internecie — pomoże mi to przygotować bardziej spersonalizowaną ofertę, "
+        "a dane firmy przydadzą się później do sporządzenia umowy;\n"
+        "* następnie poproszę Cię o **przedstawienie się**, abym wiedział, z kim rozmawiam;\n"
+        "* będę kolejno zadawać pytania o Twoje zadania, wyzwania i potrzeby — możesz "
+        "odpowiadać tekstem lub nagrywać **wiadomości głosowe**, jak wygodniej. Na tę część "
+        "warto zarezerwować około **30 minut**. Możesz przerwać w dowolnym momencie i wrócić "
+        "później, korzystając z linku widocznego powyżej — wszystkie odpowiedzi zostaną "
+        "zapisane i wrócimy do miejsca, w którym skończyliśmy;\n"
+        "* po udzieleniu odpowiedzi na wszystkie pytania przygotuję **ofertę handlową** na "
+        "integrację systemu, w której znajdą się terminy, koszty, proces pracy itd. Będziesz "
+        "mógł/mogła ją sprawdzić, coś dodać lub zadać dodatkowe pytania — wprowadzę wszelkie poprawki;\n"
+        "* gdy zatwierdzisz ofertę, przygotuję dla Ciebie **umowę** oraz **proformę** do "
+        "płatności na rozpoczęcie pracy.\n\n"
+        "Zacznijmy! Podaj proszę **numer NIP** swojej firmy."
     )
 
     session["messages"].append({"role": "assistant", "content": greeting})
