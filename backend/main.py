@@ -477,8 +477,11 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
                 pdf_bytes=proposal_pdf,
             )
 
-            # Generate TZ PDF, config ZIP, README PDF and attach to deal
+            # Generate TZ HTML, config ZIP, README HTML and attach to deal
             from services.pdf_generator import _html_to_pdf
+            import traceback
+
+            tz_bytes = b""
             try:
                 tz_html = generate_tz_html(
                     inp,
@@ -486,29 +489,31 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
                     session["user_info"],
                     session["proposal_data"],
                 )
-                tz_pdf = _html_to_pdf(tz_html)
-            except Exception as exc:
-                logger.warning("TZ PDF generation failed: %s", exc)
-                tz_pdf = b""
+                tz_bytes = _html_to_pdf(tz_html)
+                logger.info("TZ generated: %d bytes", len(tz_bytes))
+            except Exception:
+                logger.error("TZ generation FAILED:\n%s", traceback.format_exc())
 
+            config_zip = b""
             try:
                 config_zip = generate_config_zip(inp, session["company"])
-            except Exception as exc:
-                logger.warning("Config ZIP generation failed: %s", exc)
-                config_zip = b""
+                logger.info("Config ZIP generated: %d bytes", len(config_zip))
+            except Exception:
+                logger.error("Config ZIP generation FAILED:\n%s", traceback.format_exc())
 
+            readme_bytes = b""
             try:
                 readme_html = generate_readme_html(inp, session["company"])
-                readme_pdf = _html_to_pdf(readme_html)
-            except Exception as exc:
-                logger.warning("README PDF generation failed: %s", exc)
-                readme_pdf = b""
+                readme_bytes = _html_to_pdf(readme_html)
+                logger.info("README generated: %d bytes", len(readme_bytes))
+            except Exception:
+                logger.error("README generation FAILED:\n%s", traceback.format_exc())
 
             await add_mvp_documents(
                 deal_id,
-                tz_pdf_bytes=tz_pdf,
+                tz_pdf_bytes=tz_bytes,
                 config_zip_bytes=config_zip,
-                readme_pdf_bytes=readme_pdf,
+                readme_pdf_bytes=readme_bytes,
                 session_id=session_id,
             )
 
