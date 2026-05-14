@@ -186,18 +186,17 @@ _STAGE_COLORS = [
 
 
 def _build_deal_stage_json(stages: list[str], category_id: int = 0) -> dict:
-    cat_prefix = f"C{category_id}:" if category_id else ""
     entity_id = f"DEAL_STAGE_{category_id}" if category_id else "DEAL_STAGE"
     pipeline_name = "Sprzedaż" if not category_id else f"Lejek {category_id}"
+    cat_str = str(category_id)  # CATEGORY_ID for work stages
 
     items = []
-    sort_val = 10
 
     # Opening system stage
     items.append({
         "ID": "100",
         "ENTITY_ID": entity_id,
-        "STATUS_ID": f"{cat_prefix}NEW",
+        "STATUS_ID": "NEW",
         "NAME": stages[0] if stages else "Nowy lead",
         "NAME_INIT": "W toku",
         "SORT": "10",
@@ -206,30 +205,28 @@ def _build_deal_stage_json(stages: list[str], category_id: int = 0) -> dict:
         "SEMANTICS": None,
         "CATEGORY_ID": None,
     })
-    sort_val = 20
 
-    # Middle work stages
+    # Middle work stages — STATUS_ID must be plain integers "1", "2", … (Bitrix24 format)
     for i, stage_name in enumerate(stages[1:], start=1):
         color = _STAGE_COLORS[i % len(_STAGE_COLORS)]
         items.append({
             "ID": str(100 + i),
             "ENTITY_ID": entity_id,
-            "STATUS_ID": f"{cat_prefix}STAGE_{i}",
+            "STATUS_ID": str(i),
             "NAME": stage_name,
-            "NAME_INIT": stage_name,
-            "SORT": str(sort_val),
+            "NAME_INIT": "",
+            "SORT": str(10 + i * 10),
             "SYSTEM": "N",
             "COLOR": color,
             "SEMANTICS": None,
-            "CATEGORY_ID": None,
+            "CATEGORY_ID": cat_str,
         })
-        sort_val += 10
 
     # Terminal stages
     items.append({
-        "ID": str(200),
+        "ID": "200",
         "ENTITY_ID": entity_id,
-        "STATUS_ID": f"{cat_prefix}WON",
+        "STATUS_ID": "WON",
         "NAME": "Zamknięty Wygrany",
         "NAME_INIT": "Zamknięty Wygrany",
         "SORT": "200",
@@ -239,9 +236,9 @@ def _build_deal_stage_json(stages: list[str], category_id: int = 0) -> dict:
         "CATEGORY_ID": None,
     })
     items.append({
-        "ID": str(201),
+        "ID": "201",
         "ENTITY_ID": entity_id,
-        "STATUS_ID": f"{cat_prefix}LOSE",
+        "STATUS_ID": "LOSE",
         "NAME": "Zamknięty Stracony",
         "NAME_INIT": "Zamknięty Stracony",
         "SORT": "210",
@@ -256,11 +253,12 @@ def _build_deal_stage_json(stages: list[str], category_id: int = 0) -> dict:
             "ID": entity_id,
             "NAME": pipeline_name,
             "SEMANTIC_INFO": {
-                "START_FIELD": f"{cat_prefix}NEW",
-                "FINAL_SUCCESS_FIELD": f"{cat_prefix}WON",
-                "FINAL_UNSUCCESS_FIELD": f"{cat_prefix}LOSE",
+                "START_FIELD": "NEW",
+                "FINAL_SUCCESS_FIELD": "WON",
+                "FINAL_UNSUCCESS_FIELD": "LOSE",
                 "FINAL_SORT": 0,
             },
+            "FIELD_ATTRIBUTE_SCOPE": "",
             "ENTITY_TYPE_ID": 2,
             "CATEGORY_ID": category_id,
         },
@@ -329,6 +327,46 @@ def _build_deal_type_json() -> dict:
     }
 
 
+_USER_TYPE_META: dict[str, dict] = {
+    "string": {
+        "USER_TYPE_ID": "string",
+        "CLASS_NAME": "Bitrix\\Main\\UserField\\Types\\StringType",
+        "EDIT_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\StringType", "renderEdit"],
+        "VIEW_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\StringType", "renderView"],
+        "USE_FIELD_COMPONENT": True,
+        "DESCRIPTION": "String",
+        "BASE_TYPE": "string",
+    },
+    "date": {
+        "USER_TYPE_ID": "date",
+        "CLASS_NAME": "Bitrix\\Main\\UserField\\Types\\DateType",
+        "EDIT_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\DateType", "renderEdit"],
+        "VIEW_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\DateType", "renderView"],
+        "USE_FIELD_COMPONENT": True,
+        "DESCRIPTION": "Date",
+        "BASE_TYPE": "string",
+    },
+    "boolean": {
+        "USER_TYPE_ID": "boolean",
+        "CLASS_NAME": "Bitrix\\Main\\UserField\\Types\\BooleanType",
+        "EDIT_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\BooleanType", "renderEdit"],
+        "VIEW_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\BooleanType", "renderView"],
+        "USE_FIELD_COMPONENT": True,
+        "DESCRIPTION": "Yes/No",
+        "BASE_TYPE": "int",
+    },
+    "enumeration": {
+        "USER_TYPE_ID": "enumeration",
+        "CLASS_NAME": "Bitrix\\Main\\UserField\\Types\\EnumType",
+        "EDIT_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\EnumType", "renderEdit"],
+        "VIEW_CALLBACK": ["Bitrix\\Main\\UserField\\Types\\EnumType", "renderView"],
+        "USE_FIELD_COMPONENT": True,
+        "DESCRIPTION": "List",
+        "BASE_TYPE": "int",
+    },
+}
+
+
 def _settings_for_type(user_type: str, label: str) -> tuple[dict, list[dict] | None]:
     """Return (SETTINGS dict, ITEMS list or None) for a given user_type."""
     if user_type == "string":
@@ -338,7 +376,6 @@ def _settings_for_type(user_type: str, label: str) -> tuple[dict, list[dict] | N
     if user_type == "boolean":
         return {"DEFAULT_VALUE": ""}, None
     if user_type == "enumeration":
-        # Generate a few default options based on label
         if "priorytet" in label.lower() or "priority" in label.lower():
             option_values = ["Niski", "Średni", "Wysoki", "Krytyczny"]
         else:
@@ -366,7 +403,9 @@ def _build_crm_fields_json(entity_type: str, entity_name: str, field_defs: list[
 
         settings, enum_items = _settings_for_type(user_type, label)
 
+        user_type_meta = _USER_TYPE_META.get(user_type, _USER_TYPE_META["string"])
         field_def: dict[str, Any] = {
+            "ID": str(sort_val),
             "ENTITY_ID": entity_type,
             "FIELD_NAME": field_name,
             "USER_TYPE_ID": user_type,
@@ -384,6 +423,8 @@ def _build_crm_fields_json(entity_type: str, entity_name: str, field_defs: list[
             "LIST_FILTER_LABEL": label,
             "ERROR_MESSAGE": "",
             "HELP_MESSAGE": "",
+            "USER_TYPE": user_type_meta,
+            "VALUE": False,
         }
         if enum_items is not None:
             field_def["ITEMS"] = enum_items
@@ -479,6 +520,22 @@ def generate_config_zip(interview: dict, company: dict) -> bytes:
 
         def _add(path: str, obj: Any) -> None:
             zf.writestr(path, json.dumps(obj, ensure_ascii=False, indent=2))
+
+        # manifest.json — required by Bitrix24 import wizard to validate the archive
+        _add("manifest.json", {
+            "CODE": "ad_selfintegrator",
+            "VERSION": 1,
+            "ACTIVE": "Y",
+            "PLACEMENT": ["crm", "crm_lead", "crm_deal", "crm_contact", "crm_company", "crm_settings"],
+            "USES": ["app", "crm", "bizproc_crm"],
+            "TITLE": "Konfiguracja CRM — Alpha Digital",
+            "DESCRIPTION": "Indywidualna konfiguracja CRM przygotowana przez Alpha Digital na podstawie wywiadu z klientem.",
+            "COLOR": "#C2FF85",
+            "METADATA": {"crm": {"enableRole": False}},
+        })
+
+        # CRM_SETTING
+        _add("CRM_SETTING/LEAD_MODE.json", {"TYPE": "LEAD_MODE", "ENABLED": "N"})
 
         # CRM_STATUS
         _add("CRM_STATUS/DEAL_STAGE.json", _build_deal_stage_json(stages, category_id=0))
