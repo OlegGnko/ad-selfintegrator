@@ -670,26 +670,18 @@ async def regenerate_mvp(session_id: str):
     from services.bitrix24 import _ensure_mvp_fields, _bx
     import base64 as _b64
 
-    # ── Diagnostic: show what crm.userfield.list actually returns ──────────────
-    raw_uf = await _bx("crm.userfield.list", {
-        "order": {"SORT": "ASC"},
-        "filter": {"ENTITY_ID": "CRM_DEAL"},
-    })
-    results["userfield_list_total"] = len(raw_uf.get("result", []))
-    results["userfield_list_error"] = raw_uf.get("error", "none")
-    # Show all UF_CRM_ field names and their labels
-    results["deal_uf_fields"] = [
-        {
-            "FIELD_NAME": f.get("FIELD_NAME"),
-            "XML_ID":     f.get("XML_ID"),
-            "TYPE":       f.get("USER_TYPE_ID"),
-            "LABEL_PL":   (f.get("EDIT_FORM_LABEL") or {}).get("pl")
-                          if isinstance(f.get("EDIT_FORM_LABEL"), dict)
-                          else f.get("EDIT_FORM_LABEL"),
-        }
-        for f in raw_uf.get("result", [])
-        if f.get("USER_TYPE_ID") == "file"   # only file-type fields
-    ]
+    # ── Diagnostic: use crm.deal.fields to find all UF_CRM_ fields ────────────
+    raw_fields = await _bx("crm.deal.fields", {})
+    all_fields: dict = raw_fields.get("result", {})
+    results["deal_fields_error"] = raw_fields.get("error", "none")
+    results["deal_uf_file_fields"] = {
+        k: v.get("type") for k, v in all_fields.items()
+        if k.startswith("UF_CRM_") and v.get("type") == "file"
+    }
+    results["deal_uf_all_custom"] = {
+        k: v.get("type") for k, v in all_fields.items()
+        if k.startswith("UF_CRM_")
+    }
     # ───────────────────────────────────────────────────────────────────────────
 
     try:
