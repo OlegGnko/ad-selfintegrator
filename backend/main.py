@@ -72,7 +72,8 @@ def recommend_license(team_size: int) -> tuple[str, str]:
 def build_proposal_scope(interview: dict) -> list[dict]:
     """
     Build scope using standard task catalogue (250 PLN/h netto).
-    Hours are mid-range of stated intervals from standard_tasks.md.
+    Hours sourced from: "Bitrix24 standard tasks - Final Standard.csv"
+    Ranges resolved to mid-point: e.g. 2-10h → 6h.
     """
     team_size = interview.get("team_size", "")
     try:
@@ -83,14 +84,16 @@ def build_proposal_scope(interview: dict) -> list[dict]:
     scope = []
 
     # ── Analytics & Setup ─────────────────────────────────────────
-    # Analiza BP: 5h; rejestracja portalu: 0.5h
+    # CSV: "Analiza procesów biznesowych firmy" = 5h
+    #      "Rejestracja portalu, konsultacje" = 0.5h
     scope.append({
         "item": "Analiza procesów biznesowych i rejestracja portalu Bitrix24",
         "hours": 5.5,
         "price": hours_to_price(5.5),
     })
 
-    # Orgstructure: 1h; karty CRM (lead/deal/contact/company): 3h
+    # CSV: "Tworzenie struktury firmy i rejestracja pracowników (do 20)" = 1h
+    #      "Dostosowanie leadów, dealów, kontaktów, kart firmowych" = 3h
     scope.append({
         "item": "Konfiguracja struktury organizacyjnej i kart CRM (lead, oferta, kontakt, firma)",
         "hours": 4,
@@ -98,7 +101,7 @@ def build_proposal_scope(interview: dict) -> list[dict]:
     })
 
     # ── Sales pipeline ─────────────────────────────────────────────
-    # Jedna lejka do 20 etapów: 4h
+    # CSV: "Konfiguracja jednego lejka sprzedaży (do 20 etapów)" = 4h
     scope.append({
         "item": "Konfiguracja lejka sprzedażowego (do 20 etapów)",
         "hours": 4,
@@ -108,7 +111,8 @@ def build_proposal_scope(interview: dict) -> list[dict]:
     # ── Automations ────────────────────────────────────────────────
     automations = interview.get("automations_needed", "")
     if automations and str(automations).strip().lower() not in ("nie", "no", "brak", ""):
-        # Automatyzacje do 5 robotów: 3h; 1 dokument auto: 3h
+        # CSV: "Konfiguracja automatyzacji z wyzwalaczami i robotami (do 5 robotów)" = 3h
+        #      "Opracowanie szablonu do automatycznego generowania dokumentów (1 dokument)" = 3h
         scope.append({
             "item": "Automatyzacje i roboty CRM (do 5 reguł) + szablon dokumentu",
             "hours": 6,
@@ -119,7 +123,7 @@ def build_proposal_scope(interview: dict) -> list[dict]:
     current_tools = interview.get("current_tools", "").lower()
     has_data = any(w in current_tools for w in ["excel", "xlsx", "csv", "crm", "baza", "system"])
     if has_data:
-        # Import z pliku XLS: 2–10h → 6h mid
+        # CSV: "Import bazy klientów z pliku xls" = 2–10h → 6h mid
         scope.append({
             "item": "Import bazy klientów z pliku (przygotowanie + import)",
             "hours": 6,
@@ -128,25 +132,26 @@ def build_proposal_scope(interview: dict) -> list[dict]:
 
     # ── Integrations ───────────────────────────────────────────────
     if interview.get("telephony_needed"):
-        # Integracja Zadarma lub inna VoIP: 3–15h → 8h mid
+        # CSV: "Integracja usługi Zadarma. Proste / robocze scenariusze" = 3–15h → 9h mid
         scope.append({
             "item": "Integracja z telefonią VoIP (Zadarma lub inna)",
-            "hours": 8,
-            "price": hours_to_price(8),
+            "hours": 9,
+            "price": hours_to_price(9),
         })
 
     integrations = interview.get("integrations", "").lower()
     if any(w in integrations for w in ["formularz", "form", "strona", "www", "website", "landing"]):
-        # CRM-forma + widget: 2–4h + 1h = 4h mid
+        # CSV: "Konfiguracja i integracja formularza CRM (z opracowaniem formularza)" = 2–4h → 3h mid
+        #      "Instalacja widżetu na stronie" = 1h
         scope.append({
-            "item": "Integracja formularza ze strony internetowej z CRM",
+            "item": "Integracja formularza ze strony internetowej z CRM + widget",
             "hours": 4,
             "price": hours_to_price(4),
         })
 
     lead_sources = interview.get("lead_sources", "").lower()
     if any(w in lead_sources for w in ["email", "e-mail", "poczta", "mail"]):
-        # Podłączenie poczty SMTP: 1h
+        # CSV: "Połączenie pocztowe (SMTP)" = 1h
         scope.append({
             "item": "Podłączenie poczty e-mail (SMTP)",
             "hours": 1,
@@ -154,7 +159,7 @@ def build_proposal_scope(interview: dict) -> list[dict]:
         })
 
     if any(w in lead_sources for w in ["messenger", "whatsapp", "facebook", "telegram", "chat"]):
-        # Otwarta linia (messenger): 1h
+        # CSV: "Podłączenie 1 kanału otwartego" = 1h
         scope.append({
             "item": "Podłączenie kanału komunikacji (messenger / chat)",
             "hours": 1,
@@ -163,20 +168,21 @@ def build_proposal_scope(interview: dict) -> list[dict]:
 
     # ── Access rights ──────────────────────────────────────────────
     if size > 3:
-        # Prawa dostępu do 20 użytkowników: 2–4h → 3h
+        # CSV: "Konfigurowanie praw dostępu dla pracowników (do 20 użytkowników)" = 2–4h → 3h mid
         scope.append({
-            "item": "Konfiguracja praw dostępu pracowników",
+            "item": "Konfiguracja praw dostępu pracowników (do 20 użytkowników)",
             "hours": 3,
             "price": hours_to_price(3),
         })
 
-    # ── Training ───────────────────────────────────────────────────
-    # Szkolenie CRM: 3–5h → 4h; wsparcie 2 tygodnie: 0h (gratis)
+    # ── Training & Support ─────────────────────────────────────────
+    # CSV: "Szkolenie w sekcji CRM" = 3–5h → 4h mid
     scope.append({
         "item": "Szkolenie zespołu z obsługi CRM (sesja online)",
         "hours": 4,
         "price": hours_to_price(4),
     })
+    # CSV: "Wsparcie po dostarczeniu projektu w ciągu 2 tygodni" = 0h (gratis)
     scope.append({
         "item": "Wsparcie powdrożeniowe przez 2 tygodnie po oddaniu",
         "hours": 0,
