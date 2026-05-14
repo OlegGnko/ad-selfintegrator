@@ -192,20 +192,44 @@ async def add_interview_comment(deal_id: str, interview: dict) -> None:
         return
 
     labels = {
-        "team_size":          "Zespol sprzedazy",
-        "lead_sources":       "Zrodla leadow",
-        "current_tools":      "Obecne narzedzia",
-        "sales_process":      "Proces sprzedazy",
-        "telephony_needed":   "Telefonia VoIP",
-        "integrations":       "Integracje",
-        "automations_needed": "Automatyzacje",
-        "budget":             "Budzet",
-        "timeline":           "Termin uruchomienia",
+        # Blok 1
+        "team_size":               "Liczba uzytkownikow Bitrix24",
+        "bitrix24_experience":     "Doswiadczenie z Bitrix24",
+        "implementation_goals":    "Cele wdrozenia",
+        "key_modules":             "Kluczowe moduly",
+        # Blok 2
+        "current_tools":           "Aktualne systemy i narzedzia",
+        "data_import":             "Import bazy klientow",
+        # Blok 3
+        "sales_team_structure":    "Struktura dzialu sprzedazy",
+        "lead_sources":            "Kanaly pozyskiwania leadow",
+        "sales_process":           "Etapy lejka sprzedazowego",
+        "crm_sections":            "Sekcje CRM",
+        "client_data_fields":      "Pola danych klienta",
+        "lead_distribution":       "Dystrybucja leadow",
+        "access_rights":           "Prawa dostepu",
+        "reports_needed":          "Raporty i analityki",
+        # Blok 4
+        "automations_needed":      "Automatyzacje i procesy",
+        "has_documented_processes":"Gotowe opisy procesow",
+        "external_users":          "Zewnetrzni uzytkownicy",
+        # Blok 5
+        "telephony_needed":        "Telefonia VoIP",
+        "telephony_details":       "Szczegoly telefonii",
+        "open_channels":           "Otwarte linie (komunikatory)",
+        "email_integration":       "Integracja poczty e-mail",
+        "website_integration":     "Integracja strony WWW",
+        "other_integrations":      "Inne integracje",
+        # Blok 6
+        "timeline":                "Termin wdrozenia",
+        "budget":                  "Budzet",
+        "portal_email":            "Email portalu Bitrix24",
+        "additional_comments":     "Dodatkowe komentarze",
     }
     lines = ["Wywiad z klientem (AD SelfIntegrator)", ""]
     for key, label in labels.items():
         val = interview.get(key)
-        if val is not None and str(val).strip():
+        if val is not None and str(val).strip() and str(val).strip().lower() not in ("false", "none"):
             lines.append(f"- {label}: {val}")
 
     await _bx("crm.timeline.comment.add", {"fields": {

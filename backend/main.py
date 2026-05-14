@@ -119,6 +119,16 @@ def build_proposal_scope(interview: dict) -> list[dict]:
         "price": hours_to_price(4),
     })
 
+    # ── Access rights ──────────────────────────────────────────────
+    access_rights = interview.get("access_rights", "")
+    if size > 3 or access_rights:
+        # CSV: "Konfigurowanie praw dostępu dla pracowników (do 20 użytkowników)" = 2–4h → 3h mid
+        scope.append({
+            "item": "Konfiguracja praw dostępu pracowników (do 20 użytkowników)",
+            "hours": 3,
+            "price": hours_to_price(3),
+        })
+
     # ── Automations ────────────────────────────────────────────────
     automations = interview.get("automations_needed", "")
     if automations and str(automations).strip().lower() not in ("nie", "no", "brak", ""):
@@ -131,8 +141,12 @@ def build_proposal_scope(interview: dict) -> list[dict]:
         })
 
     # ── Data import ────────────────────────────────────────────────
+    data_import = interview.get("data_import", "")
     current_tools = interview.get("current_tools", "").lower()
-    has_data = any(w in current_tools for w in ["excel", "xlsx", "csv", "crm", "baza", "system"])
+    has_data = (
+        (data_import and str(data_import).strip().lower() not in ("nie", "no", "brak", "false", ""))
+        or any(w in current_tools for w in ["excel", "xlsx", "csv", "crm", "baza", "system"])
+    )
     if has_data:
         # CSV: "Import bazy klientów z pliku xls" = 2–10h → 6h mid
         scope.append({
@@ -141,7 +155,20 @@ def build_proposal_scope(interview: dict) -> list[dict]:
             "price": hours_to_price(6),
         })
 
-    # ── Integrations ───────────────────────────────────────────────
+    # ── Open channels / messengers ────────────────────────────────
+    open_channels = interview.get("open_channels", "").lower()
+    channel_count = sum(1 for w in ["whatsapp", "telegram", "viber", "facebook", "instagram", "chat", "online"]
+                        if w in open_channels)
+    if channel_count > 0:
+        # CSV: "Podłączenie 1 kanału otwartego" = 1h; each additional ~0.5h
+        channel_hours = 1 + max(0, channel_count - 1) * 0.5
+        scope.append({
+            "item": f"Podłączenie otwartych linii / komunikatorów ({channel_count} {'kanał' if channel_count == 1 else 'kanały' if channel_count < 5 else 'kanałów'})",
+            "hours": channel_hours,
+            "price": hours_to_price(channel_hours),
+        })
+
+    # ── Telephony ─────────────────────────────────────────────────
     if interview.get("telephony_needed"):
         # CSV: "Integracja usługi Zadarma. Proste / robocze scenariusze" = 3–15h → 9h mid
         scope.append({
@@ -150,40 +177,53 @@ def build_proposal_scope(interview: dict) -> list[dict]:
             "price": hours_to_price(9),
         })
 
-    integrations = interview.get("integrations", "").lower()
-    if any(w in integrations for w in ["formularz", "form", "strona", "www", "website", "landing"]):
-        # CSV: "Konfiguracja i integracja formularza CRM (z opracowaniem formularza)" = 2–4h → 3h mid
+    # ── Website / CRM forms ───────────────────────────────────────
+    website_integration = interview.get("website_integration", "").lower()
+    if website_integration and str(website_integration).strip().lower() not in ("nie", "no", "brak", "false", ""):
+        # CSV: "Konfiguracja i integracja formularza CRM" = 2–4h → 3h mid
         #      "Instalacja widżetu na stronie" = 1h
         scope.append({
-            "item": "Integracja formularza ze strony internetowej z CRM + widget",
+            "item": "Integracja formularzy CRM i widżetu ze stroną internetową",
             "hours": 4,
             "price": hours_to_price(4),
         })
 
-    lead_sources = interview.get("lead_sources", "").lower()
-    if any(w in lead_sources for w in ["email", "e-mail", "poczta", "mail"]):
+    # ── Email integration ─────────────────────────────────────────
+    if interview.get("email_integration"):
         # CSV: "Połączenie pocztowe (SMTP)" = 1h
         scope.append({
-            "item": "Podłączenie poczty e-mail (SMTP)",
+            "item": "Podłączenie firmowej poczty e-mail (SMTP/IMAP)",
             "hours": 1,
             "price": hours_to_price(1),
         })
+    else:
+        # Check lead sources for email mentions (backward compat)
+        lead_sources = interview.get("lead_sources", "").lower()
+        if any(w in lead_sources for w in ["email", "e-mail", "poczta", "mail"]):
+            scope.append({
+                "item": "Podłączenie poczty e-mail (SMTP)",
+                "hours": 1,
+                "price": hours_to_price(1),
+            })
 
-    if any(w in lead_sources for w in ["messenger", "whatsapp", "facebook", "telegram", "chat"]):
-        # CSV: "Podłączenie 1 kanału otwartego" = 1h
+    # ── Other integrations ────────────────────────────────────────
+    other_integrations = interview.get("other_integrations", "").lower()
+    if other_integrations and str(other_integrations).strip().lower() not in ("nie", "no", "brak", "false", ""):
+        # CSV: "Integracja z systemem zewnętrznym przez API" = 4–20h → 12h mid
         scope.append({
-            "item": "Podłączenie kanału komunikacji (messenger / chat)",
-            "hours": 1,
-            "price": hours_to_price(1),
+            "item": "Integracja z systemami zewnętrznymi (API / webhook)",
+            "hours": 12,
+            "price": hours_to_price(12),
         })
 
-    # ── Access rights ──────────────────────────────────────────────
-    if size > 3:
-        # CSV: "Konfigurowanie praw dostępu dla pracowników (do 20 użytkowników)" = 2–4h → 3h mid
+    # ── External users ────────────────────────────────────────────
+    external_users = interview.get("external_users", "")
+    if external_users and str(external_users).strip().lower() not in ("nie", "no", "brak", "false", ""):
+        # CSV: "Konfiguracja dostępu zewnętrznych użytkowników" = 2h
         scope.append({
-            "item": "Konfiguracja praw dostępu pracowników (do 20 użytkowników)",
-            "hours": 3,
-            "price": hours_to_price(3),
+            "item": "Konfiguracja dostępu dla zewnętrznych użytkowników (partnerzy/agenci)",
+            "hours": 2,
+            "price": hours_to_price(2),
         })
 
     # ── Training & Support ─────────────────────────────────────────
@@ -401,6 +441,11 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             "your_company": YOUR_COMPANY,
             "license_plan": license_plan,
             "license_reason": license_reason,
+            # Extra context for templates
+            "portal_email":          inp.get("portal_email", ""),
+            "implementation_goals":  inp.get("implementation_goals", ""),
+            "key_modules":           inp.get("key_modules", ""),
+            "open_channels":         inp.get("open_channels", ""),
         }
 
         # Enrich Bitrix24 deal: Q&A comment + proposal PDF attachment
