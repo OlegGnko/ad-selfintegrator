@@ -23,7 +23,9 @@ from services.bitrix24 import (
     add_proposal_comment,
     add_contract_comment,
     add_mvp_documents,
+    notify_responsible_user,
 )
+from services.translations import T
 from services.bx24_config_generator import (
     generate_config_zip,
     generate_tz_html,
@@ -283,6 +285,7 @@ async def start_session():
     session = {
         "session_id": session_id,
         "state": "collect_user_info",
+        "language": "",  # empty = not chosen yet
         "messages": [],
         "user_info": {},
         "company": {},
@@ -291,24 +294,15 @@ async def start_session():
     }
 
     greeting = (
-        "Cześć! Jestem asystentem AI firmy Alpha Digital — pomagam w przygotowaniu "
-        "indywidualnej oferty handlowej na integrację systemu Bitrix24.\n\n"
-        "Nasza rozmowa będzie przebiegać następująco:\n\n"
-        "* najpierw poproszę Cię o podanie **numeru NIP** Twojej firmy, aby znaleźć o niej "
-        "informacje w internecie — pomoże mi to przygotować bardziej spersonalizowaną ofertę, "
-        "a dane firmy przydadzą się później do sporządzenia umowy;\n"
-        "* następnie poproszę Cię o **przedstawienie się**, abym wiedział, z kim rozmawiam;\n"
-        "* będę kolejno zadawać pytania o Twoje zadania, wyzwania i potrzeby — możesz "
-        "odpowiadać tekstem lub nagrywać **wiadomości głosowe**, jak wygodniej. Na tę część "
-        "warto zarezerwować około **30 minut**. Możesz przerwać w dowolnym momencie i wrócić "
-        "później, korzystając z linku widocznego powyżej — wszystkie odpowiedzi zostaną "
-        "zapisane i wrócimy do miejsca, w którym skończyliśmy;\n"
-        "* po udzieleniu odpowiedzi na wszystkie pytania przygotuję **ofertę handlową** na "
-        "integrację systemu, w której znajdą się terminy, koszty, proces pracy itd. Będziesz "
-        "mógł/mogła ją sprawdzić, coś dodać lub zadać dodatkowe pytania — wprowadzę wszelkie poprawki;\n"
-        "* gdy zatwierdzisz ofertę, przygotuję dla Ciebie **umowę** oraz **proformę** do "
-        "płatności na rozpoczęcie pracy.\n\n"
-        "Zacznijmy! Podaj proszę **numer NIP** swojej firmy."
+        "**🇵🇱 PL** — Dzień dobry! Jestem asystentem AI firmy **Alpha Digital**. "
+        "Pomogę Ci przygotować spersonalizowaną ofertę wdrożenia Bitrix24.\n\n"
+        "**🇬🇧 EN** — Hello! I'm the AI assistant of **Alpha Digital**. "
+        "I'll help you get a personalised Bitrix24 implementation proposal.\n\n"
+        "**🇷🇺 RU** — Добрый день! Я ИИ-ассистент компании **Alpha Digital**. "
+        "Помогу вам подготовить персонализированное коммерческое предложение по внедрению Bitrix24.\n\n"
+        "---\n"
+        "W jakim języku chcemy rozmawiać? / What language shall we use? / На каком языке будем общаться?\n\n"
+        "**1.** 🇵🇱 Polski &nbsp;&nbsp; **2.** 🇬🇧 English &nbsp;&nbsp; **3.** 🇷🇺 Русский"
     )
 
     session["messages"].append({"role": "assistant", "content": greeting})
@@ -322,9 +316,10 @@ async def get_session_info(session_id: str):
     """Return session state so the frontend can resume a saved session."""
     session = await get_session(session_id)
     return {
-        "session_id": session_id,
-        "state": session["state"],
-        "messages": session["messages"],
+        "session_id":       session_id,
+        "state":            session["state"],
+        "language":         session.get("language", "pl"),
+        "messages":         session["messages"],
         "proposal_approved": session.get("proposal_approved", False),
     }
 
@@ -347,6 +342,7 @@ async def send_message(session_id: str, body: MessageRequest):
 
     state_snapshot = {
         "state": session["state"],
+        "language": session.get("language", ""),
         "user_info": session["user_info"],
         "company": session["company"],
         "interview": session["interview"],
@@ -372,6 +368,7 @@ async def send_message(session_id: str, body: MessageRequest):
         "message": reply,
         "actions": actions,
         "state": session["state"],
+        "language": session.get("language", "pl"),
     }
 
 
@@ -381,7 +378,15 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
 
     session_id = session["session_id"]
 
-    if name == "submit_user_info":
+    if name == "set_language":
+        lang = inp.get("language", "pl")
+        if lang not in ("pl", "en", "ru"):
+            lang = "pl"
+        session["language"] = lang
+        logger.info("Language set to '%s' for session %s", lang, session_id)
+        return {"type": "language_set", "language": lang}
+
+    elif name == "submit_user_info":
         nip = inp.get("nip", "").replace("-", "").replace(" ", "")
 
         if not validate_nip(nip):
@@ -420,9 +425,11 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
                 session["bitrix24_deal_id"] = deal_id
                 logger.info("Bitrix24 deal created: %s", deal_id)
 
-        if company:
-            return {"type": "company_found", "company": company}
-        return {"type": "company_not_found"}
+        response: dict = {"type": "company_found", "company": company} if company else {"type": "company_not_found"}
+        # Signal frontend to show "Call Manager" button once deal is created
+        if inp.get("first_name") and session.get("bitrix24_deal_id"):
+            response["deal_created"] = True
+        return response
 
     elif name == "submit_interview_data":
         session["interview"] = inp
@@ -464,6 +471,7 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
                 "company":    session["company"],
                 "interview":  inp,
                 "session_id": session_id,
+                "language":   session.get("language", "pl"),
             }
             proposal_pdf = generate_proposal_pdf_file(doc_data)
             await add_proposal_comment(
@@ -518,7 +526,7 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             session["proposal_approved"] = True
             session["state"] = "contract_ready"
 
-            # Generate contract PDF and attach to Bitrix24
+            # Generate contract PDF and attach to Bitrix24 (contract is always in Polish)
             deal_id = session.get("bitrix24_deal_id")
             if deal_id:
                 doc_data = {
@@ -527,6 +535,7 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
                     "company":    session["company"],
                     "interview":  session["interview"],
                     "session_id": session_id,
+                    # Contract is always in Polish — do not pass language
                 }
                 contract_pdf = generate_contract_pdf_file(doc_data)
                 await add_contract_comment(deal_id, session_id, pdf_bytes=contract_pdf)
@@ -544,10 +553,11 @@ async def download_proposal(session_id: str):
 
     data = {
         **session.get("proposal_data", {}),
-        "user_info": session["user_info"],
-        "company": session["company"],
-        "interview": session["interview"],
+        "user_info":  session["user_info"],
+        "company":    session["company"],
+        "interview":  session["interview"],
         "session_id": session_id,
+        "language":   session.get("language", "pl"),
     }
     html_bytes = generate_proposal_pdf(data)
     return Response(content=html_bytes, media_type="text/html; charset=utf-8")
@@ -557,17 +567,42 @@ async def download_proposal(session_id: str):
 async def download_contract(session_id: str):
     session = await get_session(session_id)
     if not session.get("proposal_approved"):
-        raise HTTPException(status_code=400, detail="Oferta nie została jeszcze zatwierdzona")
+        raise HTTPException(status_code=400, detail="Oferta nie zostala jeszcze zatwierdzona")
 
     data = {
         **session.get("proposal_data", {}),
-        "user_info": session["user_info"],
-        "company": session["company"],
-        "interview": session["interview"],
+        "user_info":  session["user_info"],
+        "company":    session["company"],
+        "interview":  session["interview"],
         "session_id": session_id,
+        # Contract is always in Polish — no language key
     }
     html_bytes = generate_contract_pdf(data)
     return Response(content=html_bytes, media_type="text/html; charset=utf-8")
+
+
+@app.post("/api/session/{session_id}/request-manager")
+async def request_manager(session_id: str):
+    """Send an internal Bitrix24 notification to the deal's responsible manager."""
+    session = await get_session(session_id)
+    deal_id = session.get("bitrix24_deal_id")
+    language = session.get("language", "pl")
+    t = T.get(language, T["pl"])
+
+    if not deal_id:
+        return {"success": False, "message": t.get("call_manager_error", "Error")}
+
+    # Notification message is always in Polish (internal Bitrix24)
+    msg = "Czesc! Klient prosi o pilny kontakt z nim!"
+    success = await notify_responsible_user(deal_id, msg)
+
+    return {
+        "success": success,
+        "message": t.get(
+            "call_manager_sent" if success else "call_manager_error",
+            "OK" if success else "Error",
+        ),
+    }
 
 
 @app.get("/")

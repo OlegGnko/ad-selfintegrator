@@ -4,6 +4,8 @@ from datetime import date
 import io
 import logging
 
+from services.translations import T, scope_item as _scope_item
+
 logger = logging.getLogger(__name__)
 
 TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
@@ -70,21 +72,49 @@ def _html_to_pdf(html: str) -> bytes:
     return b""
 
 
+def _proposal_render_ctx(session_data: dict) -> dict:
+    """
+    Build Jinja2 render context for the proposal template:
+    - adds ``t`` (translation dict for the chosen language)
+    - translates scope item names if language != "pl"
+    """
+    language = session_data.get("language") or "pl"
+    if language not in T:
+        language = "pl"
+    t = T[language]
+
+    # Translate scope item names when not in Polish
+    scope = session_data.get("scope", [])
+    if language != "pl" and scope:
+        scope = [
+            {**item, "item": _scope_item(item.get("item", ""), language)}
+            for item in scope
+        ]
+
+    ctx = {**session_data, "t": t, "language": language}
+    if scope:
+        ctx["scope"] = scope
+    return ctx
+
+
 def generate_proposal_pdf(session_data: dict) -> bytes:
+    """Return wrapped HTML (for browser display with print button)."""
     template = env.get_template("proposal.html")
+    ctx = _proposal_render_ctx(session_data)
     html = template.render(
-        **session_data,
+        **ctx,
         today=date.today().strftime("%d.%m.%Y"),
         proposal_number=f"OF/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
     )
     wrapped = PRINT_WRAPPER.format(
-        doctype="Oferta handlowa",
+        doctype=ctx["t"].get("doc_title", "Oferta handlowa"),
         content=_extract_styles(html) + _extract_body(html),
     )
     return wrapped.encode("utf-8")
 
 
 def generate_contract_pdf(session_data: dict) -> bytes:
+    """Return wrapped HTML for contract (always Polish)."""
     template = env.get_template("contract.html")
     html = template.render(
         **session_data,
@@ -92,7 +122,7 @@ def generate_contract_pdf(session_data: dict) -> bytes:
         contract_number=f"UMW/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
     )
     wrapped = PRINT_WRAPPER.format(
-        doctype="Umowa o świadczenie usług",
+        doctype="Umowa o swiadczenie uslug",
         content=_extract_styles(html) + _extract_body(html),
     )
     return wrapped.encode("utf-8")
@@ -103,8 +133,9 @@ def generate_contract_pdf(session_data: dict) -> bytes:
 def generate_proposal_pdf_file(session_data: dict) -> bytes:
     """Return true PDF bytes (for attaching to Bitrix24 deal)."""
     template = env.get_template("proposal.html")
+    ctx = _proposal_render_ctx(session_data)
     html = template.render(
-        **session_data,
+        **ctx,
         today=date.today().strftime("%d.%m.%Y"),
         proposal_number=f"OF/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
     )
@@ -112,7 +143,7 @@ def generate_proposal_pdf_file(session_data: dict) -> bytes:
 
 
 def generate_contract_pdf_file(session_data: dict) -> bytes:
-    """Return true PDF bytes (for attaching to Bitrix24 deal)."""
+    """Return true PDF bytes for contract (always Polish)."""
     template = env.get_template("contract.html")
     html = template.render(
         **session_data,

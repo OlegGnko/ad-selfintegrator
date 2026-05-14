@@ -312,32 +312,32 @@
   <div class="header">
     <div>
       <div class="logo-name">Alpha<span> Digital</span></div>
-      <div class="logo-tag">Wdrożenia Bitrix24 · CRM · Automatyzacja</div>
+      <div class="logo-tag">{{ t.tag }}</div>
     </div>
     <div class="doc-meta">
-      <div class="doc-title">Oferta handlowa</div>
+      <div class="doc-title">{{ t.doc_title }}</div>
       <div class="doc-number">Nr {{ proposal_number }}</div>
-      <div class="doc-number">Data: {{ today }}</div>
+      <div class="doc-number">{{ today }}</div>
     </div>
   </div>
 
   <!-- Lime bar -->
   <div class="lime-bar">
-    <span>Wdrożenie CRM Bitrix24</span>
-    <span>Ważność oferty: {{ validity_days }} dni</span>
+    <span>{{ t.lime_bar_label }}</span>
+    <span>{{ t.lime_bar_validity }}: {{ validity_days }} {{ t.days }}</span>
   </div>
 
   <!-- Parties -->
   <div class="parties">
     <div class="party">
-      <div class="party-label">Wykonawca</div>
+      <div class="party-label">{{ t.executor }}</div>
       <div class="party-name">{{ your_company.name }}</div>
       <div class="party-detail">NIP: {{ your_company.nip }} · KRS: {{ your_company.krs }}</div>
       <div class="party-detail">{{ your_company.address }}</div>
       <div class="party-detail">{{ your_company.email }}</div>
     </div>
     <div class="party client">
-      <div class="party-label">Zamawiający</div>
+      <div class="party-label">{{ t.client }}</div>
       <div class="party-name">{{ company.name }}</div>
       <div class="party-detail">NIP: {{ company.nip }}</div>
       {% if company.address %}<div class="party-detail">{{ company.address }}</div>{% endif %}
@@ -351,31 +351,31 @@
   <div class="summary-row">
     <div class="s-box">
       <div class="val">{{ total_net | int }} PLN</div>
-      <div class="lbl">Wartość netto</div>
+      <div class="lbl">{{ t.value_net }}</div>
     </div>
     <div class="s-box lime">
       <div class="val">{{ total_gross | int }} PLN</div>
-      <div class="lbl">Wartość brutto</div>
+      <div class="lbl">{{ t.value_gross }}</div>
     </div>
     <div class="s-box dark">
       <div class="val">{{ scope | sum(attribute='hours') | round(1) | string | replace('.0','') }}h</div>
-      <div class="lbl">Łączne godziny</div>
+      <div class="lbl">{{ t.hours_total }}</div>
     </div>
     <div class="s-box">
-      <div class="val">6 tyg.</div>
-      <div class="lbl">Czas realizacji</div>
+      <div class="val">{{ t.weeks_6 }}</div>
+      <div class="lbl">{{ t.delivery_time }}</div>
     </div>
   </div>
 
   <!-- Scope -->
-  <h2>1. Zakres prac</h2>
+  <h2>{{ t.h1_scope }}</h2>
   <table>
     <thead>
       <tr>
-        <th style="width:4%">Lp.</th>
-        <th>Pozycja</th>
-        <th class="center" style="width:11%">Godz.</th>
-        <th style="width:17%; text-align:right;">Cena netto</th>
+        <th style="width:4%">{{ t.col_no }}</th>
+        <th>{{ t.col_item }}</th>
+        <th class="center" style="width:11%">{{ t.col_hours }}</th>
+        <th style="width:17%; text-align:right;">{{ t.col_price }}</th>
       </tr>
     </thead>
     <tbody>
@@ -383,147 +383,145 @@
       <tr>
         <td>{{ loop.index }}</td>
         <td>{{ item.item }}</td>
-        <td class="center">{% if item.hours > 0 %}{{ item.hours | round(1) | string | replace('.0','') }}h{% else %}gratis{% endif %}</td>
+        <td class="center">{% if item.hours > 0 %}{{ item.hours | round(1) | string | replace('.0','') }}h{% else %}{{ t.free_label }}{% endif %}</td>
         <td class="right">{% if item.price > 0 %}{{ item.price | int }} PLN{% else %}—{% endif %}</td>
       </tr>
       {% endfor %}
       <tr class="subtotal-row">
-        <td colspan="2"><strong>RAZEM NETTO</strong></td>
+        <td colspan="2"><strong>{{ t.total_net }}</strong></td>
         <td class="center"><strong>{{ scope | sum(attribute='hours') | round(1) | string | replace('.0','') }}h</strong></td>
         <td class="right">{{ total_net | int }} PLN</td>
       </tr>
       <tr class="total-row">
-        <td colspan="3"><strong>RAZEM BRUTTO (VAT 23%)</strong></td>
+        <td colspan="3"><strong>{{ t.total_gross }}</strong></td>
         <td class="right">{{ total_gross | int }} PLN</td>
       </tr>
     </tbody>
   </table>
-  <p class="rate-note">Stawka: 250 PLN netto/godz. · Wszystkie ceny netto, VAT 23%.</p>
+  <p class="rate-note">{{ t.rate_note }}</p>
 
   <!-- Licencja Bitrix24 -->
-  <h2>2. Licencja Bitrix24</h2>
-  <p>Koszt licencji Bitrix24 <strong>nie jest wliczony</strong> w cenę wdrożenia — Zamawiający nabywa ją bezpośrednio od Bitrix24.
-  Poniżej przedstawiamy dostępne plany i rekomendację dla Państwa firmy.</p>
+  <h2>{{ t.h2_license }}</h2>
+  <p>{{ t.license_desc | safe }}</p>
 
   <table style="margin: 8px 0 6px; font-size: 8pt;">
     <thead>
       <tr>
-        <th>Plan</th>
-        <th class="center">Użytkownicy</th>
-        <th class="center">Cena/mies.</th>
-        <th>Kluczowe funkcje</th>
+        <th>{{ t.col_plan }}</th>
+        <th class="center">{{ t.col_users }}</th>
+        <th class="center">{{ t.col_price_mo }}</th>
+        <th>{{ t.col_features }}</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><strong>Free</strong></td>
-        <td class="center">Bez limitu</td>
+        <td class="center">∞</td>
         <td class="center">0 PLN</td>
-        <td>Podstawowy CRM, zadania, czat — bez automatyzacji i zaawansowanych raportów</td>
+        <td>{{ t.plan_free_feat }}</td>
       </tr>
       <tr style="background:#f9f9f9;">
         <td><strong>Basic</strong></td>
         <td class="center">5</td>
         <td class="center">~229 PLN</td>
-        <td>CRM, maile, 24 GB dysk, podstawowe automatyzacje</td>
+        <td>{{ t.plan_basic_feat }}</td>
       </tr>
       <tr>
         <td><strong>Standard</strong></td>
         <td class="center">50</td>
         <td class="center">~459 PLN</td>
-        <td>Pełny CRM, automatyzacje, marketing, 100 GB dysk</td>
+        <td>{{ t.plan_std_feat }}</td>
       </tr>
       <tr style="background:#f9f9f9;">
         <td><strong>Professional</strong></td>
         <td class="center">100</td>
         <td class="center">~919 PLN</td>
-        <td>Wszystko z Standard + HR, serwis, zaawansowana analityka, 1024 GB</td>
+        <td>{{ t.plan_pro_feat }}</td>
       </tr>
       <tr>
         <td><strong>Enterprise</strong></td>
         <td class="center">250+</td>
-        <td class="center">od ~2 299 PLN</td>
-        <td>Pełna platforma, wiele oddziałów, dedykowany serwer, SLA</td>
+        <td class="center">~2 299 PLN</td>
+        <td>{{ t.plan_ent_feat }}</td>
       </tr>
     </tbody>
   </table>
 
   <div style="background:#C2FF85; border-radius:6px; padding:9px 14px; margin:8px 0 14px; font-size:8.5pt;">
-    <strong>Rekomendacja dla {{ company.name }}:</strong>
+    <strong>{{ t.rec_prefix }} {{ company.name }}:</strong>
     {% if license_plan %}
-      plan <strong>{{ license_plan }}</strong> — {{ license_reason }}
+      {{ t.rec_plan }} <strong>{{ license_plan }}</strong> — {{ license_reason }}
     {% else %}
-      plan <strong>Standard</strong> — optymalny dla większości firm z zespołem sprzedażowym, zapewnia pełny CRM i automatyzacje.
-    {% endif %}
-    Ceny mogą ulec zmianie — aktualne stawki na <strong>bitrix24.pl</strong>.
+      {{ t.rec_plan }} <strong>Standard</strong>
+    {% endif %}.
+    {{ t.prices_note | safe }}
   </div>
 
   <!-- Timeline -->
-  <h2>3. Harmonogram realizacji</h2>
-
+  <h2>{{ t.h3_timeline }}</h2>
   <div class="tl-wrap">
     {% for phase in timeline %}
     <div class="tl-row">
       <div class="tl-dot">{{ loop.index }}</div>
-      <div class="tl-week">Tydzień {{ phase.week }}</div>
+      <div class="tl-week">{{ t.week_label }} {{ phase.week }}</div>
       <div class="tl-phase">{{ phase.phase }}</div>
     </div>
     {% endfor %}
   </div>
 
   <!-- How it works -->
-  <h2>4. Jak przebiega wdrożenie?</h2>
-  <p><strong>Analiza</strong> — mapujemy procesy biznesowe i ustalamy konfigurację podczas spotkania online.</p>
-  <p><strong>Konfiguracja</strong> — ustawiamy lejki, automatyzacje, pola i uprawnienia w Bitrix24.</p>
-  <p><strong>Integracje</strong> — podłączamy telefonie, formularze i inne systemy.</p>
-  <p><strong>Import danych</strong> — przenosimy kontakty, firmy i historię z obecnych narzędzi.</p>
-  <p><strong>Szkolenia i odbiór</strong> — szkolenie online dla zespołu + nadzór przez pierwsze 2 tygodnie.</p>
+  <h2>{{ t.h4_how }}</h2>
+  <p>{{ t.phase_analysis | safe }}</p>
+  <p>{{ t.phase_config | safe }}</p>
+  <p>{{ t.phase_integrations | safe }}</p>
+  <p>{{ t.phase_import | safe }}</p>
+  <p>{{ t.phase_training | safe }}</p>
 
   <!-- Conditions -->
-  <h2>5. Warunki handlowe</h2>
+  <h2>{{ t.h5_terms }}</h2>
   <div class="conditions">
     <div class="cond-item">
-      <div class="cond-key">Płatność</div>
-      <div class="cond-val">50% + 50%</div>
+      <div class="cond-key">{{ t.payment }}</div>
+      <div class="cond-val">{{ t.payment_val }}</div>
     </div>
     <div class="cond-item">
-      <div class="cond-key">Zaliczka</div>
+      <div class="cond-key">{{ t.advance }}</div>
       <div class="cond-val">{{ (total_net * 0.5) | int }} PLN</div>
     </div>
     <div class="cond-item">
-      <div class="cond-key">Termin realizacji</div>
-      <div class="cond-val">do 6 tygodni</div>
+      <div class="cond-key">{{ t.delivery }}</div>
+      <div class="cond-val">{{ t.delivery_val }}</div>
     </div>
     <div class="cond-item">
-      <div class="cond-key">Gwarancja</div>
-      <div class="cond-val">12 miesięcy</div>
+      <div class="cond-key">{{ t.guarantee }}</div>
+      <div class="cond-val">{{ t.guarantee_val }}</div>
     </div>
     <div class="cond-item">
-      <div class="cond-key">Wsparcie startowe</div>
-      <div class="cond-val">2 tygodnie gratis</div>
+      <div class="cond-key">{{ t.support }}</div>
+      <div class="cond-val">{{ t.support_val }}</div>
     </div>
   </div>
 
   <!-- Guarantees -->
-  <h2>6. Nasze gwarancje</h2>
+  <h2>{{ t.h6_guarantees }}</h2>
   <div class="guarantees">
     <div class="g-item">
-      <strong>Stały opiekun projektu</strong>
-      Jeden PM odpowiada za cały projekt — pełna odpowiedzialność i komunikacja.
+      <strong>{{ t.g1_title }}</strong>
+      {{ t.g1_text }}
     </div>
     <div class="g-item">
-      <strong>Certyfikowani specjaliści</strong>
-      Zespół z certyfikatami Bitrix24 i kilkuletnim doświadczeniem wdrożeniowym.
+      <strong>{{ t.g2_title }}</strong>
+      {{ t.g2_text }}
     </div>
     <div class="g-item">
-      <strong>Cena stała w umowie</strong>
-      Żadnych ukrytych kosztów. Zmiany zakresu — tylko za osobnym aneksem.
+      <strong>{{ t.g3_title }}</strong>
+      {{ t.g3_text }}
     </div>
   </div>
 
   <!-- Acceptance -->
-  <h2>7. Akceptacja oferty</h2>
-  <p>W celu akceptacji prosimy o podpisanie umowy i wpłatę zaliczki na rachunek bankowy:</p>
+  <h2>{{ t.h7_accept }}</h2>
+  <p>{{ t.accept_text }}</p>
   <table class="bank-table">
     <tr>
       <td class="bank-key">PLN</td>
@@ -542,7 +540,7 @@
       <td>{{ your_company.bank_name }} · SWIFT: {{ your_company.bic_swift }}</td>
     </tr>
   </table>
-  <p>Kontakt: <strong>{{ your_company.email }}</strong> · <strong>{{ your_company.phone }}</strong></p>
+  <p>{{ t.contact_label }} <strong>{{ your_company.email }}</strong> · <strong>{{ your_company.phone }}</strong></p>
 
   <!-- Signatures -->
   <div class="signatures">
@@ -551,7 +549,7 @@
         <strong>{{ your_company.name }}</strong><br>
         {{ your_company.ceo }}<br>
         {{ your_company.ceo_title }}<br>
-        Wykonawca
+        {{ t.sig_executor }}
       </div>
     </div>
     <div class="sig-block">
@@ -559,7 +557,7 @@
         <strong>{{ company.name }}</strong><br>
         {{ user_info.first_name }} {{ user_info.last_name }}<br>
         {{ user_info.position }}<br>
-        Zamawiający
+        {{ t.sig_client }}
       </div>
     </div>
   </div>

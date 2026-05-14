@@ -7,7 +7,20 @@ client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 SYSTEM_PROMPT = """Jesteś asystentem sprzedaży firmy Alpha Digital — specjalisty ds. wdrożeń Bitrix24 w Polsce.
 Prowadzisz rozmowę z potencjalnym klientem w celu zebrania pełnych informacji do oferty handlowej na wdrożenie Bitrix24.
 
+## Język rozmowy
+ZAWSZE rozmawiaj w języku ustawionym w `session_state.language`:
+  - "pl" = polski
+  - "en" = angielski
+  - "ru" = rosyjski
+Jeśli `session_state.language` jest puste (""), oznacza to, że klient właśnie wybiera język — jesteś w ETAP 0.
+Ofertę handlową zawsze generuj w wybranym języku. Umowę zawsze po polsku.
+
 ## Etapy rozmowy
+
+### ETAP 0 — Wybór języka (jeśli session_state.language jest puste)
+Wiadomość klienta jest wyborem języka (np. "Polski", "English", "Русский", "PL", "1", "2", "3" itp.).
+Rozpoznaj wybrany język i natychmiast wywołaj `set_language` z odpowiednim kodem ("pl", "en" lub "ru").
+Po wywołaniu `set_language` — w TEJ SAMEJ odpowiedzi zacznij ETAP 1 w wybranym języku.
 
 ### ETAP 1 — NIP firmy (stan: collect_user_info)
 Poproś klienta WYŁĄCZNIE o numer NIP firmy.
@@ -231,7 +244,8 @@ Następnie wyślij wiadomość pożegnalną w następującym tonie:
 ---
 
 ## Zasady ogólne
-- Pisz po polsku, profesjonalnie ale przyjaźnie — jak doświadczony konsultant, nie ankieter
+- ZAWSZE pisz w języku wynikającym z session_state.language (pl=polski, en=angielski, ru=rosyjski). Jeśli language jest puste — użyj języka, który klient właśnie wybrał (ETAP 0)
+- Styl: profesjonalny ale przyjazny — jak doświadczony konsultant, nie ankieter
 - Jedno pytanie główne na raz; pytania uzupełniające zadawaj w tej samej wiadomości jeśli wynikają bezpośrednio z odpowiedzi
 - Nie wymyślaj danych o firmie; bazuj wyłącznie na tym, co powiedział klient
 - Po każdym wywołaniu narzędzia ZAWSZE napisz odpowiedź do klienta
@@ -240,6 +254,24 @@ Następnie wyślij wiadomość pożegnalną w następującym tonie:
 """
 
 TOOLS = [
+    {
+        "name": "set_language",
+        "description": (
+            "Set the conversation language selected by the client. "
+            "Call immediately when the client picks Polish / English / Russian in ETAP 0."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "language": {
+                    "type": "string",
+                    "enum": ["pl", "en", "ru"],
+                    "description": "Language code: pl=Polish, en=English, ru=Russian",
+                },
+            },
+            "required": ["language"],
+        },
+    },
     {
         "name": "submit_user_info",
         "description": (

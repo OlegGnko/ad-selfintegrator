@@ -400,6 +400,40 @@ async def add_mvp_documents(
         logger.info("Attached MVP documents to deal %s (ok=%s)", deal_id, result.get("result"))
 
 
+async def notify_responsible_user(deal_id: str, message: str) -> bool:
+    """
+    Send a Bitrix24 internal system notification to the deal's responsible user.
+    Used for the "Call Manager" feature.
+    """
+    if not BITRIX24_WEBHOOK_URL or not deal_id:
+        return False
+
+    # Get deal to find the responsible user
+    deal_res = await _bx("crm.deal.get", {"ID": int(deal_id)})
+    deal = deal_res.get("result", {})
+    user_id = deal.get("ASSIGNED_BY_ID")
+    if not user_id:
+        logger.warning("notify_responsible_user: no ASSIGNED_BY_ID for deal %s", deal_id)
+        return False
+
+    # Build deal link from the webhook URL base
+    from urllib.parse import urlparse
+    parsed = urlparse(BITRIX24_WEBHOOK_URL)
+    portal_base = f"{parsed.scheme}://{parsed.netloc}"
+    deal_link = f"{portal_base}/crm/deal/details/{deal_id}/"
+
+    full_message = f"{message}\n{deal_link}"
+
+    notif_res = await _bx("im.notify", {
+        "to":      user_id,
+        "message": full_message,
+        "type":    "SYSTEM",
+    })
+    ok = bool(notif_res.get("result"))
+    logger.info("Bitrix24 notify user %s for deal %s: ok=%s", user_id, deal_id, ok)
+    return ok
+
+
 async def add_contract_comment(
     deal_id: str,
     session_id: str,

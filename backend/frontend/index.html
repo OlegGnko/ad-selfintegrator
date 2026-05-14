@@ -421,6 +421,45 @@ textarea::placeholder { color: #555; }
 }
 .status-bar.show { display: block; }
 
+/* ── Manager bar ── */
+.manager-bar {
+  background: var(--ad-black-pure);
+  border-top: 1px solid #1a1a1a;
+  padding: 8px 20px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.manager-bar.show { display: flex; }
+.manager-bar .mgr-btn {
+  background: var(--ad-dark-gray);
+  color: var(--ad-lime);
+  border: 1px solid rgba(194,255,133,0.25);
+  border-radius: var(--ad-radius-pill);
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--ad-font);
+  transition: var(--ad-transition);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.manager-bar .mgr-btn:hover {
+  background: #2a2a2a;
+  border-color: var(--ad-lime);
+}
+.manager-bar .mgr-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.manager-bar .mgr-note {
+  font-size: 11px;
+  color: #555;
+}
+
 @media (max-width: 600px) {
   .bubble { max-width: 86%; }
   .step-label { display: none; }
@@ -474,6 +513,14 @@ textarea::placeholder { color: #555; }
   <div class="messages" id="messages"></div>
 </div>
 
+<!-- Manager bar (hidden until deal is created) -->
+<div class="manager-bar" id="managerBar">
+  <button class="mgr-btn" id="callManagerBtn">
+    📞 <span id="callManagerLabel">Zadzwoń do managera</span>
+  </button>
+  <span class="mgr-note" id="managerNote"></span>
+</div>
+
 <!-- Input -->
 <div class="input-area">
   <button class="mic-btn" id="micBtn" title="Nagraj głosem">
@@ -496,14 +543,51 @@ textarea::placeholder { color: #555; }
 </div>
 
 <script>
-  const messagesEl = document.getElementById('messages');
-  const inputEl    = document.getElementById('input');
-  const sendBtn    = document.getElementById('sendBtn');
-  const stateBadge = document.getElementById('stateBadge');
-  const statusBar  = document.getElementById('statusBar');
+  const messagesEl      = document.getElementById('messages');
+  const inputEl         = document.getElementById('input');
+  const sendBtn         = document.getElementById('sendBtn');
+  const stateBadge      = document.getElementById('stateBadge');
+  const statusBar       = document.getElementById('statusBar');
+  const managerBar      = document.getElementById('managerBar');
+  const callManagerBtn  = document.getElementById('callManagerBtn');
+  const callManagerLabel= document.getElementById('callManagerLabel');
+  const managerNote     = document.getElementById('managerNote');
 
-  let sessionId = null;
-  let isLoading = false;
+  let sessionId  = null;
+  let isLoading  = false;
+  let currentLang = 'pl';  // default; updated when Claude calls set_language
+
+  // ── Translations for UI chrome ────────────────────────────────────────────
+  const UI_T = {
+    pl: {
+      callMgr:    'Zadzwoń do managera',
+      callSent:   'Zapytanie przekazane! Manager odezwie się wkrótce.',
+      callError:  'Błąd. Napisz na info@alphadigital.pl',
+      inputPh:    'Wpisz wiadomość lub naciśnij mikrofon…',
+    },
+    en: {
+      callMgr:    'Talk to a manager',
+      callSent:   'Request sent! A manager will contact you shortly.',
+      callError:  'Error. Please email info@alphadigital.pl',
+      inputPh:    'Type a message or press the mic…',
+    },
+    ru: {
+      callMgr:    'Связаться с менеджером',
+      callSent:   'Запрос отправлен! Менеджер свяжется с вами.',
+      callError:  'Ошибка. Напишите на info@alphadigital.pl',
+      inputPh:    'Введите сообщение или нажмите микрофон…',
+    },
+  };
+
+  const MIC_LANG = { pl: 'pl-PL', en: 'en-US', ru: 'ru-RU' };
+
+  function applyLanguage(lang) {
+    if (!UI_T[lang]) return;
+    currentLang = lang;
+    callManagerLabel.textContent = UI_T[lang].callMgr;
+    inputEl.placeholder = UI_T[lang].inputPh;
+    if (recognition) recognition.lang = MIC_LANG[lang] || 'pl-PL';
+  }
 
   const STATE_LABELS = {
     collect_user_info: 'Dane kontaktowe',
@@ -573,6 +657,8 @@ textarea::placeholder { color: #555; }
         if (res.ok) {
           const data = await res.json();
           sessionId = existingId;
+          // Restore language
+          if (data.language) applyLanguage(data.language);
           // Replay messages into chat UI
           for (const m of data.messages) {
             if (m.role === 'assistant') addBotMessage(m.content);
@@ -584,6 +670,10 @@ textarea::placeholder { color: #555; }
             if (last && !last.querySelector('.download-panel')) {
               last.appendChild(buildDownloadPanel(data.state === 'contract_ready'));
             }
+          }
+          // Restore manager bar if deal was created (interview stage or later)
+          if (['interview','proposal_ready','revisions','contract_ready'].includes(data.state)) {
+            managerBar.classList.add('show');
           }
           updateStepper(data.state);
           showSessionLink(sessionId);
@@ -775,6 +865,19 @@ textarea::placeholder { color: #555; }
       const companyAction   = actions.find(a => a.type === 'company_found');
       const proposalReady   = actions.some(a => ['proposal_ready','proposal_updated'].includes(a.type));
       const contractReady   = actions.some(a => a.type === 'contract_ready');
+      const dealCreated     = actions.some(a => a.deal_created);
+      const langSetAction   = actions.find(a => a.type === 'language_set');
+
+      // Apply language if changed
+      const responseLang = data.language || '';
+      if (responseLang && responseLang !== currentLang) {
+        applyLanguage(responseLang);
+      }
+
+      // Show Call Manager bar once deal is created
+      if (dealCreated) {
+        managerBar.classList.add('show');
+      }
 
       const extras = {};
       if (companyAction) extras.company = companyAction.company;
@@ -814,14 +917,44 @@ textarea::placeholder { color: #555; }
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
+  // ── Call Manager button ───────────────────────────────────────────────────
+  callManagerBtn.addEventListener('click', async () => {
+    if (!sessionId) return;
+    callManagerBtn.disabled = true;
+    managerNote.textContent = '';
+    try {
+      const res  = await fetch(`/api/session/${sessionId}/request-manager`, { method: 'POST' });
+      const data = await res.json();
+      const t = UI_T[currentLang] || UI_T.pl;
+      managerNote.textContent = data.success ? t.callSent : t.callError;
+      managerNote.style.color = data.success ? 'var(--ad-lime)' : 'var(--ad-coral)';
+      if (data.success) {
+        // Keep button disabled for 60s to prevent spam
+        setTimeout(() => {
+          callManagerBtn.disabled = false;
+          managerNote.textContent  = '';
+        }, 60000);
+      } else {
+        callManagerBtn.disabled = false;
+      }
+    } catch (e) {
+      const t = UI_T[currentLang] || UI_T.pl;
+      managerNote.textContent = t.callError;
+      managerNote.style.color = 'var(--ad-coral)';
+      callManagerBtn.disabled = false;
+    }
+  });
+
   // ── Voice input ────────────────────────────────────────────────────────────
   const micBtn = document.getElementById('micBtn');
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  let recognition = null;  // declared here so applyLanguage() can access it
+
   if (!SpeechRecognition) {
     micBtn.style.display = 'none';
   } else {
-    const recognition = new SpeechRecognition();
+    recognition = new SpeechRecognition();
     recognition.lang = 'pl-PL';
     recognition.continuous = true;      // keep recording through pauses
     recognition.interimResults = true;
