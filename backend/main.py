@@ -385,11 +385,22 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             "license_reason": license_reason,
         }
 
-        # Enrich Bitrix24 deal: Q&A comment + proposal link
+        # Enrich Bitrix24 deal: Q&A comment + proposal file attachment
         deal_id = session.get("bitrix24_deal_id")
         if deal_id:
             await add_interview_comment(deal_id, inp)
-            await add_proposal_comment(deal_id, session_id, total, round(total * 1.23))
+            # Generate proposal HTML now so we can attach it to Bitrix24
+            proposal_html = generate_proposal_pdf({
+                **session["proposal_data"],
+                "user_info":  session["user_info"],
+                "company":    session["company"],
+                "interview":  inp,
+                "session_id": session_id,
+            })
+            await add_proposal_comment(
+                deal_id, session_id, total, round(total * 1.23),
+                html_bytes=proposal_html,
+            )
 
         return {"type": "proposal_ready"}
 
@@ -403,10 +414,17 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             session["proposal_approved"] = True
             session["state"] = "contract_ready"
 
-            # Add contract link to Bitrix24
+            # Generate contract HTML and attach to Bitrix24
             deal_id = session.get("bitrix24_deal_id")
             if deal_id:
-                await add_contract_comment(deal_id, session_id)
+                contract_html = generate_contract_pdf({
+                    **session.get("proposal_data", {}),
+                    "user_info":  session["user_info"],
+                    "company":    session["company"],
+                    "interview":  session["interview"],
+                    "session_id": session_id,
+                })
+                await add_contract_comment(deal_id, session_id, html_bytes=contract_html)
 
             return {"type": "contract_ready"}
 
