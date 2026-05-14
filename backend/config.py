@@ -8,6 +8,18 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 MODEL = "claude-sonnet-4-6"
 
+# ── Bitrix24 integration ──────────────────────────────────────────────────────
+# Inbound webhook URL: Bitrix24 → Приложения → Вебхуки → Входящий вебхук
+# Format: https://your-portal.bitrix24.pl/rest/USER_ID/WEBHOOK_CODE
+BITRIX24_WEBHOOK_URL = os.getenv("BITRIX24_WEBHOOK_URL", "")
+# ID воронки (категории сделок). 0 = стандартная воронка.
+# Найти: CRM → Сделки → выбрать воронку → смотреть URL: ?categoryId=X
+BITRIX24_PIPELINE_ID = os.getenv("BITRIX24_PIPELINE_ID", "0")
+# ID первой стадии воронки (оставить пустым — определится автоматически)
+BITRIX24_STAGE_ID = os.getenv("BITRIX24_STAGE_ID", "")
+# Публичный URL приложения (для ссылок в комментариях Bitrix24)
+APP_BASE_URL = os.getenv("APP_BASE_URL", "https://ad-selfintegrator.vercel.app")
+
 # Your company details (used in proposals and contracts)
 YOUR_COMPANY = {
     "name": "Alpha Digital Sp. z o.o.",

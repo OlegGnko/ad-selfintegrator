@@ -12,6 +12,12 @@ from services.company_lookup import lookup_company_by_nip, validate_nip
 from services.claude_agent import chat
 from services.pdf_generator import generate_proposal_pdf, generate_contract_pdf
 from services import session_store
+from services.bitrix24 import (
+    create_deal_with_contact,
+    add_interview_comment,
+    add_proposal_comment,
+    add_contract_comment,
+)
 from config import YOUR_COMPANY
 
 logging.basicConfig(level=logging.INFO)
@@ -322,6 +328,8 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
     name = tool_call["name"]
     inp = tool_call["input"]
 
+    session_id = session["session_id"]
+
     if name == "submit_user_info":
         session["user_info"] = inp
         nip = inp.get("nip", "").replace("-", "").replace(" ", "")
@@ -337,11 +345,20 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
         if company:
             session["company"] = company
             session["state"] = "confirm_company"
-            return {"type": "company_found", "company": company}
         else:
             session["state"] = "confirm_company"
             session["company"] = {"nip": nip, "name": "Nie znaleziono danych", "address": ""}
-            return {"type": "company_not_found"}
+
+        # Create Bitrix24 deal once we have full contact info (second call with first_name)
+        if inp.get("first_name") and not session.get("bitrix24_deal_id"):
+            deal_id = await create_deal_with_contact(inp, session["company"], session_id)
+            if deal_id:
+                session["bitrix24_deal_id"] = deal_id
+                logger.info("Bitrix24 deal created: %s", deal_id)
+
+        if company:
+            return {"type": "company_found", "company": company}
+        return {"type": "company_not_found"}
 
     elif name == "submit_interview_data":
         session["interview"] = inp
@@ -367,6 +384,13 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             "license_plan": license_plan,
             "license_reason": license_reason,
         }
+
+        # Enrich Bitrix24 deal: Q&A comment + proposal link
+        deal_id = session.get("bitrix24_deal_id")
+        if deal_id:
+            await add_interview_comment(deal_id, inp)
+            await add_proposal_comment(deal_id, session_id, total, round(total * 1.23))
+
         return {"type": "proposal_ready"}
 
     elif name == "update_proposal_data":
@@ -378,6 +402,12 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
         if inp.get("confirmed"):
             session["proposal_approved"] = True
             session["state"] = "contract_ready"
+
+            # Add contract link to Bitrix24
+            deal_id = session.get("bitrix24_deal_id")
+            if deal_id:
+                await add_contract_comment(deal_id, session_id)
+
             return {"type": "contract_ready"}
 
     return None
