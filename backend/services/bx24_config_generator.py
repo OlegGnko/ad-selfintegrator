@@ -522,12 +522,13 @@ def generate_config_zip(interview: dict, company: dict) -> bytes:
             zf.writestr(path, json.dumps(obj, ensure_ascii=False, indent=2))
 
         # manifest.json — required by Bitrix24 import wizard ("vertical_crm" is the accepted code)
+        # NOTE: "app" must NOT be in USES — it triggers REST app installation which fails for non-marketplace files
         _add("manifest.json", {
             "CODE": "vertical_crm",
             "VERSION": 1,
             "ACTIVE": "Y",
             "PLACEMENT": ["crm", "crm_lead", "crm_deal", "crm_contact", "crm_company", "crm_settings"],
-            "USES": ["app", "crm", "crm_form", "bizproc_crm", "intranet_setting"],
+            "USES": ["crm", "crm_form", "bizproc_crm", "intranet_setting"],
             "TITLE": "Konfiguracja CRM — Alpha Digital",
             "DESCRIPTION": "Indywidualna konfiguracja CRM przygotowana przez Alpha Digital na podstawie wywiadu z klientem.",
             "COLOR": "#C2FF85",
@@ -569,9 +570,6 @@ def generate_config_zip(interview: dict, company: dict) -> bytes:
 
         # BIZPROC_MAIN
         _add("BIZPROC_MAIN/0.json", _build_bizproc_json(stages))
-
-        # REST_APPLICATION
-        _add("REST_APPLICATION/0.json", _build_rest_app_json())
 
         # CRM_DYNAMIC_TYPES
         _add("CRM_DYNAMIC_TYPES/types.json", _build_dynamic_types_json())
