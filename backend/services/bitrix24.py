@@ -280,6 +280,126 @@ async def add_proposal_comment(
     await _move_deal(deal_id, 2)
 
 
+# ---------------------------------------------------------------------------
+# MVP document fields — auto-created on first use
+# ---------------------------------------------------------------------------
+
+_mvp_fields_cache: dict = {}
+
+FIELD_TZ_LABEL     = "Zadanie techniczne"
+FIELD_MVP_LABEL    = "MVP Portalu"
+FIELD_README_LABEL = "Readme do MVP Portalu"
+
+_MVP_FIELD_DEFS = [
+    (FIELD_TZ_LABEL,     "tz",     "ZADANIE_TECHNICZNE"),
+    (FIELD_MVP_LABEL,    "mvp",    "MVP_PORTALU"),
+    (FIELD_README_LABEL, "readme", "README_MVP_PORTALU"),
+]
+
+
+async def _ensure_mvp_fields() -> dict:
+    """
+    Find or create 3 file-type custom fields on CRM_DEAL for TZ, MVP ZIP, README.
+    Returns dict: {"tz": "UF_CRM_...", "mvp": "UF_CRM_...", "readme": "UF_CRM_..."}
+    """
+    global _mvp_fields_cache
+    if _mvp_fields_cache:
+        return _mvp_fields_cache
+
+    result = await _bx("crm.userfield.list", {
+        "order": {"SORT": "ASC"},
+        "filter": {"ENTITY_ID": "CRM_DEAL"},
+    })
+    fields = result.get("result", [])
+
+    # Map label text -> FIELD_NAME
+    label_to_field: dict[str, str] = {}
+    all_labels = {FIELD_TZ_LABEL, FIELD_MVP_LABEL, FIELD_README_LABEL}
+    for f in fields:
+        for attr in ("EDIT_FORM_LABEL", "LIST_COLUMN_LABEL"):
+            val = f.get(attr, "")
+            if isinstance(val, str) and val in all_labels:
+                label_to_field[val] = f["FIELD_NAME"]
+            elif isinstance(val, dict):
+                for v in val.values():
+                    if isinstance(v, str) and v in all_labels:
+                        label_to_field[v] = f["FIELD_NAME"]
+
+    # Create any missing fields
+    created_any = False
+    for label, _key, xml_id in _MVP_FIELD_DEFS:
+        if label not in label_to_field:
+            r = await _bx("crm.userfield.add", {"fields": {
+                "ENTITY_ID":         "CRM_DEAL",
+                "FIELD_NAME":        f"UF_CRM_AD_{xml_id[:20]}",
+                "USER_TYPE_ID":      "file",
+                "XML_ID":            xml_id,
+                "MULTIPLE":          "N",
+                "MANDATORY":         "N",
+                "SHOW_IN_LIST":      "Y",
+                "EDIT_IN_LIST":      "Y",
+                "EDIT_FORM_LABEL":   {"pl": label, "en": label},
+                "LIST_COLUMN_LABEL": {"pl": label, "en": label},
+                "SORT":              "500",
+            }})
+            if r.get("result"):
+                created_any = True
+                logger.info("Created Bitrix24 field '%s' id=%s", label, r["result"])
+
+    if created_any:
+        # Re-fetch to get the actual FIELD_NAME values
+        result2 = await _bx("crm.userfield.list", {
+            "order": {"SORT": "ASC"},
+            "filter": {"ENTITY_ID": "CRM_DEAL"},
+        })
+        for f in result2.get("result", []):
+            for attr in ("EDIT_FORM_LABEL", "LIST_COLUMN_LABEL"):
+                val = f.get(attr, "")
+                if isinstance(val, str) and val in all_labels:
+                    label_to_field[val] = f["FIELD_NAME"]
+                elif isinstance(val, dict):
+                    for v in val.values():
+                        if isinstance(v, str) and v in all_labels:
+                            label_to_field[v] = f["FIELD_NAME"]
+
+    _mvp_fields_cache = {
+        "tz":     label_to_field.get(FIELD_TZ_LABEL,     ""),
+        "mvp":    label_to_field.get(FIELD_MVP_LABEL,    ""),
+        "readme": label_to_field.get(FIELD_README_LABEL, ""),
+    }
+    logger.info("MVP field IDs resolved: %s", _mvp_fields_cache)
+    return _mvp_fields_cache
+
+
+async def add_mvp_documents(
+    deal_id: str,
+    tz_pdf_bytes: bytes,
+    config_zip_bytes: bytes,
+    readme_pdf_bytes: bytes,
+    session_id: str,
+) -> None:
+    """Attach TZ PDF, config ZIP, and README PDF to deal custom fields."""
+    if not BITRIX24_WEBHOOK_URL or not deal_id:
+        return
+
+    fields = await _ensure_mvp_fields()
+
+    updates: dict = {}
+    if tz_pdf_bytes and fields.get("tz"):
+        b64 = base64.b64encode(tz_pdf_bytes).decode()
+        updates[fields["tz"]] = {"fileData": [f"TZ_{session_id[:8]}.pdf", b64]}
+    if config_zip_bytes and fields.get("mvp"):
+        b64 = base64.b64encode(config_zip_bytes).decode()
+        updates[fields["mvp"]] = {"fileData": [f"MVP_Config_{session_id[:8]}.zip", b64]}
+    if readme_pdf_bytes and fields.get("readme"):
+        b64 = base64.b64encode(readme_pdf_bytes).decode()
+        updates[fields["readme"]] = {"fileData": [f"README_MVP_{session_id[:8]}.pdf", b64]}
+
+    if updates:
+        result = await _bx("crm.deal.update", {"id": int(deal_id), "fields": updates})
+        logger.info("Attached MVP documents to deal %s (ok=%s)", deal_id, result.get("result"))
+
+
 async def add_contract_comment(
     deal_id: str,
     session_id: str,

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5pt;
+  color: #111;
+  background: #fff;
+  line-height: 1.6;
+}
+
+.page { padding: 14mm 16mm; }
+
+/* ── Header ── */
+.header {
+  padding-bottom: 12px;
+  border-bottom: 3px solid #111;
+  margin-bottom: 18px;
+}
+.logo-name {
+  font-size: 16pt;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.logo-name span { color: #C2FF85; }
+.doc-title {
+  font-size: 13pt;
+  font-weight: 700;
+  margin-top: 8px;
+  color: #111;
+}
+.doc-sub {
+  font-size: 8.5pt;
+  color: #555;
+  margin-top: 3px;
+}
+.doc-company {
+  font-size: 10pt;
+  font-weight: 700;
+  margin-top: 6px;
+  color: #111;
+}
+
+/* ── Sections ── */
+.section { margin-bottom: 18px; }
+.section-title {
+  font-size: 10.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1.5px solid #111;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+/* ── Check/cross lists ── */
+.check-list { list-style: none; padding: 0; margin: 0; }
+.check-list li {
+  padding: 4px 0 4px 24px;
+  position: relative;
+  border-bottom: 1px solid #eee;
+  font-size: 9pt;
+}
+.check-list li:last-child { border-bottom: none; }
+.check-list li::before {
+  position: absolute;
+  left: 4px;
+  font-weight: 700;
+}
+.check-list.yes li::before { content: "✓"; color: #2e7d32; }
+.check-list.no li::before  { content: "✗"; color: #c62828; }
+
+.check-list li span.reason {
+  display: block;
+  font-size: 8pt;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* ── Steps ── */
+.steps { counter-reset: steps; list-style: none; padding: 0; }
+.steps li {
+  counter-increment: steps;
+  padding: 5px 0 5px 28px;
+  position: relative;
+  border-bottom: 1px solid #eee;
+  font-size: 9pt;
+}
+.steps li:last-child { border-bottom: none; }
+.steps li::before {
+  content: counter(steps);
+  position: absolute;
+  left: 4px;
+  background: #111;
+  color: #C2FF85;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 7.5pt;
+  font-weight: 700;
+  text-align: center;
+  line-height: 18px;
+}
+
+/* ── Info box ── */
+.info-box {
+  background: #f0f7ff;
+  border-left: 3px solid #1565c0;
+  padding: 7px 10px;
+  border-radius: 0 4px 4px 0;
+  font-size: 8.5pt;
+  margin-bottom: 10px;
+}
+
+/* ── Warning box ── */
+.warn-box {
+  background: #fff8e1;
+  border-left: 3px solid #f9a825;
+  padding: 7px 10px;
+  border-radius: 0 4px 4px 0;
+  font-size: 8.5pt;
+  margin-bottom: 10px;
+}
+
+/* ── Code block ── */
+.path {
+  font-family: monospace;
+  font-size: 8pt;
+  background: #f5f5f5;
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+/* ── Footer ── */
+.footer {
+  margin-top: 20px;
+  padding-top: 8px;
+  border-top: 1.5px solid #111;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+  color: #555;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+  margin-bottom: 6px;
+}
+th {
+  background: #111;
+  color: #fff;
+  padding: 4px 8px;
+  text-align: left;
+}
+td {
+  padding: 4px 8px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: #f9f9f9; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════════════════════ HEADER ══════════════════════════ -->
+<div class="header">
+  <div class="logo-name">Alpha<span>.</span>Digital</div>
+  <div class="doc-title">README &mdash; MVP Portalu Bitrix24</div>
+  <div class="doc-company">dla: {{ company.get("name", "Klient") }}</div>
+  <div class="doc-sub">Data wygenerowania: {{ today }}</div>
+</div>
+
+<div class="info-box">
+  Niniejszy dokument opisuje zawartość paczki konfiguracyjnej <strong>MVP Portalu Bitrix24</strong>, instrukcję importu oraz listę ustawień, które wymagają ręcznej konfiguracji w panelu administracyjnym portalu.
+</div>
+
+<!-- ══════════════════════════ §1 CO ZAWIERA PACZKA ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§1 &mdash; Co zawiera paczka konfiguracyjna (MVP_Config_*.zip)</div>
+
+  <ul class="check-list yes">
+    {% for item in in_config %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+
+  <div style="margin-top:10px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Plik w paczce ZIP</th>
+        <th>Zawartość</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="path">CRM_STATUS/DEAL_STAGE.json</span></td>
+        <td>Etapy głównego lejka sprzedażowego</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_STATUS/SOURCE.json</span></td>
+        <td>Lista źródeł leadów</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_STATUS/CONTACT_TYPE.json</span></td>
+        <td>Typy kontaktów</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_STATUS/COMPANY_TYPE.json</span></td>
+        <td>Typy firm</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_STATUS/DEAL_TYPE.json</span></td>
+        <td>Typy transakcji</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_FIELDS/CRM_LEAD.json</span></td>
+        <td>Niestandardowe pola leadów</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_FIELDS/CRM_DEAL.json</span></td>
+        <td>Niestandardowe pola ofert / dealów</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_FIELDS/CRM_CONTACT.json</span></td>
+        <td>Niestandardowe pola kontaktów</td>
+      </tr>
+      <tr>
+        <td><span class="path">CRM_FIELDS/CRM_COMPANY.json</span></td>
+        <td>Niestandardowe pola firm</td>
+      </tr>
+      <tr>
+        <td><span class="path">BIZPROC_MAIN/0.json</span></td>
+        <td>Szablon automatyzacji: powiadomienie o nowym leadzie</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════ §2 JAK ZAIMPORTOWAĆ ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§2 &mdash; Jak zaimportować konfigurację</div>
+
+  <div class="warn-box">
+    Import nadpisuje istniejące etapy lejka i listy słownikowe. Wykonaj go na świeżym (nowym) portalu lub przed dodaniem jakichkolwiek danych produkcyjnych.
+  </div>
+
+  <ol class="steps">
+    <li>Zaloguj się do portalu Bitrix24 jako <strong>Administrator</strong>.</li>
+    <li>Przejdź do <strong>Ustawienia</strong> (ikona koła zębatego w lewym pasku) &rarr; <strong>CRM</strong> &rarr; <strong>Import ustawień CRM</strong>.<br>
+        <em>Alternatywnie:</em> menu górne &rarr; CRM &rarr; Ustawienia &rarr; Import.</li>
+    <li>Kliknij <strong>Wybierz plik</strong> i wskaż plik <span class="path">MVP_Config_*.zip</span>.</li>
+    <li>Kliknij <strong>Importuj</strong>. Poczekaj na komunikat o zakończeniu (kilka sekund).</li>
+    <li>Sprawdź wyniki: CRM &rarr; Ustawienia &rarr; Etapy lejka (powinna pojawić się skonfigurowana lista etapów).</li>
+    <li>Sprawdź źródła: CRM &rarr; Ustawienia &rarr; Źródła.</li>
+    <li>Sprawdź pola: CRM &rarr; Ustawienia &rarr; Pola użytkownika &rarr; Leady / Oferty.</li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════ §3 CO WYMAGA RĘCZNEJ KONFIGURACJI ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§3 &mdash; Ustawienia wymagające ręcznej konfiguracji</div>
+
+  <p style="font-size:8.5pt;margin-bottom:8px;">
+    Poniższe elementy <strong>nie mogą być skonfigurowane automatycznie</strong> przez plik importu ze względów technicznych lub bezpieczeństwa (wymagają danych logowania, autoryzacji OAuth lub interakcji z interfejsem użytkownika):
+  </p>
+
+  <ul class="check-list no">
+    {% for item in cannot_list %}
+    <li>
+      {{ item.title }}
+      <span class="reason">{{ item.reason }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- ══════════════════════════ §4 KOLEJNOŚĆ PO IMPORCIE ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§4 &mdash; Kolejność czynności po imporcie</div>
+
+  <ol class="steps">
+    <li><strong>Import paczki konfiguracyjnej ZIP</strong> (patrz §2 powyżej).</li>
+    <li><strong>Założenie kont użytkowników</strong> &mdash; Ustawienia &rarr; Użytkownicy &rarr; Zaproś użytkownika. Przypisz licencje.</li>
+    <li><strong>Konfiguracja praw dostępu</strong> &mdash; CRM &rarr; Ustawienia &rarr; Prawa dostępu. Przypisz role (Handlowiec, Manager, Administrator CRM).</li>
+    {% if interview.get("telephony_needed") %}
+    <li><strong>Integracja telefonii VoIP</strong> &mdash; Ustawienia &rarr; Telefonia &rarr; Podłącz operatora (Zadarma / SIP). Wpisz dane konta operatora.</li>
+    {% endif %}
+    {% set oc = interview.get("open_channels", "") %}
+    {% if oc and oc | lower not in ("nie", "brak", "no", "false") %}
+    <li><strong>Podłączenie otwartych kanałów</strong> ({{ oc }}) &mdash; Komunikator &rarr; Otwarte kanały &rarr; Dodaj kanał. Dla każdego komunikatora wymagana autoryzacja OAuth.</li>
+    {% endif %}
+    {% if interview.get("email_integration") %}
+    <li><strong>Podłączenie poczty e-mail</strong> &mdash; Ustawienia &rarr; Poczta &rarr; Dodaj skrzynkę. Podaj serwer SMTP/IMAP i hasło.</li>
+    {% endif %}
+    {% set wi = interview.get("website_integration", "") %}
+    {% if wi and wi | lower not in ("nie", "brak", "no", "false") %}
+    <li><strong>Osadzenie widżetu CRM na stronie www</strong> &mdash; CRM &rarr; Kanały sprzedaży &rarr; CRM-formularz. Skopiuj kod i wklej na stronę przez webmastera.</li>
+    {% endif %}
+    {% set di = interview.get("data_import", "") %}
+    {% if di and di | lower not in ("nie", "brak", "no", "false", "false") %}
+    <li><strong>Import bazy klientów</strong> &mdash; CRM &rarr; Import &rarr; Wybierz plik CSV/XLS. Zmapuj kolumny. Wykonaj import.</li>
+    {% endif %}
+    <li><strong>Konfiguracja automatyzacji (robotów)</strong> &mdash; CRM &rarr; Lejek &rarr; Automatyzacja. Dodaj reguły powiadomień, zadań i zmian etapów zgodnie z opisem procesów.</li>
+    <li><strong>Tworzenie raportów i dashboardów</strong> &mdash; CRM Analytics &rarr; BI Builder. Stwórz lejek sprzedaży, raporty efektywności handlowców.</li>
+    <li><strong>Szkolenie zespołu</strong> z obsługi Bitrix24 CRM (sesja online z konsultantem Alpha Digital).</li>
+    <li><strong>Testy akceptacyjne</strong> &mdash; weryfikacja wszystkich etapów lejka, automatyzacji, integracji i raportów.</li>
+    <li><strong>Przekazanie projektu</strong> &mdash; protokół odbioru i start wsparcia powdrożeniowego (2 tygodnie).</li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<div class="footer">
+  <span>Alpha Digital Sp. z o.o. &middot; info@alphadigital.pl &middot; www.alphadigital.pl</span>
+  <span>Wygenerowano: {{ today }} dla {{ company.get("name", "") }}</span>
+</div>
+
+</div><!-- /.page -->
+</body>
+</html>

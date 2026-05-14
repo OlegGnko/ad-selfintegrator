@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5pt;
+  color: #111;
+  background: #fff;
+  line-height: 1.55;
+}
+
+.page { padding: 14mm 16mm; }
+
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #111;
+  margin-bottom: 18px;
+}
+.logo-name {
+  font-size: 18pt;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.logo-name span { color: #C2FF85; }
+.logo-tag {
+  font-size: 7.5pt;
+  color: #555;
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.doc-meta { text-align: right; }
+.doc-title {
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.doc-sub { font-size: 8pt; color: #555; margin-top: 3px; }
+
+/* ── Confidential stamp ── */
+.confidential {
+  background: #fff3cd;
+  border: 1px solid #f0a500;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 8pt;
+  color: #7a4f00;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+/* ── Sections ── */
+.section {
+  margin-bottom: 16px;
+  page-break-inside: avoid;
+}
+.section-title {
+  font-size: 10pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1.5px solid #111;
+  padding-bottom: 3px;
+  margin-bottom: 8px;
+}
+.section-subtitle {
+  font-size: 9pt;
+  font-weight: 700;
+  margin: 8px 0 4px;
+}
+
+/* ── Info grid ── */
+.info-grid {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+}
+.info-row { display: table-row; }
+.info-label {
+  display: table-cell;
+  font-weight: 700;
+  width: 35%;
+  padding: 2px 6px 2px 0;
+  vertical-align: top;
+  color: #333;
+  font-size: 8.5pt;
+}
+.info-value {
+  display: table-cell;
+  padding: 2px 0;
+  vertical-align: top;
+  font-size: 8.5pt;
+}
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+  margin-bottom: 8px;
+}
+th {
+  background: #111;
+  color: #fff;
+  padding: 4px 7px;
+  text-align: left;
+  font-weight: 700;
+}
+td {
+  padding: 4px 7px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: #f7f7f7; }
+.col-no { width: 5%; text-align: center; }
+.col-item { width: 40%; }
+.col-hours { width: 12%; text-align: right; }
+.col-price { width: 15%; text-align: right; }
+.col-stage { width: 8%; text-align: center; }
+.col-name { width: 45%; }
+.col-color { width: 15%; }
+.col-sem { width: 18%; }
+.total-row td { font-weight: 700; border-top: 2px solid #111; background: #f0f0f0; }
+
+/* ── Lists ── */
+ul, ol { padding-left: 18px; margin: 4px 0; }
+li { margin: 2px 0; font-size: 8.5pt; }
+
+/* ── Integration table ── */
+.integ-table th:first-child { width: 40%; }
+
+/* ── Footer ── */
+.footer {
+  margin-top: 20px;
+  padding-top: 8px;
+  border-top: 1.5px solid #111;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+  color: #555;
+}
+
+/* ── Badges ── */
+.badge-cannot {
+  display: inline-block;
+  background: #ffd6d6;
+  color: #a00;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 7.5pt;
+  font-weight: 700;
+  margin-left: 4px;
+}
+.badge-manual {
+  display: inline-block;
+  background: #fff3cd;
+  color: #7a4f00;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 7.5pt;
+  font-weight: 700;
+  margin-left: 4px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════════════════════ HEADER ══════════════════════════ -->
+<div class="header">
+  <div>
+    <div class="logo-name">Alpha<span>.</span>Digital</div>
+    <div class="logo-tag">Integracja systemów CRM · Bitrix24</div>
+  </div>
+  <div class="doc-meta">
+    <div class="doc-title">Specyfikacja Techniczna</div>
+    <div class="doc-title" style="font-size:8.5pt;">Zadanie Techniczne</div>
+    <div class="doc-sub">Nr: {{ doc_number }}</div>
+    <div class="doc-sub">Data: {{ today }}</div>
+  </div>
+</div>
+
+<div class="confidential">
+  Dokument wewnętrzny — poufny &mdash; nie przekazywać klientowi
+</div>
+
+<!-- ══════════════════════════ §1 DANE PROJEKTU ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§1 &mdash; Dane projektu</div>
+  <div class="info-grid">
+    <div class="info-row">
+      <div class="info-label">Klient (firma):</div>
+      <div class="info-value"><strong>{{ company.get("name", "—") }}</strong></div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">NIP:</div>
+      <div class="info-value">{{ company.get("nip", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Adres:</div>
+      <div class="info-value">{{ company.get("address", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Osoba kontaktowa:</div>
+      <div class="info-value">{{ user_info.get("first_name", "") }} {{ user_info.get("last_name", "") }}{% if user_info.get("position") %} · {{ user_info.get("position") }}{% endif %}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Telefon:</div>
+      <div class="info-value">{{ user_info.get("phone", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">E-mail:</div>
+      <div class="info-value">{{ user_info.get("email", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">E-mail portalu Bitrix24:</div>
+      <div class="info-value">{{ interview.get("portal_email", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Liczba użytkowników:</div>
+      <div class="info-value">{{ interview.get("team_size", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Doświadczenie z Bitrix24:</div>
+      <div class="info-value">{{ interview.get("bitrix24_experience", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Termin wdrożenia:</div>
+      <div class="info-value">{{ interview.get("timeline", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Budżet klienta:</div>
+      <div class="info-value">{{ interview.get("budget", "—") }}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">Rekomendowany plan:</div>
+      <div class="info-value">Bitrix24 {{ proposal_data.get("license_plan", "Standard") }} &mdash; {{ proposal_data.get("license_reason", "") }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ §2 CELE WDROŻENIA ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§2 &mdash; Cele wdrożenia</div>
+  <p style="margin-bottom:6px;">{{ interview.get("implementation_goals", "—") }}</p>
+  {% if interview.get("key_modules") %}
+  <div class="section-subtitle">Kluczowe moduły:</div>
+  <p>{{ interview.get("key_modules") }}</p>
+  {% endif %}
+  {% if interview.get("current_tools") %}
+  <div class="section-subtitle">Aktualne narzędzia / systemy:</div>
+  <p>{{ interview.get("current_tools") }}</p>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════ §3 KONFIGURACJA CRM ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§3 &mdash; Konfiguracja CRM</div>
+
+  <!-- 3.1 Sekcje CRM -->
+  <div class="section-subtitle">3.1 Sekcje CRM</div>
+  <p>{{ interview.get("crm_sections", "Leady, Kontakty, Firmy, Oferty") }}</p>
+
+  <!-- 3.2 Pipeline / Lejek -->
+  <div class="section-subtitle">3.2 Etapy lejka sprzedażowego</div>
+  <p style="margin-bottom:5px;">Na podstawie: <em>{{ interview.get("sales_process", "—") }}</em></p>
+  <table>
+    <thead>
+      <tr>
+        <th class="col-stage">Sort</th>
+        <th class="col-name">Nazwa etapu</th>
+        <th>STATUS_ID</th>
+        <th class="col-sem">Semantyka</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stage in stages %}
+      <tr>
+        <td class="col-stage" style="text-align:center;">{{ loop.index * 10 }}</td>
+        <td><strong>{{ stage }}</strong></td>
+        <td style="font-family:monospace;font-size:8pt;">
+          {%- if loop.first -%}NEW
+          {%- elif loop.last -%}STAGE_{{ loop.index - 1 }}
+          {%- else -%}STAGE_{{ loop.index - 1 }}
+          {%- endif -%}
+        </td>
+        <td>
+          {%- if loop.first -%}Etap startowy
+          {%- else -%}Etap roboczy
+          {%- endif -%}
+        </td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td style="text-align:center;">200</td>
+        <td><strong>Zamknięty Wygrany</strong></td>
+        <td style="font-family:monospace;font-size:8pt;">WON</td>
+        <td>Sukces</td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">210</td>
+        <td><strong>Zamknięty Stracony</strong></td>
+        <td style="font-family:monospace;font-size:8pt;">LOSE</td>
+        <td>Porażka</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 3.3 Źródła leadów -->
+  <div class="section-subtitle">3.3 Źródła leadów</div>
+  <p style="margin-bottom:5px;">Na podstawie: <em>{{ interview.get("lead_sources", "—") }}</em></p>
+  <table>
+    <thead>
+      <tr>
+        <th>STATUS_ID</th>
+        <th>Nazwa źródła</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sid, sname in sources %}
+      <tr>
+        <td style="font-family:monospace;font-size:8pt;">{{ sid }}</td>
+        <td>{{ sname }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- 3.4 Pola niestandardowe -->
+  <div class="section-subtitle">3.4 Niestandardowe pola CRM (UF_)</div>
+  <p style="margin-bottom:5px;">Na podstawie: <em>{{ interview.get("client_data_fields", "—") }}</em></p>
+  {% if field_defs %}
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa pola (UF_CRM_...)</th>
+        <th>Etykieta</th>
+        <th>Typ</th>
+        <th>Encja</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fd in field_defs %}
+      <tr>
+        <td style="font-family:monospace;font-size:8pt;">UF_CRM_{{ fd.suffix }}</td>
+        <td>{{ fd.label }}</td>
+        <td>{{ fd.user_type }}</td>
+        <td>{{ fd.entity_ids | join(", ") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Brak dodatkowych pól niestandardowych do skonfigurowania.</p>
+  {% endif %}
+
+  <!-- 3.5 Dystrybucja leadów -->
+  <div class="section-subtitle">3.5 Dystrybucja leadów</div>
+  <p>{{ interview.get("lead_distribution", "—") }}</p>
+
+  <!-- 3.6 Prawa dostępu -->
+  <div class="section-subtitle">3.6 Prawa dostępu</div>
+  <p>{{ interview.get("access_rights", "—") }}</p>
+  <div class="badge-manual">Konfiguracja ręczna</div>
+  <span style="font-size:8pt;color:#555;margin-left:4px;">Prawa dostępu konfigurowane per użytkownik po założeniu kont.</span>
+
+  <!-- 3.7 Struktura działu sprzedaży -->
+  {% if interview.get("sales_team_structure") %}
+  <div class="section-subtitle">3.7 Struktura działu sprzedaży</div>
+  <p>{{ interview.get("sales_team_structure") }}</p>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════ §4 AUTOMATYZACJE ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§4 &mdash; Automatyzacje i procesy</div>
+  <table class="integ-table">
+    <thead>
+      <tr><th>Wymaganie</th><th>Opis</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Automatyzacje i roboty</td>
+        <td>{{ interview.get("automations_needed", "—") }}</td>
+      </tr>
+      <tr>
+        <td>Gotowe opisy procesów</td>
+        <td>{{ interview.get("has_documented_processes", "—") }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:8pt;color:#555;">Uwaga: złożone automatyzacje z warunkami wymagają ręcznej konfiguracji w edytorze wizualnym. Paczka MVP zawiera tylko szablon powiadomienia o nowym leadzie.</p>
+</div>
+
+<!-- ══════════════════════════ §5 INTEGRACJE ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§5 &mdash; Integracje</div>
+  <table class="integ-table">
+    <thead>
+      <tr><th>Integracja</th><th>Wymagania / Uwagi</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Telefonia VoIP</td>
+        <td>
+          {% if interview.get("telephony_needed") %}
+          {{ interview.get("telephony_details", "Tak — szczegóły do ustalenia") }}
+          <span class="badge-manual">Ręcznie</span>
+          {% else %}
+          Nie wymagana
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Otwarte kanały (komunikatory)</td>
+        <td>
+          {% set oc = interview.get("open_channels", "") %}
+          {% if oc and oc | lower not in ("nie", "brak", "no", "false") %}
+          {{ oc }}
+          <span class="badge-manual">Ręcznie — OAuth</span>
+          {% else %}
+          Nie wymagane
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Integracja poczty e-mail</td>
+        <td>
+          {% if interview.get("email_integration") %}
+          Tak — SMTP/IMAP <span class="badge-manual">Ręcznie</span>
+          {% else %}
+          Nie wymagana
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Integracja strony WWW / formularze</td>
+        <td>
+          {% set wi = interview.get("website_integration", "") %}
+          {% if wi and wi | lower not in ("nie", "brak", "no", "false") %}
+          {{ wi }} <span class="badge-manual">Ręcznie — kod na stronie</span>
+          {% else %}
+          Nie wymagana
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>Inne integracje</td>
+        <td>
+          {% set oi = interview.get("other_integrations", "") %}
+          {% if oi and oi | lower not in ("nie", "brak", "no", "false") %}
+          {{ oi }} <span class="badge-manual">Ręcznie — API/webhook</span>
+          {% else %}
+          Brak
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════ §6 IMPORT DANYCH ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§6 &mdash; Import danych</div>
+  <p>{{ interview.get("data_import", "—") }}</p>
+  <p style="font-size:8pt;color:#555;margin-top:4px;">Import wykonywany ręcznie przez CRM → Import → plik CSV/XLS po zakończeniu konfiguracji portalu.</p>
+</div>
+
+<!-- ══════════════════════════ §7 UŻYTKOWNICY ZEWNĘTRZNI ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§7 &mdash; Użytkownicy zewnętrzni</div>
+  {% set eu = interview.get("external_users", "") %}
+  {% if eu and eu | lower not in ("nie", "brak", "no", "false") %}
+  <p>{{ eu }}</p>
+  <p style="font-size:8pt;color:#555;margin-top:4px;">Konfiguracja dostępu zewnętrznego (Ekstranet / rola Partner) — ręcznie przez Ustawienia → Użytkownicy.</p>
+  {% else %}
+  <p>Nie dotyczy.</p>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════ §8 RAPORTY ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§8 &mdash; Raporty i analityki</div>
+  <p>{{ interview.get("reports_needed", "—") }}</p>
+  <p style="font-size:8pt;color:#555;margin-top:4px;">Raporty i dashboardy konfigurowane ręcznie w CRM Analytics / BI Builder po zakończeniu wdrożenia.</p>
+</div>
+
+<!-- ══════════════════════════ §9 ZAKRES I HARMONOGRAM ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§9 &mdash; Zakres prac i kosztorys</div>
+  {% if proposal_data.get("scope") %}
+  <table>
+    <thead>
+      <tr>
+        <th class="col-no">#</th>
+        <th class="col-item">Pozycja</th>
+        <th class="col-hours">Godz.</th>
+        <th class="col-price">Cena netto (PLN)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in proposal_data.scope %}
+      <tr>
+        <td class="col-no">{{ loop.index }}</td>
+        <td>{{ item.item }}</td>
+        <td class="col-hours">{{ item.hours if item.hours else "—" }}</td>
+        <td class="col-price">{% if item.price %}{{ item.price }}{% else %}gratis{% endif %}</td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row">
+        <td colspan="2">RAZEM NETTO</td>
+        <td class="col-hours">{{ proposal_data.scope | sum(attribute="hours") }}</td>
+        <td class="col-price">{{ proposal_data.get("total_net", "—") }} PLN</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="3">RAZEM BRUTTO (+ 23% VAT)</td>
+        <td class="col-price">{{ proposal_data.get("total_gross", "—") }} PLN</td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if proposal_data.get("timeline") %}
+  <div class="section-subtitle">Harmonogram realizacji</div>
+  <table>
+    <thead>
+      <tr><th style="width:20%;">Tydzień</th><th>Faza</th></tr>
+    </thead>
+    <tbody>
+      {% for phase in proposal_data.timeline %}
+      <tr>
+        <td>Tydzień {{ phase.week }}</td>
+        <td>{{ phase.phase }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if interview.get("timeline") or interview.get("budget") %}
+  <div class="section-subtitle">Oczekiwania klienta</div>
+  {% if interview.get("timeline") %}
+  <p><strong>Termin:</strong> {{ interview.get("timeline") }}</p>
+  {% endif %}
+  {% if interview.get("budget") %}
+  <p><strong>Budżet:</strong> {{ interview.get("budget") }}</p>
+  {% endif %}
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════ §10 WARUNKI TECHNICZNE ══════════════════════════ -->
+<div class="section">
+  <div class="section-title">§10 &mdash; Warunki techniczne i środowisko</div>
+  <table class="integ-table">
+    <thead>
+      <tr><th>Parametr</th><th>Wartość</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>System docelowy</td>
+        <td>Bitrix24 Cloud (SaaS)</td>
+      </tr>
+      <tr>
+        <td>Rekomendowany plan</td>
+        <td>Bitrix24 {{ proposal_data.get("license_plan", "Standard") }}</td>
+      </tr>
+      <tr>
+        <td>E-mail portalu (administrator)</td>
+        <td>{{ interview.get("portal_email", "—") }}</td>
+      </tr>
+      <tr>
+        <td>Liczba użytkowników</td>
+        <td>{{ interview.get("team_size", "—") }}</td>
+      </tr>
+      <tr>
+        <td>Metoda konfiguracji</td>
+        <td>Import paczki JSON (Ustawienia → Import) + ręczne ustawienia nieautomatyzowalnych elementów</td>
+      </tr>
+      <tr>
+        <td>Paczka MVP Portalu</td>
+        <td>ZIP z plikami JSON: etapy lejka, źródła, pola CRM, automatyzacja</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if cannot_list %}
+  <div class="section-subtitle">Elementy wymagające ręcznej konfiguracji po imporcie:</div>
+  <table class="integ-table">
+    <thead>
+      <tr><th>Element</th><th>Powód wymagania ręcznej konfiguracji</th></tr>
+    </thead>
+    <tbody>
+      {% for item in cannot_list %}
+      <tr>
+        <td>{{ item.title }}</td>
+        <td>{{ item.reason }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if interview.get("additional_comments") %}
+  <div class="section-subtitle">Dodatkowe uwagi klienta:</div>
+  <p>{{ interview.get("additional_comments") }}</p>
+  {% endif %}
+</div>
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<div class="footer">
+  <span>Alpha Digital Sp. z o.o. &middot; ul. Zygmunta Vogla 28/02.91, 02-963 Warszawa &middot; info@alphadigital.pl</span>
+  <span>Dokument wygenerowany: {{ today }} &middot; Nr: {{ doc_number }}</span>
+</div>
+
+</div><!-- /.page -->
+</body>
+</html>

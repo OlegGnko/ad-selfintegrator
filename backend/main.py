@@ -22,6 +22,12 @@ from services.bitrix24 import (
     add_interview_comment,
     add_proposal_comment,
     add_contract_comment,
+    add_mvp_documents,
+)
+from services.bx24_config_generator import (
+    generate_config_zip,
+    generate_tz_html,
+    generate_readme_html,
 )
 from config import YOUR_COMPANY
 
@@ -448,7 +454,7 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             "open_channels":         inp.get("open_channels", ""),
         }
 
-        # Enrich Bitrix24 deal: Q&A comment + proposal PDF attachment
+        # Enrich Bitrix24 deal: Q&A comment + proposal PDF + MVP documents
         deal_id = session.get("bitrix24_deal_id")
         if deal_id:
             await add_interview_comment(deal_id, inp)
@@ -463,6 +469,41 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             await add_proposal_comment(
                 deal_id, session_id, total, round(total * 1.23),
                 pdf_bytes=proposal_pdf,
+            )
+
+            # Generate TZ PDF, config ZIP, README PDF and attach to deal
+            from services.pdf_generator import _html_to_pdf
+            try:
+                tz_html = generate_tz_html(
+                    inp,
+                    session["company"],
+                    session["user_info"],
+                    session["proposal_data"],
+                )
+                tz_pdf = _html_to_pdf(tz_html)
+            except Exception as exc:
+                logger.warning("TZ PDF generation failed: %s", exc)
+                tz_pdf = b""
+
+            try:
+                config_zip = generate_config_zip(inp, session["company"])
+            except Exception as exc:
+                logger.warning("Config ZIP generation failed: %s", exc)
+                config_zip = b""
+
+            try:
+                readme_html = generate_readme_html(inp, session["company"])
+                readme_pdf = _html_to_pdf(readme_html)
+            except Exception as exc:
+                logger.warning("README PDF generation failed: %s", exc)
+                readme_pdf = b""
+
+            await add_mvp_documents(
+                deal_id,
+                tz_pdf_bytes=tz_pdf,
+                config_zip_bytes=config_zip,
+                readme_pdf_bytes=readme_pdf,
+                session_id=session_id,
             )
 
         return {"type": "proposal_ready"}
