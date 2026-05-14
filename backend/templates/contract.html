@@ -13,15 +13,15 @@
     line-height: 1.6;
   }
 
-  .page { padding: 15mm 18mm; }
+  .page { padding: 14mm 18mm; }
 
   /* ── Header ── */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
     border-bottom: 3px solid #111111;
   }
   .logo-name {
@@ -42,7 +42,7 @@
   }
   .doc-meta { text-align: right; }
   .doc-title {
-    font-size: 11pt;
+    font-size: 12pt;
     font-weight: 700;
     color: #111111;
     text-transform: uppercase;
@@ -54,8 +54,8 @@
   .lime-bar {
     background: #C2FF85;
     border-radius: 6px;
-    padding: 8px 14px;
-    margin-bottom: 16px;
+    padding: 7px 14px;
+    margin-bottom: 14px;
     font-size: 8pt;
     font-weight: 700;
     color: #111111;
@@ -67,15 +67,15 @@
 
   /* ── Parties table ── */
   .parties-wrap {
-    border: 1.5px solid #e5e5e5;
-    border-radius: 8px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 7px;
     overflow: hidden;
-    margin-bottom: 18px;
-    font-size: 9pt;
+    margin-bottom: 14px;
+    font-size: 8.5pt;
   }
   .party-row {
     display: flex;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e0e0e0;
   }
   .party-row:last-child { border-bottom: none; }
   .party-label-cell {
@@ -85,15 +85,14 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    writing-mode: horizontal-tb;
-    padding: 10px 14px;
-    width: 90px;
+    padding: 10px 12px;
+    width: 96px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
   }
   .party-content { padding: 10px 14px; flex: 1; }
-  .party-content strong { font-size: 10pt; }
+  .party-content strong { font-size: 9pt; }
 
   /* ── Section headings ── */
   h2 {
@@ -102,33 +101,39 @@
     color: #111111;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin: 16px 0 8px;
-    padding-bottom: 5px;
+    margin: 14px 0 6px;
+    padding-bottom: 4px;
     border-bottom: 2px solid #C2FF85;
   }
 
-  p { margin-bottom: 6px; font-size: 9pt; }
-  ol { margin-left: 18px; margin-bottom: 8px; }
-  ol li { margin-bottom: 4px; font-size: 9pt; }
+  p { margin-bottom: 5px; font-size: 9pt; }
+  ol { margin-left: 18px; margin-bottom: 6px; }
+  ol li { margin-bottom: 3px; font-size: 9pt; }
+  ul { margin-left: 18px; margin-bottom: 6px; }
+  ul li { margin-bottom: 3px; font-size: 9pt; list-style-type: disc; }
+
+  .indent { margin-left: 18px; }
+  .sub-ol { list-style-type: none; margin-left: 0; }
+  .sub-ol li { margin-bottom: 3px; font-size: 9pt; }
 
   /* ── Amount box ── */
   .amount-box {
     background: #C2FF85;
     border-radius: 8px;
-    padding: 12px 16px;
-    margin: 10px 0 12px;
+    padding: 10px 14px;
+    margin: 8px 0 10px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
   }
   .amount-main {
-    font-size: 16pt;
+    font-size: 15pt;
     font-weight: 900;
     color: #111111;
     line-height: 1;
   }
   .amount-sub {
-    font-size: 8pt;
+    font-size: 7.5pt;
     color: #272727;
     margin-top: 3px;
   }
@@ -137,68 +142,98 @@
     text-align: right;
     font-size: 8.5pt;
   }
-  .amount-breakdown strong { color: #111111; }
 
   /* ── Bank table ── */
-  .bank-table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 8.5pt; }
-  .bank-table td { padding: 4px 10px 4px 0; vertical-align: top; }
+  .bank-table { width: 100%; border-collapse: collapse; margin: 4px 0 8px; font-size: 8.5pt; }
+  .bank-table td { padding: 3px 8px 3px 0; vertical-align: top; }
   .bank-key {
     color: #404040;
     text-transform: uppercase;
     font-size: 7pt;
     font-weight: 700;
     letter-spacing: 0.5px;
-    width: 70px;
-    padding-top: 5px;
+    width: 60px;
   }
   .bank-val { font-weight: 700; }
 
-  /* ── Schedule table ── */
-  .schedule-table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9pt; }
-  .schedule-table th {
+  /* ── Scope / schedule table ── */
+  .data-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 8.5pt; }
+  .data-table th {
     background: #111111;
     color: #fff;
-    padding: 6px 10px;
+    padding: 5px 9px;
     text-align: left;
     font-size: 7.5pt;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  .schedule-table td { padding: 7px 10px; border-bottom: 1px solid #ebebeb; }
-  .schedule-table tr:nth-child(even) td { background: #f9f9f9; }
+  .data-table td { padding: 6px 9px; border-bottom: 1px solid #ebebeb; }
+  .data-table tr:nth-child(even) td { background: #f9f9f9; }
+  .data-table tfoot td {
+    background: #111111;
+    color: #C2FF85;
+    font-weight: 700;
+    font-size: 8.5pt;
+    border: none;
+  }
 
   /* ── Signatures ── */
   .signatures {
-    margin-top: 36px;
+    margin-top: 30px;
     display: flex;
     justify-content: space-between;
   }
   .sig-block { width: 44%; text-align: center; }
   .sig-line {
     border-top: 1.5px solid #111111;
-    padding-top: 6px;
+    padding-top: 5px;
     font-size: 8pt;
     color: #272727;
-    margin-top: 40px;
+    margin-top: 36px;
     line-height: 1.7;
   }
   .sig-line strong { font-size: 9pt; color: #111111; }
 
   /* ── Footer ── */
   .footer {
-    margin-top: 18px;
-    padding-top: 8px;
+    margin-top: 14px;
+    padding-top: 6px;
     border-top: 1px solid #e5e5e5;
-    font-size: 7.5pt;
-    color: #C5C5C5;
+    font-size: 7pt;
+    color: #bbb;
     text-align: center;
   }
+
+  /* ── Page break ── */
+  .page-break {
+    page-break-before: always;
+    padding-top: 14mm;
+  }
+
+  /* ── Attachment header ── */
+  .attach-header {
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #C2FF85;
+  }
+  .attach-title {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #111111;
+    letter-spacing: 0.5px;
+  }
+  .attach-sub { font-size: 8pt; color: #444; margin-top: 2px; }
+
+  .contact-table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 8.5pt; }
+  .contact-table td { padding: 4px 8px; border: 1px solid #e0e0e0; vertical-align: top; }
+  .contact-table th { background: #f5f5f5; font-weight: 700; padding: 4px 8px; border: 1px solid #e0e0e0; font-size: 8pt; }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- Header -->
+  <!-- ── HEADER ── -->
   <div class="header">
     <div>
       <div class="logo-name">Alpha<span> Digital</span></div>
@@ -211,172 +246,337 @@
     </div>
   </div>
 
-  <!-- Lime bar -->
+  <!-- ── LIME BAR ── -->
   <div class="lime-bar">
-    <span>Umowa o wdrożenie systemu CRM Bitrix24</span>
+    <span>Umowa na wdrożenie systemu CRM Bitrix24</span>
     <span>{{ contract_number }}</span>
   </div>
 
-  <!-- Parties -->
+  <!-- ── PREAMBLE ── -->
+  <p style="margin-bottom:10px;">
+    zwana dalej <strong>„Umową"</strong>, zawarta w dniu {{ today }} w miejscowości Warszawa, pomiędzy:
+  </p>
+
+  <!-- ── PARTIES ── -->
   <div class="parties-wrap">
     <div class="party-row">
-      <div class="party-label-cell">Wykonawca</div>
+      <div class="party-label-cell">Zleceniobiorca<br>(Wykonawca)</div>
       <div class="party-content">
-        <strong>{{ your_company.name_full }}</strong>, wpisana do rejestru przedsiębiorców KRS
-        pod nr <strong>{{ your_company.krs }}</strong>, REGON: {{ your_company.regon }},
-        NIP: {{ your_company.nip }}, z siedzibą: {{ your_company.address }},
-        reprezentowana przez <strong>{{ your_company.ceo }}</strong> — {{ your_company.ceo_title }},
+        <strong>{{ your_company.name_full }}</strong> z siedzibą przy {{ your_company.address }},
+        NIP {{ your_company.nip_short }}, REGON {{ your_company.regon }}, KRS {{ your_company.krs }},
+        którą reprezentuje <strong>{{ your_company.ceo }}</strong> — {{ your_company.ceo_title }},
         e-mail: {{ your_company.email }}, tel.: {{ your_company.phone }}
       </div>
     </div>
     <div class="party-row">
-      <div class="party-label-cell">Zamawiający</div>
+      <div class="party-label-cell">Zleceniodawca<br>(Klient)</div>
       <div class="party-content">
-        <strong>{{ company.name }}</strong>, NIP: {{ company.nip }},
-        {% if company.address %}z siedzibą: {{ company.address }},{% endif %}
-        reprezentowana przez <strong>{{ user_info.first_name }} {{ user_info.last_name }}</strong>
-        ({{ user_info.position }}), tel.: {{ user_info.phone }}
+        <strong>{{ company.name }}</strong>,
+        NIP {{ company.nip }}{% if company.regon %}, REGON {{ company.regon }}{% endif %}{% if company.address %}, z siedzibą: {{ company.address }}{% endif %},
+        którą reprezentuje <strong>{{ user_info.first_name }} {{ user_info.last_name }}</strong>
+        {% if user_info.position %}— {{ user_info.position }}{% endif %},
+        tel.: {{ user_info.phone }}{% if user_info.email %}, e-mail: {{ user_info.email }}{% endif %}
       </div>
     </div>
   </div>
 
-  <p style="margin-bottom:16px;">zwanych dalej łącznie <strong>„Stronami"</strong>, o następującej treści:</p>
+  <p style="margin-bottom:12px;">łącznie dalej zwani <strong>„Stronami"</strong>, a każdy z nich pojedynczo <strong>„Stroną"</strong>, o następującej treści:</p>
 
-  <!-- §1 -->
-  <h2>§ 1. Przedmiot umowy</h2>
-  <p>1. Wykonawca zobowiązuje się do kompleksowego wdrożenia systemu CRM <strong>Bitrix24</strong>
-  dla Zamawiającego, zgodnie z zakresem określonym w Ofercie Nr {{ contract_number | replace("UMW","OF") }}.</p>
-  <p>2. Zakres wdrożenia obejmuje w szczególności:</p>
+  <!-- ── §1 ── -->
+  <h2>§ 1. Przedmiot Umowy</h2>
+  <p>1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się, w zamian za uzgodnione pomiędzy Stronami wynagrodzenie, świadczyć na rzecz Zleceniodawcy usługi w zakresie przeprowadzenia analizy biznesowej, wdrożenia systemu Bitrix24 oraz rozwoju oprogramowania.</p>
+  <p>2. Wykaz usług, etapy, koszt, warunki i sposób realizacji usług określa <strong>Załącznik nr 1</strong> do niniejszej umowy zgodnie z Regulaminem świadczenia usług — <strong>Załącznik nr 2</strong>.</p>
+  <p>3. Zakres wdrożenia obejmuje w szczególności:</p>
   <ol>
     {% for item in scope %}
-    <li>{{ item.item }}{% if item.hours > 0 %} ({{ item.hours | int }}h){% endif %}</li>
+    <li>{{ item.item }}{% if item.hours > 0 %} — {{ item.hours | int }} godz.{% endif %}</li>
     {% endfor %}
   </ol>
-  <p>3. Szczegółowy harmonogram realizacji stanowi Załącznik nr 1 do niniejszej Umowy.</p>
 
-  <!-- §2 -->
-  <h2>§ 2. Wynagrodzenie i warunki płatności</h2>
+  <!-- ── §2 ── -->
+  <h2>§ 2. Prawa i Obowiązki Stron</h2>
+  <p>1. Zleceniobiorca zobowiązuje się świadczyć usługi z zachowaniem należytej profesjonalnej staranności i odpowiada wobec Zleceniodawcy z tytułu nienależytego wykonania Umowy, w szczególności z tytułu niedochowania należytej staranności.</p>
+  <p>2. Zleceniobiorca w szczególności zobowiązuje się:</p>
+  <ul>
+    <li>przystąpić do realizacji uzgodnionego pomiędzy Stronami zadania nie później niż po 2 (dwóch) dniach roboczych po uzgodnieniu Specyfikacji Technicznej i przedpłaty;</li>
+    <li>chronić przed dostępem osób trzecich wszelkie materiały i informacje związane ze świadczeniem usług doradczych (w tym otrzymanych od Zamawiającego lub powstałych przy świadczeniu usług).</li>
+  </ul>
+  <p>3. Zleceniobiorca jest uprawniony do:</p>
+  <ul>
+    <li>wydłużenia wcześniej uzgodnionego terminu realizacji Zamówienia w przypadku, gdy wykonanie Zamówienia zależy od decyzji lub działania Zleceniodawcy, a Zleceniodawca nie podjął tej decyzji lub działania w odpowiednim uzgodnionym terminie;</li>
+    <li>odmowy realizacji kolejnego Zamówienia, w przypadku gdy wynagrodzenie należne Zleceniobiorcy z tytułu wykonania poprzedniego Zamówienia nie zostało uiszczone;</li>
+    <li>wykonania prac przed uzgodnionym terminem.</li>
+  </ul>
+  <p>4. Zleceniodawca zobowiązuje się do:</p>
+  <ul>
+    <li>terminowego i pełnego opłacenia kosztu usług Wykonawcy zgodnie z warunkami niniejszej umowy;</li>
+    <li>dostarczenia Wykonawcy wszelkich informacji niezbędnych do wykonania usług;</li>
+    <li>wyznaczenia osoby odpowiedzialnej za kontakty, wymianę informacji i uzgadnianie prac z Wykonawcą;</li>
+    <li>przyjęcia usług po otrzymaniu pisemnego powiadomienia od Wykonawcy o wykonaniu prac, opłacenia pracy i podpisania protokołu odbioru wykonanych prac;</li>
+    <li>przestrzegania wymogów przepisów o ochronie danych osobowych.</li>
+  </ul>
+  <p>5. Zleceniodawca jest uprawniony do otrzymywania informacji o postępie prac w dni robocze w godzinach 9:00–17:00 osobiście i telefonicznie od osoby odpowiedzialnej określonej w Załączniku nr 1.</p>
+  <p>6. Strony zobowiązują się przestrzegać warunki określone w Regulaminie świadczenia usług — Załącznik nr 2 do niniejszej Umowy.</p>
+
+  <!-- ── §3 ── -->
+  <h2>§ 3. Czas obowiązywania Umowy i rozwiązanie Umowy</h2>
+  <p>1. Umowa wchodzi w życie w dniu podpisania przez Strony i zostaje zawarta na czas nieoznaczony.</p>
+  <p>2. Każda ze Stron może rozwiązać Umowę z zachowaniem 30-dniowego okresu wypowiedzenia, w formie pisemnej pod rygorem nieważności.</p>
+  <p>3. Zleceniobiorca może wypowiedzieć Umowę bez zachowania okresu wypowiedzenia, jeżeli Zleceniodawca nie zapłaci należnego wynagrodzenia, po uprzednim pisemnym wezwaniu do zapłaty z wyznaczeniem dodatkowego terminu nie krótszego niż 7 (siedem) dni kalendarzowych.</p>
+  <p>4. Zleceniodawca może odstąpić od niniejszej umowy w następujących sytuacjach:</p>
+  <ul>
+    <li>jeżeli Zleceniobiorca nie przystąpi do wykonywania obowiązków wynikających ze złożonego Zamówienia w terminie 5 (pięciu) dni roboczych od jego złożenia i otrzymania ewentualnej zaliczki;</li>
+    <li>jeżeli Zleceniobiorca przerwie wykonywanie prac na okres dłuższy niż 10 (dziesięć) dni roboczych i nie wznowi ich w ciągu 2 (dwóch) dni roboczych od wezwania do kontynuacji.</li>
+  </ul>
+
+  <!-- ── §4 ── -->
+  <h2>§ 4. Cennik i procedura rozliczenia</h2>
+  <p>1. Koszt i wykaz usług należnych Wykonawcy od Zleceniodawcy określa Załącznik nr 1 do niniejszej Umowy.</p>
   <div class="amount-box">
     <div>
       <div class="amount-main">{{ total_net | int }} PLN netto</div>
-      <div class="amount-sub">Wynagrodzenie ryczałtowe · VAT 23%</div>
+      <div class="amount-sub">Wynagrodzenie za całość wdrożenia · stawka VAT 23%</div>
     </div>
     <div class="amount-breakdown">
       <div><strong>{{ total_gross | int }} PLN brutto</strong></div>
-      <div style="color:#404040; font-size:7.5pt;">łączna wartość umowy</div>
+      <div style="color:#404040;font-size:7pt;">łączna wartość umowy</div>
     </div>
   </div>
-  <p>2. Płatność w dwóch ratach:</p>
-  <ol>
-    <li><strong>Zaliczka — 50%:</strong> {{ (total_net * 0.5) | int }} PLN netto — w terminie 7 dni od podpisania Umowy.</li>
-    <li><strong>Pozostała kwota — 50%:</strong> {{ (total_net * 0.5) | int }} PLN netto — w ciągu 7 dni od podpisania protokołu odbioru.</li>
-  </ol>
+  <p>2. Zleceniodawca zapłaci koszt usług na rachunek rozliczeniowy Wykonawcy. Płatność w dwóch ratach:</p>
+  <ul>
+    <li><strong>Zaliczka — 50%:</strong> {{ (total_net * 0.5) | int }} PLN netto — w terminie 5 (pięciu) dni bankowych od podpisania Umowy (na podstawie proformy).</li>
+    <li><strong>Pozostała kwota — 50%:</strong> {{ (total_net * 0.5) | int }} PLN netto — w terminie 5 (pięciu) dni bankowych od podpisania protokołu odbioru wykonanych prac.</li>
+  </ul>
   <p>3. Dane do przelewu:</p>
   <table class="bank-table">
-    <tr>
-      <td class="bank-key">PLN</td>
-      <td class="bank-val">{{ your_company.bank_account_pln }}</td>
-    </tr>
-    <tr>
-      <td class="bank-key">EUR</td>
-      <td class="bank-val">{{ your_company.bank_account_eur }}</td>
-    </tr>
-    <tr>
-      <td class="bank-key">USD</td>
-      <td class="bank-val">{{ your_company.bank_account_usd }}</td>
-    </tr>
-    <tr>
-      <td class="bank-key">Bank</td>
-      <td>{{ your_company.bank_name }}, {{ your_company.bank_address }}<br>SWIFT/BIC: {{ your_company.bic_swift }}</td>
-    </tr>
+    <tr><td class="bank-key">PLN</td><td class="bank-val">{{ your_company.bank_account_pln }}</td></tr>
+    <tr><td class="bank-key">EUR</td><td class="bank-val">{{ your_company.bank_account_eur }}</td></tr>
+    <tr><td class="bank-key">USD</td><td class="bank-val">{{ your_company.bank_account_usd }}</td></tr>
+    <tr><td class="bank-key">Bank</td><td>{{ your_company.bank_name }}<br>SWIFT/BIC: {{ your_company.bic_swift }}</td></tr>
   </table>
   <p>4. W tytule przelewu należy podać: <strong>{{ contract_number }}</strong>.</p>
+  <p>5. Momentem spełnienia zobowiązania Zleceniodawcy do zapłaty jest data zaksięgowania środków na rachunku Wykonawcy.</p>
+  <p>6. Jeśli Zleceniodawca ma uwagi dotyczące jakości i zakresu wykonanych prac, lista uwag zostanie przesłana Wykonawcy nie później niż 3 (trzy) dni robocze od otrzymania protokołu odbioru. Po upływie tego terminu pracę uznaje się za zaakceptowaną.</p>
 
-  <!-- §3 -->
-  <h2>§ 3. Harmonogram realizacji</h2>
-  <table class="schedule-table">
-    <thead>
-      <tr><th style="width:25%">Tydzień</th><th>Etap</th></tr>
-    </thead>
-    <tbody>
-      {% for phase in timeline %}
-      <tr>
-        <td>Tydzień {{ phase.week }}</td>
-        <td>{{ phase.phase }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <p>Termin rozpoczęcia: 7 dni roboczych od wpłaty zaliczki.</p>
+  <!-- ── §5 ── -->
+  <h2>§ 5. Roboty dodatkowe, zmiana wykazu robót i zadań</h2>
+  <p>1. Każda ze Stron może żądać zmiany Umowy, w tym warunków, terminów, składu i kosztów prac.</p>
+  <p>2. Wniosek Zleceniodawcy o wprowadzenie zmian powinien być sporządzony w formie pisemnej i przekazany do Zleceniobiorcy za pośrednictwem adresu e-mail wskazanego w Załączniku nr 1. W terminie 2 (dwóch) dni roboczych Wykonawca prześle kosztorys zmian.</p>
+  <p>3. Wprowadzenie zmian jest formalizowane poprzez podpisanie aneksu przez Strony.</p>
 
-  <!-- §4 -->
-  <h2>§ 4. Obowiązki Stron</h2>
-  <p><strong>Wykonawca zobowiązuje się do:</strong></p>
+  <!-- ── §6 ── -->
+  <h2>§ 6. Odpowiedzialność Stron</h2>
+  <p>1. W przypadku naruszenia terminów wykonania pracy określonych w Załączniku nr 1 Zleceniodawca będzie uprawniony do żądania od Wykonawcy kary w wysokości 0,3% kosztu odpowiedniej części pracy za każdy dzień roboczy opóźnienia, ale nie więcej niż 5% tej kwoty za każdy przypadek.</p>
+  <p>2. W przypadku naruszenia warunków płatności Wykonawca będzie uprawniony do żądania od Zleceniodawcy kary umownej w wysokości 0,3% kwoty zaległej płatności za każdy dzień roboczy opóźnienia, ale nie więcej niż 10% tej kwoty za każdy przypadek.</p>
+  <p>3. Wykonawca nie ponosi odpowiedzialności za niedotrzymanie terminów wynikłe z winy Zleceniodawcy (nieterminowe dostarczenie informacji, dostępów, materiałów).</p>
+  <p>4. Łączna odpowiedzialność Wykonawcy ograniczona jest do wartości wynagrodzenia netto określonego w § 4.</p>
+
+  <!-- ── §7 ── -->
+  <h2>§ 7. Gwarancja</h2>
+  <p>1. Wykonawca zapewni serwis gwarancyjny przez okres <strong>6 (sześciu) miesięcy</strong> od daty określonej w protokole odbioru.</p>
+  <p>2. W przypadku wykrycia usterek w okresie gwarancyjnym (z wyłączeniem usterek w oprogramowaniu zewnętrznym oraz komponentach sprzętowych Klienta) Wykonawca zobowiązuje się do ich usunięcia bez dodatkowych opłat w rozsądnym terminie.</p>
+  <p>3. Bezpłatne wsparcie startowe przez <strong>2 tygodnie</strong> od przekazania projektu.</p>
+  <p>4. Wsparcie techniczne po upływie okresu gwarancji będzie realizowane na podstawie odrębnych umów między Stronami.</p>
+
+  <!-- ── §8 ── -->
+  <h2>§ 8. Poufność</h2>
+  <p>1. Wszelkie informacje wynikające z niniejszej Umowy, jak również informacje pozyskane przez Wykonawcę w związku z realizacją Umowy, w tym wszelkie informacje organizacyjne, handlowe i techniczne dotyczące Zamawiającego i nieudostępniane publicznie, będą uważane przez Strony za informacje poufne i nie będą ujawniane osobom trzecim.</p>
+  <p>2. Wykonawca oświadcza, że nie będzie wykorzystywać informacji poufnych w innych celach niż dla realizacji Umowy.</p>
+  <p>3. Zobowiązanie do zachowania poufności pozostaje w mocy przez 5 (pięć) lat po wygaśnięciu Umowy.</p>
+
+  <!-- ── §9 ── -->
+  <h2>§ 9. Postanowienia końcowe</h2>
   <ol>
-    <li>Realizacji prac z należytą starannością zgodnie z aktualną wiedzą techniczną.</li>
-    <li>Wyznaczenia dedykowanego opiekuna projektu (Project Managera).</li>
-    <li>Informowania Zamawiającego o postępach prac co najmniej raz w tygodniu.</li>
-    <li>Przeprowadzenia szkoleń dla użytkowników systemu.</li>
-  </ol>
-  <p><strong>Zamawiający zobowiązuje się do:</strong></p>
-  <ol>
-    <li>Terminowego dostarczenia niezbędnych danych, materiałów i dostępów.</li>
-    <li>Wyznaczenia osoby kontaktowej odpowiedzialnej po swojej stronie.</li>
-    <li>Terminowego wnoszenia płatności zgodnie z § 2.</li>
-    <li>Udziału w testach akceptacyjnych i podpisania protokołu odbioru.</li>
-  </ol>
-
-  <!-- §5 -->
-  <h2>§ 5. Gwarancja i wsparcie</h2>
-  <ol>
-    <li>Wykonawca udziela <strong>12-miesięcznej gwarancji</strong> na wykonaną konfigurację, liczonej od daty podpisania protokołu odbioru.</li>
-    <li>W ramach gwarancji błędy wynikające z prac Wykonawcy usuwane są do 5 dni roboczych od zgłoszenia.</li>
-    <li>Bezpłatne wsparcie startowe przez <strong>2 tygodnie</strong> od przekazania projektu.</li>
-    <li>Po okresie gwarancyjnym Zamawiający może korzystać z odpłatnych pakietów wsparcia.</li>
-  </ol>
-
-  <!-- §6 -->
-  <h2>§ 6. Poufność</h2>
-  <p>Strony zobowiązują się do zachowania w tajemnicy wszelkich informacji poufnych uzyskanych
-  w związku z realizacją Umowy przez okres 5 lat od jej wygaśnięcia.</p>
-
-  <!-- §7 -->
-  <h2>§ 7. Odpowiedzialność</h2>
-  <p>Łączna odpowiedzialność Wykonawcy ograniczona jest do wartości wynagrodzenia netto określonego w § 2.</p>
-
-  <!-- §8 -->
-  <h2>§ 8. Postanowienia końcowe</h2>
-  <ol>
-    <li>Umowa wchodzi w życie z dniem podpisania przez obie Strony.</li>
-    <li>Wszelkie zmiany Umowy wymagają formy pisemnej pod rygorem nieważności.</li>
-    <li>W sprawach nieuregulowanych zastosowanie mają przepisy Kodeksu Cywilnego.</li>
-    <li>Spory rozstrzyga sąd właściwy dla siedziby Wykonawcy.</li>
+    <li>Wszelkie spory mogące wyniknąć przy realizacji niniejszej Umowy rozstrzygane będą przez Strony polubownie; w razie braku porozumienia — przez właściwy Sąd w Warszawie.</li>
+    <li>Wszelkie zmiany i uzupełnienia do Umowy wymagają formy pisemnej w postaci aneksów, pod rygorem nieważności. Dokumenty mogą być podpisywane w formie elektronicznej.</li>
+    <li>Żadna ze Stron nie może przekazać swoich praw i obowiązków wynikających z umowy na rzecz podmiotów trzecich bez uprzedniej pisemnej zgody drugiej Strony.</li>
+    <li>Strony mogą korzystać z poczty elektronicznej, przechowywania danych w chmurze i czatów określonych w Załączniku nr 1 do Umowy.</li>
     <li>Umowę sporządzono w dwóch jednobrzmiących egzemplarzach, po jednym dla każdej ze Stron.</li>
+    <li>Integralną część Umowy stanowią: <strong>Załącznik nr 1</strong> — Specyfikacja istotnych warunków zamówienia oraz <strong>Załącznik nr 2</strong> — Regulamin świadczenia usług.</li>
   </ol>
 
-  <!-- Signatures -->
+  <!-- ── SIGNATURES ── -->
   <div class="signatures">
     <div class="sig-block">
       <div class="sig-line">
         <strong>{{ your_company.name }}</strong><br>
         {{ your_company.ceo }}<br>
         {{ your_company.ceo_title }}<br>
-        <span style="color:#C5C5C5;">Wykonawca</span>
+        <span style="color:#bbb;">Zleceniobiorca / Wykonawca</span>
       </div>
     </div>
     <div class="sig-block">
       <div class="sig-line">
         <strong>{{ company.name }}</strong><br>
         {{ user_info.first_name }} {{ user_info.last_name }}<br>
-        {{ user_info.position }}<br>
-        <span style="color:#C5C5C5;">Zamawiający</span>
+        {% if user_info.position %}{{ user_info.position }}<br>{% endif %}
+        <span style="color:#bbb;">Zleceniodawca / Klient</span>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
   <div class="footer">
-    {{ your_company.name_full }} · NIP: {{ your_company.nip }} · KRS: {{ your_company.krs }} · REGON: {{ your_company.regon }} · {{ your_company.address }} · {{ contract_number }}
+    {{ your_company.name_full }} · NIP {{ your_company.nip_short }} · KRS {{ your_company.krs }} · {{ your_company.address }} · {{ contract_number }}
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ZAŁĄCZNIK NR 1
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break">
+    <div class="attach-header">
+      <div class="attach-title">Załącznik nr 1 do Umowy {{ contract_number }}</div>
+      <div class="attach-sub">Specyfikacja istotnych warunków zamówienia</div>
+    </div>
+
+    <h2>Zakres prac</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:55%">Usługa</th>
+          <th style="width:15%; text-align:center;">Godz.</th>
+          <th style="width:30%; text-align:right;">Koszt netto (PLN)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in scope %}
+        <tr>
+          <td>{{ item.item }}</td>
+          <td style="text-align:center;">{% if item.hours > 0 %}{{ item.hours | int }}{% else %}gratis{% endif %}</td>
+          <td style="text-align:right;">{% if item.price > 0 %}{{ item.price | int }}{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">Łącznie netto</td>
+          <td style="text-align:right;">{{ total_net | int }} PLN</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="background:#1a1a1a;">VAT 23%</td>
+          <td style="text-align:right; background:#1a1a1a;">{{ (total_gross - total_net) | int }} PLN</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="background:#C2FF85; color:#111;">Łącznie brutto</td>
+          <td style="text-align:right; background:#C2FF85; color:#111; font-size:10pt;">{{ total_gross | int }} PLN</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <h2>Harmonogram realizacji</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th style="width:20%">Tydzień</th><th>Etap</th></tr>
+      </thead>
+      <tbody>
+        {% for phase in timeline %}
+        <tr>
+          <td>Tydzień {{ phase.week }}</td>
+          <td>{{ phase.phase }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p style="margin-top:6px;font-size:8.5pt;">Termin rozpoczęcia prac: 2 (dwa) dni robocze od uzgodnienia Specyfikacji Technicznej i wpłaty zaliczki.</p>
+
+    <h2>Dane kontaktowe</h2>
+    <table class="contact-table">
+      <tr>
+        <th style="width:30%">Strona</th>
+        <th style="width:35%">Osoba odpowiedzialna</th>
+        <th>Telefon / E-mail</th>
+      </tr>
+      <tr>
+        <td><strong>Wykonawca</strong><br>{{ your_company.name }}</td>
+        <td>{{ your_company.ceo }}</td>
+        <td>{{ your_company.phone }}<br>{{ your_company.email }}</td>
+      </tr>
+      <tr>
+        <td><strong>Klient</strong><br>{{ company.name }}</td>
+        <td>{{ user_info.first_name }} {{ user_info.last_name }}{% if user_info.position %}<br>{{ user_info.position }}{% endif %}</td>
+        <td>{{ user_info.phone }}{% if user_info.email %}<br>{{ user_info.email }}{% endif %}</td>
+      </tr>
+    </table>
+
+    <p style="font-size:8pt;margin-top:8px;">Elektroniczne środki wymiany informacji: e-mail, czat/messenger — do ustalenia na kick-offie.</p>
+    <p style="font-size:8pt;">Adres e-mail do przesyłania zleceń zmian i korespondencji: <strong>{{ your_company.email }}</strong></p>
+
+    <!-- Signatures Attachment 1 -->
+    <div class="signatures" style="margin-top:40px;">
+      <div class="sig-block">
+        <div class="sig-line">
+          <strong>{{ your_company.name }}</strong><br>
+          {{ your_company.ceo }}<br>
+          <span style="color:#bbb;">Wykonawca</span>
+        </div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line">
+          <strong>{{ company.name }}</strong><br>
+          {{ user_info.first_name }} {{ user_info.last_name }}<br>
+          <span style="color:#bbb;">Klient</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ZAŁĄCZNIK NR 2
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="page-break">
+    <div class="attach-header">
+      <div class="attach-title">Załącznik nr 2 do Umowy {{ contract_number }}</div>
+      <div class="attach-sub">Regulamin świadczenia usług</div>
+    </div>
+
+    <p>Praca nad projektem wdrożeniowym obejmuje regularne spotkania online (lub offline), zwykle raz w tygodniu. Regularność spotkań i konkretne godziny uzgadnia się z kierownikiem projektu lub osobą odpowiedzialną zgodnie z Załącznikiem nr 1.</p>
+    <p>Niezależnie od spotkań, co najmniej raz w tygodniu kierownik projektu informuje Klienta o realizacji zadań, statusie projektu i nadchodzących krokach.</p>
+    <p>Jeden specjalista ma zwykle od 3 do 6 projektów w toku w tym samym czasie. Dla wygody Klienta i efektywnej pracy nad projektem planujemy pracę i trzymamy się harmonogramu. Prosimy o szanowanie czasu pracowników i informowanie nas jak najwcześniej, jeśli z jakiegoś powodu nie jest możliwe odbycie uzgodnionej rozmowy lub dostarczenie obiecanych informacji w wyznaczonym terminie.</p>
+
+    <h2>Regulamin pracy</h2>
+    <ul>
+      <li><strong>Godziny pracy:</strong> poniedziałek–piątek, 9:00–17:00 CET. Praca poza godzinami pracy jest uzgadniana oddzielnie z wyprzedzeniem i obciążona współczynnikiem ×2.</li>
+    </ul>
+
+    <h2>Regulamin spotkań online</h2>
+    <ul>
+      <li>Każdemu spotkaniu online przypisany jest ściśle określony czas (od–do).</li>
+      <li>Rzeczywisty czas spędzony, na każde rozpoczęte 30 minut, jest brany pod uwagę przy płatności.</li>
+      <li>Jeśli Klient nie stawi się na umówione spotkanie i nie odwoła go z co najmniej 24-godzinnym wyprzedzeniem, naliczone zostanie 30 minut pracy specjalisty.</li>
+      <li>Specjalista czeka na Klienta nie dłużej niż 15 minut od rozpoczęcia spotkania.</li>
+      <li>Jeśli specjalista nie pojawi się na spotkaniu w ciągu 15 minut i nie uprzedzi o tym Klienta, Klient otrzyma 1 godzinę pracy bezpłatnie jako rekompensatę.</li>
+      <li>W każdy poniedziałek przed godz. 14:00 kierownik projektu przesyła Klientowi raport: prace wykonane w poprzednim tygodniu (z liczbą godzin), plan prac i spotkań na bieżący tydzień.</li>
+      <li>Specjalista / kierownik projektu odpowiada na wszystkie pytania w ciągu maksymalnie 24 godzin.</li>
+    </ul>
+
+    <h2>Zasady składania zleceń i rozliczania prac</h2>
+    <ul>
+      <li>Klient wysyła Wykonawcy zlecenia (zamówienia) na adres e-mail: <strong>{{ your_company.email }}</strong></li>
+      <li>Wykonawca wycenia koszt, czas realizacji i inne warunki wykonania zamówienia, uzgadnia je z Klientem i po uzyskaniu akceptacji przystępuje do realizacji.</li>
+      <li>Po zakończeniu prac etapowych Wykonawca powiadomi Klienta pocztą elektroniczną i przekaże wyniki prac. Klient jest zobowiązany do sprawdzenia, odbioru wykonanych prac i podpisania Protokołu Odbioru lub uzasadnionej odmowy podpisania Protokołu w ciągu 3 dni roboczych.</li>
+      <li>Prace uzgodnione przez Strony mogą być opisane szczegółowo i uwzględnione w aneksach do niniejszej Umowy.</li>
+    </ul>
+
+    <!-- Signatures Attachment 2 -->
+    <div class="signatures" style="margin-top:50px;">
+      <div class="sig-block">
+        <div class="sig-line">
+          <strong>{{ your_company.name }}</strong><br>
+          {{ your_company.ceo }}<br>
+          <span style="color:#bbb;">Wykonawca</span>
+        </div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line">
+          <strong>{{ company.name }}</strong><br>
+          {{ user_info.first_name }} {{ user_info.last_name }}<br>
+          <span style="color:#bbb;">Klient</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer" style="margin-top:20px;">
+      {{ your_company.name_full }} · NIP {{ your_company.nip_short }} · {{ your_company.address }} · {{ contract_number }}
+    </div>
   </div>
 
 </div>

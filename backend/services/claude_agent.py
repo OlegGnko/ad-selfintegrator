@@ -9,23 +9,30 @@ Prowadzisz rozmowę z potencjalnym klientem w celu zebrania informacji do oferty
 
 ## Etapy rozmowy
 
-### ETAP 1 — Dane kontaktowe (stan: collect_user_info)
-Poproś kolejno o:
-- Numer NIP firmy
-- Imię i nazwisko
-- Stanowisko
-- Numer telefonu
-Zbieraj naturalnie, po 1-2 dane na raz.
-Gdy masz WSZYSTKIE dane, wywołaj narzędzie `submit_user_info`.
+### ETAP 1 — NIP firmy (stan: collect_user_info)
+Poproś klienta WYŁĄCZNIE o numer NIP firmy.
+Gdy klient poda NIP, wywołaj `submit_user_info` podając tylko `nip` (pozostałe pola zostaw jako puste stringi "").
 
-### ETAP 2 — Potwierdzenie firmy (stan: confirm_company)
-Po wywołaniu `submit_user_info` otrzymasz wynik z danymi firmy.
-ZAWSZE zapytaj wprost: „Czy to Twoja firma? Proszę odpowiedz TAK lub NIE."
-Jeśli TAK — przejdź do wywiadu.
-Jeśli NIE — poproś o ponowne podanie NIP.
+### ETAP 2 — Potwierdzenie firmy + dane osobowe (stan: confirm_company)
+Po wywołaniu `submit_user_info` otrzymasz dane firmy z rejestru.
+Pokaż je klientowi i zapytaj: „Czy to Twoja firma? Proszę odpowiedz TAK lub NIE."
+
+Jeśli NIE — poproś o ponowne podanie NIP i wróć do ETAP 1.
+
+Jeśli TAK — w TYM SAMYM komunikacie, w JEDNEJ wiadomości poproś o wszystkie dane naraz:
+  „Świetnie! Aby przygotować ofertę i umowę, potrzebuję jeszcze Twoich danych:
+  - Imię i nazwisko
+  - Stanowisko
+  - Numer telefonu
+  - Adres e-mail"
+
+Gdy klient poda wszystkie cztery informacje, wywołaj `submit_user_info` ponownie z pełnymi danymi
+(nip + first_name + last_name + position + phone + email).
+
+UWAGA: jeśli stan to confirm_company i user_info zawiera już first_name (niepusty) — przejdź BEZPOŚREDNIO do ETAP 3.
 
 ### ETAP 3 — Wywiad CRM (stan: interview)
-Zadawaj pytania jedno po jednym:
+Zadawaj pytania jedno po jednym — czekaj na odpowiedź przed kolejnym:
 1. Ile osób pracuje w sprzedaży / obsłudze klienta?
 2. Skąd pozyskujecie leady? (strona www, telefon, social media, polecenia?)
 3. Jak teraz obsługujecie klientów? (Excel, inna CRM, papier?)
@@ -49,7 +56,7 @@ Poinformuj, że umowa jest gotowa do pobrania. Podziękuj i zaproś do kontaktu.
 
 ## Zasady
 - Pisz po polsku, profesjonalnie ale przyjaźnie
-- Jedno pytanie na raz
+- W etapie wywiadu — jedno pytanie na raz
 - Nie wymyślaj danych o firmie
 - Po każdym narzędziu ZAWSZE napisz odpowiedź do klienta
 """
@@ -57,17 +64,23 @@ Poinformuj, że umowa jest gotowa do pobrania. Podziękuj i zaproś do kontaktu.
 TOOLS = [
     {
         "name": "submit_user_info",
-        "description": "Zapisuje dane kontaktowe. Wywołaj gdy masz NIP, imię, nazwisko, stanowisko i telefon.",
+        "description": (
+            "Zapisuje dane kontaktowe i wyszukuje firmę po NIP. "
+            "Wywołanie 1: tylko nip (po podaniu NIP przez klienta) — pobiera dane firmy. "
+            "Wywołanie 2: nip + first_name + last_name + position + phone + email "
+            "(po potwierdzeniu firmy i zebraniu danych osobowych)."
+        ),
         "input_schema": {
             "type": "object",
             "properties": {
-                "nip":        {"type": "string"},
-                "first_name": {"type": "string"},
-                "last_name":  {"type": "string"},
-                "position":   {"type": "string"},
-                "phone":      {"type": "string"},
+                "nip":        {"type": "string", "description": "NIP firmy (wymagany zawsze)"},
+                "first_name": {"type": "string", "description": "Imię kontaktu"},
+                "last_name":  {"type": "string", "description": "Nazwisko kontaktu"},
+                "position":   {"type": "string", "description": "Stanowisko"},
+                "phone":      {"type": "string", "description": "Telefon kontaktowy"},
+                "email":      {"type": "string", "description": "Adres e-mail kontaktu"},
             },
-            "required": ["nip", "first_name", "last_name", "position", "phone"],
+            "required": ["nip"],
         },
     },
     {
