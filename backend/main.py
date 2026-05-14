@@ -670,20 +670,6 @@ async def regenerate_mvp(session_id: str):
     from services.bitrix24 import _ensure_mvp_fields, _bx
     import base64 as _b64
 
-    # ── Diagnostic: use crm.deal.fields to find all UF_CRM_ fields ────────────
-    raw_fields = await _bx("crm.deal.fields", {})
-    all_fields: dict = raw_fields.get("result", {})
-    results["deal_fields_error"] = raw_fields.get("error", "none")
-    results["deal_uf_file_fields"] = {
-        k: v.get("type") for k, v in all_fields.items()
-        if k.startswith("UF_CRM_") and v.get("type") == "file"
-    }
-    results["deal_uf_all_custom"] = {
-        k: v.get("type") for k, v in all_fields.items()
-        if k.startswith("UF_CRM_")
-    }
-    # ───────────────────────────────────────────────────────────────────────────
-
     try:
         fields = await _ensure_mvp_fields()
         results["field_ids"] = fields

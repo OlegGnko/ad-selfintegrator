@@ -29,8 +29,15 @@ logger = logging.getLogger(__name__)
 DEAL_ENTITY_TYPE = 2  # Bitrix24 numeric entity type for CRM Deal
 
 # File-type field IDs in deal category 53 (section "Dokumenty")
-FIELD_OFERTA = "UF_CRM_1778757181337"
-FIELD_UMOWA  = "UF_CRM_1778757195020"
+FIELD_OFERTA  = "UF_CRM_1778757181337"
+FIELD_UMOWA   = "UF_CRM_1778757195020"
+# MVP document fields (created by crm.userfield.add, confirmed via crm.deal.fields)
+FIELD_TZ      = "UF_CRM_1778757209187"   # Zadanie techniczne
+FIELD_MVP_ZIP = "UF_CRM_1778757254788"   # MVP Portalu (config ZIP)
+FIELD_README  = "UF_CRM_1778757273958"   # Readme do MVP Portalu
+
+# Hardcoded MVP field map (no dynamic lookup needed — fields already exist in portal)
+_MVP_FIELDS_HARDCODED = {"tz": FIELD_TZ, "mvp": FIELD_MVP_ZIP, "readme": FIELD_README}
 
 # Cache stages list so we don't hit API on every request
 _stages_cache: list[str] = []
@@ -281,122 +288,17 @@ async def add_proposal_comment(
 
 
 # ---------------------------------------------------------------------------
-# MVP document fields — auto-created on first use
+# MVP document fields — hardcoded field IDs (confirmed via crm.deal.fields)
 # ---------------------------------------------------------------------------
-
-_mvp_fields_cache: dict = {}
-
-FIELD_TZ_LABEL     = "Zadanie techniczne"
-FIELD_MVP_LABEL    = "MVP Portalu"
-FIELD_README_LABEL = "Readme do MVP Portalu"
-
-_MVP_FIELD_DEFS = [
-    (FIELD_TZ_LABEL,     "tz",     "ZADANIE_TECHNICZNE"),
-    (FIELD_MVP_LABEL,    "mvp",    "MVP_PORTALU"),
-    (FIELD_README_LABEL, "readme", "README_MVP_PORTALU"),
-]
-
-
-def _extract_labels(field: dict) -> set[str]:
-    """Return all label strings from a Bitrix24 userfield dict."""
-    out: set[str] = set()
-    for attr in ("EDIT_FORM_LABEL", "LIST_COLUMN_LABEL", "XML_ID"):
-        val = field.get(attr, "")
-        if isinstance(val, str):
-            out.add(val)
-        elif isinstance(val, dict):
-            out.update(v for v in val.values() if isinstance(v, str))
-    return out
-
 
 async def _ensure_mvp_fields() -> dict:
     """
-    Find or create 3 file-type custom fields on CRM_DEAL for TZ, MVP ZIP, README.
-    Returns dict: {"tz": "UF_CRM_...", "mvp": "UF_CRM_...", "readme": "UF_CRM_..."}.
-    Only caches when ALL three fields are resolved.
+    Return hardcoded field IDs for TZ, MVP ZIP and README.
+    These fields were created via crm.userfield.add and their real UF_CRM_
+    names were confirmed by calling crm.deal.fields on the portal.
     """
-    global _mvp_fields_cache
-    # Only use cache when all three fields are actually found
-    if all(_mvp_fields_cache.get(k) for k in ("tz", "mvp", "readme")):
-        return _mvp_fields_cache
-
-    # Fetch all CRM_DEAL user fields once
-    res = await _bx("crm.userfield.list", {
-        "order": {"SORT": "ASC"},
-        "filter": {"ENTITY_ID": "CRM_DEAL"},
-    })
-    existing: list[dict] = res.get("result", [])
-    logger.info("crm.userfield.list returned %d fields for CRM_DEAL", len(existing))
-
-    # Build lookup: {xml_id: field_name, label: field_name}
-    lookup: dict[str, str] = {}
-    for f in existing:
-        fn = f.get("FIELD_NAME", "")
-        if not fn:
-            continue
-        for text in _extract_labels(f):
-            lookup[text] = fn
-
-    resolved: dict[str, str] = {}
-    need_refetch = False
-
-    for label, key, xml_id in _MVP_FIELD_DEFS:
-        # Try XML_ID first (most reliable), then label text
-        field_name = lookup.get(xml_id) or lookup.get(label)
-        if field_name:
-            logger.info("Found existing field '%s' -> %s", label, field_name)
-            resolved[key] = field_name
-            continue
-
-        # Field not found — create it.
-        # IMPORTANT: crm.userfield.add expects FIELD_NAME WITHOUT 'UF_CRM_' prefix;
-        # Bitrix24 prepends it automatically.
-        suffix = f"AD_{xml_id}"[:30]  # keep suffix ≤ 30 chars
-        r = await _bx("crm.userfield.add", {"fields": {
-            "ENTITY_ID":         "CRM_DEAL",
-            "FIELD_NAME":        suffix,           # NO 'UF_CRM_' prefix here!
-            "USER_TYPE_ID":      "file",
-            "XML_ID":            xml_id,
-            "MULTIPLE":          "N",
-            "MANDATORY":         "N",
-            "SHOW_IN_LIST":      "Y",
-            "EDIT_IN_LIST":      "Y",
-            "EDIT_FORM_LABEL":   label,
-            "LIST_COLUMN_LABEL": label,
-            "SORT":              "500",
-        }})
-        created_id = r.get("result")
-        if created_id:
-            logger.info("Created field '%s' (suffix=%s) -> id=%s", label, suffix, created_id)
-            need_refetch = True
-        else:
-            logger.error("crm.userfield.add FAILED for '%s': response=%s", label, r)
-
-    if need_refetch:
-        # Re-fetch to get the real FIELD_NAME that Bitrix24 assigned
-        res2 = await _bx("crm.userfield.list", {
-            "order": {"SORT": "ASC"},
-            "filter": {"ENTITY_ID": "CRM_DEAL"},
-        })
-        lookup2: dict[str, str] = {}
-        for f in res2.get("result", []):
-            fn = f.get("FIELD_NAME", "")
-            if fn:
-                for text in _extract_labels(f):
-                    lookup2[text] = fn
-
-        for label, key, xml_id in _MVP_FIELD_DEFS:
-            if key not in resolved:
-                fn = lookup2.get(xml_id) or lookup2.get(label)
-                if fn:
-                    logger.info("Post-create resolved '%s' -> %s", label, fn)
-                    resolved[key] = fn
-                else:
-                    logger.error("Still cannot find field '%s' after creation", label)
-
-    _mvp_fields_cache = resolved
-    logger.info("MVP field IDs final: %s", resolved)
-    return resolved
+    logger.info("MVP field IDs (hardcoded): %s", _MVP_FIELDS_HARDCODED)
+    return _MVP_FIELDS_HARDCODED
 
 
 async def add_mvp_documents(
