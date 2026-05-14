@@ -608,6 +608,83 @@ async def request_manager(session_id: str):
     }
 
 
+@app.post("/api/session/{session_id}/regenerate-mvp")
+async def regenerate_mvp(session_id: str):
+    """
+    Re-generate TZ HTML, config ZIP and README HTML for an existing session
+    and attach them to the Bitrix24 deal. Safe to call multiple times.
+    """
+    import traceback
+    from services.pdf_generator import _html_to_pdf
+
+    session = await get_session(session_id)
+    deal_id = session.get("bitrix24_deal_id")
+    interview = session.get("interview", {})
+    company   = session.get("company", {})
+    user_info = session.get("user_info", {})
+    proposal_data = session.get("proposal_data", {})
+
+    if not deal_id:
+        raise HTTPException(status_code=400, detail="No Bitrix24 deal linked to this session")
+    if not interview:
+        raise HTTPException(status_code=400, detail="Interview data not found in session")
+
+    results: dict = {"deal_id": deal_id, "tz": None, "zip": None, "readme": None, "errors": []}
+
+    # TZ
+    tz_bytes = b""
+    try:
+        tz_html  = generate_tz_html(interview, company, user_info, proposal_data)
+        tz_bytes = _html_to_pdf(tz_html)
+        results["tz"] = f"{len(tz_bytes)} bytes"
+        logger.info("[regenerate-mvp] TZ: %d bytes", len(tz_bytes))
+    except Exception:
+        msg = traceback.format_exc()
+        results["errors"].append(f"TZ: {msg}")
+        logger.error("[regenerate-mvp] TZ FAILED:\n%s", msg)
+
+    # Config ZIP
+    config_zip = b""
+    try:
+        config_zip   = generate_config_zip(interview, company)
+        results["zip"] = f"{len(config_zip)} bytes"
+        logger.info("[regenerate-mvp] ZIP: %d bytes", len(config_zip))
+    except Exception:
+        msg = traceback.format_exc()
+        results["errors"].append(f"ZIP: {msg}")
+        logger.error("[regenerate-mvp] ZIP FAILED:\n%s", msg)
+
+    # README
+    readme_bytes = b""
+    try:
+        readme_html  = generate_readme_html(interview, company)
+        readme_bytes = _html_to_pdf(readme_html)
+        results["readme"] = f"{len(readme_bytes)} bytes"
+        logger.info("[regenerate-mvp] README: %d bytes", len(readme_bytes))
+    except Exception:
+        msg = traceback.format_exc()
+        results["errors"].append(f"README: {msg}")
+        logger.error("[regenerate-mvp] README FAILED:\n%s", msg)
+
+    # Attach to Bitrix24
+    try:
+        await add_mvp_documents(
+            deal_id,
+            tz_pdf_bytes=tz_bytes,
+            config_zip_bytes=config_zip,
+            readme_pdf_bytes=readme_bytes,
+            session_id=session_id,
+        )
+        results["bitrix24"] = "ok"
+    except Exception:
+        msg = traceback.format_exc()
+        results["errors"].append(f"Bitrix24 attach: {msg}")
+        logger.error("[regenerate-mvp] Bitrix24 attach FAILED:\n%s", msg)
+
+    results["success"] = len(results["errors"]) == 0
+    return results
+
+
 @app.get("/")
 async def root():
     return FileResponse(str(FRONTEND_DIR / "index.html"))
