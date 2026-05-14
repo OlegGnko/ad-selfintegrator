@@ -294,15 +294,13 @@ async def start_session():
     }
 
     greeting = (
-        "**🇵🇱 PL** — Dzień dobry! Jestem asystentem AI firmy **Alpha Digital**. "
-        "Pomogę Ci przygotować spersonalizowaną ofertę wdrożenia Bitrix24.\n\n"
-        "**🇬🇧 EN** — Hello! I'm the AI assistant of **Alpha Digital**. "
-        "I'll help you get a personalised Bitrix24 implementation proposal.\n\n"
-        "**🇷🇺 RU** — Добрый день! Я ИИ-ассистент компании **Alpha Digital**. "
-        "Помогу вам подготовить персонализированное коммерческое предложение по внедрению Bitrix24.\n\n"
-        "---\n"
-        "W jakim języku chcemy rozmawiać? / What language shall we use? / На каком языке будем общаться?\n\n"
-        "**1.** 🇵🇱 Polski &nbsp;&nbsp; **2.** 🇬🇧 English &nbsp;&nbsp; **3.** 🇷🇺 Русский"
+        "**🇵🇱** Dzień dobry! Jestem asystentem AI firmy **Alpha Digital** — "
+        "pomogę przygotować ofertę wdrożenia Bitrix24.\n\n"
+        "**🇬🇧** Hello! I'm **Alpha Digital**'s AI assistant — "
+        "I'll help you get a Bitrix24 implementation proposal.\n\n"
+        "**🇷🇺** Добрый день! Я ИИ-ассистент компании **Alpha Digital** — "
+        "помогу подготовить КП по внедрению Bitrix24.\n\n"
+        "Wybierz język / Choose language / Выберите язык:"
     )
 
     session["messages"].append({"role": "assistant", "content": greeting})

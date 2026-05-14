@@ -691,7 +691,41 @@ textarea::placeholder { color: #555; }
     setUrlSession(sessionId);
     showSessionLink(sessionId);
     addBotMessage(data.message);
+    addLanguageButtons();   // show PL / EN / RU buttons on fresh session
     sendBtn.disabled = false;
+  }
+
+  function addLanguageButtons() {
+    if (document.getElementById('langButtons')) return; // already shown
+    const wrap = document.createElement('div');
+    wrap.id = 'langButtons';
+    wrap.style.cssText = [
+      'display:flex', 'gap:10px', 'justify-content:center',
+      'flex-wrap:wrap', 'padding:4px 0 16px',
+    ].join(';');
+
+    const opts = [
+      { label: '🇵🇱  Polski',   msg: 'Polski'  },
+      { label: '🇬🇧  English',  msg: 'English' },
+      { label: '🇷🇺  Русский',  msg: 'Русский' },
+    ];
+
+    opts.forEach(({ label, msg }) => {
+      const btn = document.createElement('button');
+      btn.className = 'ad-btn ad-btn-primary';
+      btn.textContent = label;
+      btn.style.cssText = 'font-size:15px;padding:11px 30px;letter-spacing:0.2px;';
+      btn.addEventListener('click', () => {
+        document.getElementById('langButtons')?.remove();
+        // Put the choice in the input and send it
+        inputEl.value = msg;
+        sendMessage();
+      });
+      wrap.appendChild(btn);
+    });
+
+    messagesEl.appendChild(wrap);
+    scrollBottom();
   }
 
   function addBotMessage(text, extras = {}) {
