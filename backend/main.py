@@ -10,7 +10,12 @@ import logging
 
 from services.company_lookup import lookup_company_by_nip, validate_nip
 from services.claude_agent import chat
-from services.pdf_generator import generate_proposal_pdf, generate_contract_pdf
+from services.pdf_generator import (
+    generate_proposal_pdf,
+    generate_contract_pdf,
+    generate_proposal_pdf_file,
+    generate_contract_pdf_file,
+)
 from services import session_store
 from services.bitrix24 import (
     create_deal_with_contact,
@@ -331,15 +336,28 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
     session_id = session["session_id"]
 
     if name == "submit_user_info":
-        session["user_info"] = inp
         nip = inp.get("nip", "").replace("-", "").replace(" ", "")
 
         if not validate_nip(nip):
-            session["messages"].append({
-                "role": "assistant",
-                "content": "⚠️ Podany numer NIP wydaje się być nieprawidłowy. Czy możesz go sprawdzić i wpisać ponownie?"
-            })
-            return None
+            return {"type": "validation_error", "field": "nip",
+                    "message": "Podany numer NIP jest nieprawidlowy. Popros klienta o ponowne podanie NIP."}
+
+        # Validate email when provided
+        email = inp.get("email", "")
+        if email:
+            if "@" not in email or "." not in email.split("@")[-1]:
+                return {"type": "validation_error", "field": "email",
+                        "message": f"Podany adres e-mail '{email}' jest nieprawidlowy (brak @ lub domeny). Popros o poprawny adres."}
+
+        # Validate phone when provided (min 9 digits)
+        phone = inp.get("phone", "")
+        if phone:
+            digits = "".join(c for c in phone if c.isdigit())
+            if len(digits) < 9:
+                return {"type": "validation_error", "field": "phone",
+                        "message": f"Podany numer telefonu '{phone}' wyglada na nieprawidlowy (za malo cyfr). Popros o poprawny numer."}
+
+        session["user_info"] = inp
 
         company = await lookup_company_by_nip(nip)
         if company:
@@ -385,21 +403,21 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             "license_reason": license_reason,
         }
 
-        # Enrich Bitrix24 deal: Q&A comment + proposal file attachment
+        # Enrich Bitrix24 deal: Q&A comment + proposal PDF attachment
         deal_id = session.get("bitrix24_deal_id")
         if deal_id:
             await add_interview_comment(deal_id, inp)
-            # Generate proposal HTML now so we can attach it to Bitrix24
-            proposal_html = generate_proposal_pdf({
+            doc_data = {
                 **session["proposal_data"],
                 "user_info":  session["user_info"],
                 "company":    session["company"],
                 "interview":  inp,
                 "session_id": session_id,
-            })
+            }
+            proposal_pdf = generate_proposal_pdf_file(doc_data)
             await add_proposal_comment(
                 deal_id, session_id, total, round(total * 1.23),
-                html_bytes=proposal_html,
+                pdf_bytes=proposal_pdf,
             )
 
         return {"type": "proposal_ready"}
@@ -414,17 +432,18 @@ async def _handle_tool_call(session: dict, tool_call: dict) -> dict | None:
             session["proposal_approved"] = True
             session["state"] = "contract_ready"
 
-            # Generate contract HTML and attach to Bitrix24
+            # Generate contract PDF and attach to Bitrix24
             deal_id = session.get("bitrix24_deal_id")
             if deal_id:
-                contract_html = generate_contract_pdf({
+                doc_data = {
                     **session.get("proposal_data", {}),
                     "user_info":  session["user_info"],
                     "company":    session["company"],
                     "interview":  session["interview"],
                     "session_id": session_id,
-                })
-                await add_contract_comment(deal_id, session_id, html_bytes=contract_html)
+                }
+                contract_pdf = generate_contract_pdf_file(doc_data)
+                await add_contract_comment(deal_id, session_id, pdf_bytes=contract_pdf)
 
             return {"type": "contract_ready"}
 

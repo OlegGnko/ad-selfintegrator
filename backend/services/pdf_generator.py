@@ -1,18 +1,16 @@
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 from datetime import date
+import io
+import logging
+
+logger = logging.getLogger(__name__)
 
 TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
 env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
 
 PRINT_WRAPPER = """<!DOCTYPE html>
 <html><head><meta charset="UTF-8">
-<script>
-  window.onload = function() {{
-    // Auto-open print dialog; fallback to manual button
-    setTimeout(function() {{ window.print(); }}, 600);
-  }};
-</script>
 <style>
   @media screen {{
     body {{ margin: 0; background: #f0f0f0; }}
@@ -58,6 +56,20 @@ def _extract_styles(html: str) -> str:
     return "<style>" + "\n".join(styles) + "</style>" if styles else ""
 
 
+def _html_to_pdf(html: str) -> bytes:
+    """Convert HTML string to PDF bytes using xhtml2pdf (pure-Python, serverless-safe)."""
+    try:
+        from xhtml2pdf import pisa
+        buffer = io.BytesIO()
+        status = pisa.CreatePDF(html, dest=buffer, encoding="utf-8")
+        if not status.err:
+            return buffer.getvalue()
+        logger.warning("xhtml2pdf error: %s", status.err)
+    except Exception as exc:
+        logger.warning("PDF conversion failed: %s", exc)
+    return b""
+
+
 def generate_proposal_pdf(session_data: dict) -> bytes:
     template = env.get_template("proposal.html")
     html = template.render(
@@ -84,3 +96,27 @@ def generate_contract_pdf(session_data: dict) -> bytes:
         content=_extract_styles(html) + _extract_body(html),
     )
     return wrapped.encode("utf-8")
+
+
+# ── PDF versions for Bitrix24 file attachments ────────────────────────────────
+
+def generate_proposal_pdf_file(session_data: dict) -> bytes:
+    """Return true PDF bytes (for attaching to Bitrix24 deal)."""
+    template = env.get_template("proposal.html")
+    html = template.render(
+        **session_data,
+        today=date.today().strftime("%d.%m.%Y"),
+        proposal_number=f"OF/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
+    )
+    return _html_to_pdf(html)
+
+
+def generate_contract_pdf_file(session_data: dict) -> bytes:
+    """Return true PDF bytes (for attaching to Bitrix24 deal)."""
+    template = env.get_template("contract.html")
+    html = template.render(
+        **session_data,
+        today=date.today().strftime("%d.%m.%Y"),
+        contract_number=f"UMW/{date.today().strftime('%Y%m%d')}/{session_data.get('session_id', '001')[:6].upper()}",
+    )
+    return _html_to_pdf(html)

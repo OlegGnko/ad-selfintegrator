@@ -823,6 +823,7 @@ textarea::placeholder { color: #555; }
   } else {
     const recognition = new SpeechRecognition();
     recognition.lang = 'pl-PL';
+    recognition.continuous = true;      // keep recording through pauses
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -856,13 +857,18 @@ textarea::placeholder { color: #555; }
     };
 
     recognition.onend = () => {
-      isRecording = false;
+      // If user hasn't pressed stop — restart automatically (browser cut off on silence)
+      if (isRecording) {
+        try { recognition.start(); } catch (e) { /* already starting */ }
+        return;
+      }
       micBtn.classList.remove('recording');
       micBtn.title = 'Nagraj głosem';
       interimSpan = '';
     };
 
     recognition.onerror = (event) => {
+      if (event.error === 'no-speech') return; // ignore silence, keep going
       console.warn('SpeechRecognition error:', event.error);
       isRecording = false;
       micBtn.classList.remove('recording');
@@ -871,6 +877,7 @@ textarea::placeholder { color: #555; }
 
     micBtn.addEventListener('click', () => {
       if (isRecording) {
+        isRecording = false;   // mark as stopped BEFORE calling stop()
         recognition.stop();
       } else {
         inputEl.focus();

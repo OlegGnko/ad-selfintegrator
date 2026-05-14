@@ -120,7 +120,7 @@ async def create_deal_with_contact(
     if not BITRIX24_WEBHOOK_URL:
         return None
 
-    # 1. Contact
+    # 1. Contact — all fields mapped to proper CRM fields
     phone_val = user_info.get("phone", "")
     email_val = user_info.get("email", "")
     contact_res = await _bx("crm.contact.add", {"fields": {
@@ -132,18 +132,30 @@ async def create_deal_with_contact(
     }})
     contact_id = contact_res.get("result")
 
-    # 2. Company
+    # 2. Company — proper CRM fields + NIP/REGON in COMMENTS
     nip     = company.get("nip", "")
     regon   = company.get("regon", "")
     address = company.get("address", "")
-    co_lines = [f"NIP: {nip}"]
-    if regon:   co_lines.append(f"REGON: {regon}")
-    if address: co_lines.append(f"Adres: {address}")
 
-    company_res = await _bx("crm.company.add", {"fields": {
-        "TITLE":    company.get("name", "Firma"),
-        "COMMENTS": "\n".join(co_lines),
-    }})
+    co_comments_lines = []
+    if nip:   co_comments_lines.append(f"NIP: {nip}")
+    if regon: co_comments_lines.append(f"REGON: {regon}")
+
+    company_fields: dict = {
+        "TITLE":       company.get("name", "Firma"),
+        "COMPANY_TYPE": "CUSTOMER",
+    }
+    if address:
+        company_fields["ADDRESS"] = address
+    if phone_val:
+        # If user provided their work phone, link it to company too
+        company_fields["PHONE"] = [{"VALUE": phone_val, "VALUE_TYPE": "WORK"}]
+    if email_val:
+        company_fields["EMAIL"] = [{"VALUE": email_val, "VALUE_TYPE": "WORK"}]
+    if co_comments_lines:
+        company_fields["COMMENTS"] = "\n".join(co_comments_lines)
+
+    company_res = await _bx("crm.company.add", {"fields": company_fields})
     company_id = company_res.get("result")
 
     # 3. Deal (stage index 0 = Nowy)
@@ -211,10 +223,10 @@ async def add_proposal_comment(
     session_id: str,
     total_net: int,
     total_gross: int,
-    html_bytes: bytes | None = None,
+    pdf_bytes: bytes | None = None,
 ) -> None:
     """
-    Post proposal summary + download link, attach HTML file to FIELD_OFERTA,
+    Post proposal summary + download link, attach PDF file to FIELD_OFERTA,
     and advance deal to stage index 2 (Oferta).
     """
     if not BITRIX24_WEBHOOK_URL or not deal_id:
@@ -236,9 +248,9 @@ async def add_proposal_comment(
         "COMMENT":        "\n".join(lines),
     }})
 
-    # Attach HTML file to the "Oferta" file field
-    if html_bytes:
-        await _attach_file(deal_id, FIELD_OFERTA, f"Oferta_{session_id[:8]}.html", html_bytes)
+    # Attach PDF file to the "Oferta" file field
+    if pdf_bytes:
+        await _attach_file(deal_id, FIELD_OFERTA, f"Oferta_{session_id[:8]}.pdf", pdf_bytes)
 
     # Advance to Oferta (stage index 2)
     await _move_deal(deal_id, 2)
@@ -247,10 +259,10 @@ async def add_proposal_comment(
 async def add_contract_comment(
     deal_id: str,
     session_id: str,
-    html_bytes: bytes | None = None,
+    pdf_bytes: bytes | None = None,
 ) -> None:
     """
-    Post contract download link, attach HTML file to FIELD_UMOWA,
+    Post contract download link, attach PDF file to FIELD_UMOWA,
     and advance deal to stage index 3 (Umowa).
     """
     if not BITRIX24_WEBHOOK_URL or not deal_id:
@@ -267,9 +279,9 @@ async def add_contract_comment(
         "COMMENT":        "\n".join(lines),
     }})
 
-    # Attach HTML file to the "Umowa" file field
-    if html_bytes:
-        await _attach_file(deal_id, FIELD_UMOWA, f"Umowa_{session_id[:8]}.html", html_bytes)
+    # Attach PDF file to the "Umowa" file field
+    if pdf_bytes:
+        await _attach_file(deal_id, FIELD_UMOWA, f"Umowa_{session_id[:8]}.pdf", pdf_bytes)
 
     # Advance to Umowa (stage index 3)
     await _move_deal(deal_id, 3)
