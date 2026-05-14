@@ -521,21 +521,33 @@ def generate_config_zip(interview: dict, company: dict) -> bytes:
         def _add(path: str, obj: Any) -> None:
             zf.writestr(path, json.dumps(obj, ensure_ascii=False, indent=2))
 
-        # manifest.json — required by Bitrix24 import wizard to validate the archive
+        # manifest.json — required by Bitrix24 import wizard ("vertical_crm" is the accepted code)
         _add("manifest.json", {
-            "CODE": "ad_selfintegrator",
+            "CODE": "vertical_crm",
             "VERSION": 1,
             "ACTIVE": "Y",
             "PLACEMENT": ["crm", "crm_lead", "crm_deal", "crm_contact", "crm_company", "crm_settings"],
-            "USES": ["app", "crm", "bizproc_crm"],
+            "USES": ["app", "crm", "crm_form", "bizproc_crm", "intranet_setting"],
             "TITLE": "Konfiguracja CRM — Alpha Digital",
             "DESCRIPTION": "Indywidualna konfiguracja CRM przygotowana przez Alpha Digital na podstawie wywiadu z klientem.",
             "COLOR": "#C2FF85",
+            "ICON": "/bitrix/images/crm/configuration/vertical-crm-icon.svg",
+            "EXPORT_TITLE_PAGE": "Eksportuj konfigurację CRM",
+            "EXPORT_TITLE_BLOCK": "Konfiguracja CRM",
+            "EXPORT_ACTION_DESCRIPTION": "Kliknij Eksport aby zapisać konfigurację CRM.",
             "METADATA": {"crm": {"enableRole": False}},
         })
 
         # CRM_SETTING
         _add("CRM_SETTING/LEAD_MODE.json", {"TYPE": "LEAD_MODE", "ENABLED": "N"})
+
+        # CRM_FORM — empty list (required when crm_form is in USES)
+        _add("CRM_FORM/list.json", {"list": []})
+
+        # INTRANET_SETTINGS — minimal theme (required when intranet_setting is in USES)
+        _add("INTRANET_SETTINGS/theme.json", {
+            "TYPE": "theme", "ID": "light:default", "TEXT_COLOR": "light", "CODE": "default",
+        })
 
         # CRM_STATUS
         _add("CRM_STATUS/DEAL_STAGE.json", _build_deal_stage_json(stages, category_id=0))

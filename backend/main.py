@@ -703,6 +703,22 @@ async def regenerate_mvp(session_id: str):
     return results
 
 
+@app.get("/api/session/{session_id}/config.zip")
+async def download_config_zip(session_id: str):
+    """Download the Bitrix24 configuration ZIP for a session directly."""
+    session = await get_session(session_id)
+    interview = session.get("interview", {})
+    company   = session.get("company", {})
+    if not interview:
+        raise HTTPException(status_code=400, detail="Interview data not found in session")
+    zip_bytes = generate_config_zip(interview, company)
+    return Response(
+        content=zip_bytes,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="MVP_Config_{session_id[:8]}.zip"'},
+    )
+
+
 @app.get("/")
 async def root():
     return FileResponse(str(FRONTEND_DIR / "index.html"))
