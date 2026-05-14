@@ -666,16 +666,34 @@ async def regenerate_mvp(session_id: str):
         results["errors"].append(f"README: {msg}")
         logger.error("[regenerate-mvp] README FAILED:\n%s", msg)
 
-    # Attach to Bitrix24
+    # Resolve field IDs and attach to Bitrix24
+    from services.bitrix24 import _ensure_mvp_fields, _bx
+    import base64 as _b64
+
     try:
-        await add_mvp_documents(
-            deal_id,
-            tz_pdf_bytes=tz_bytes,
-            config_zip_bytes=config_zip,
-            readme_pdf_bytes=readme_bytes,
-            session_id=session_id,
-        )
-        results["bitrix24"] = "ok"
+        fields = await _ensure_mvp_fields()
+        results["field_ids"] = fields
+
+        updates: dict = {}
+        if tz_bytes and fields.get("tz"):
+            updates[fields["tz"]] = {"fileData": [f"TZ_{session_id[:8]}.html",
+                                                   _b64.b64encode(tz_bytes).decode()]}
+        if config_zip and fields.get("mvp"):
+            updates[fields["mvp"]] = {"fileData": [f"MVP_Config_{session_id[:8]}.zip",
+                                                    _b64.b64encode(config_zip).decode()]}
+        if readme_bytes and fields.get("readme"):
+            updates[fields["readme"]] = {"fileData": [f"README_MVP_{session_id[:8]}.html",
+                                                       _b64.b64encode(readme_bytes).decode()]}
+
+        results["fields_to_update"] = list(updates.keys())
+
+        if updates:
+            bx_res = await _bx("crm.deal.update", {"id": int(deal_id), "fields": updates})
+            results["bitrix24_raw"] = bx_res
+            results["bitrix24"] = "ok" if bx_res.get("result") else f"fail: {bx_res}"
+        else:
+            results["bitrix24"] = "skipped — no valid field IDs"
+
     except Exception:
         msg = traceback.format_exc()
         results["errors"].append(f"Bitrix24 attach: {msg}")
